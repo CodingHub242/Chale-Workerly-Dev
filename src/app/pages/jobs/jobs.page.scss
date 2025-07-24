@@ -1,0 +1,87 @@
+:root {
+  --primary-color: #4a90e2;
+  --background-color: #f4f7fc;
+  --card-background-color: #ffffff;
+  --text-color: #333;
+  --text-color-light: #777;
+  --shadow-color: rgba(0, 0, 0, 0.08);
+  --border-radius: 12px;
+}
+
+ion-content {
+  --background: var(--background-color);
+}
+
+.jobs-grid {
+  padding: 16px;
+}
+
+.job-card {
+  background: var(--card-background-color);
+  border-radius: var(--border-radius);
+  box-shadow: 0 4px 16px var(--shadow-color);
+  margin-bottom: 20px;
+  transition: all 0.3s ease;
+  cursor: pointer;
+
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 24px var(--shadow-color);
+  }
+
+  ion-card-header {
+    padding-bottom: 12px;
+    border-bottom: 1px solid #f0f0f0;
+  }
+
+  ion-card-title {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: var(--primary-color);
+  }
+
+  ion-card-subtitle {
+    color: var(--text-color-light);
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    ion-icon {
+      margin-right: 6px;
+    }
+  }
+
+  ion-card-content {
+    padding-top: 16px;
+  }
+
+  .job-detail {
+    display: flex;
+    align-items: center;
+    margin-bottom: 12px;
+    color: var(--text-color);
+
+    ion-icon {
+      font-size: 1.1rem;
+      margin-right: 10px;
+      color: var(--text-color-light);
+    }
+  }
+
+  .status-badge {
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: #fff;
+    text-transform: uppercase;
+    display: inline-block;
+    margin-top: 10px;
+
+    &.assigned { background-color: #28a745; }
+    &.assigning { background-color: #ffc107; color: #333; }
+    &.completed { background-color: #17a2b8; }
+    &.cancelled { background-color: #dc3545; }
+    &.inactive { background-color: #6c757d; }
+    &.declined { background-color: #f5a623; }
+  }
+}

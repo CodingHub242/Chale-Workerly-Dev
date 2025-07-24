@@ -6,24 +6,45 @@
     <ion-title>Jobs</ion-title>
     <ion-buttons slot="end">
       <ion-button (click)="addJob()">
-        <ion-icon slot="icon-only" name="add"></ion-icon>
+        <ion-icon slot="icon-only" name="add-circle-outline"></ion-icon>
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
-  <ion-list>
-    <ion-item *ngFor="let job of jobs" (click)="viewJob(job.id)">
-      <ion-label>
-        <h2>{{ job.title }}</h2>
-        <p>{{ job.description }}</p>
-       
-          <p>Client: {{ job.client['name'] }}</p>
-       
-        
-        <p>Pay Rate: GHS{{ job.payRate }}</p>
-      </ion-label>
-    </ion-item>
-  </ion-list>
+  <ion-grid class="jobs-grid">
+    <ion-row>
+      <ion-col size="12" size-md="6" size-lg="4" *ngFor="let job of jobs">
+        <ion-card class="job-card" (click)="viewJob(job.id)">
+          <ion-card-header>
+            <ion-card-title>{{ job.title }}</ion-card-title>
+            <ion-card-subtitle>
+              <ion-icon name="business-outline"></ion-icon>
+              {{ job.client?.name }}
+            </ion-card-subtitle>
+          </ion-card-header>
+          <ion-card-content>
+            <div class="job-detail">
+              <ion-icon name="cash-outline"></ion-icon>
+              <span>Pay Rate: GHS{{ job.payRate }}</span>
+            </div>
+            <div class="job-detail">
+              <ion-icon name="calendar-outline"></ion-icon>
+              <span>{{ job.startDate | date: 'mediumDate' }} - {{ job.endDate | date: 'mediumDate' }}</span>
+            </div>
+            <div class="status-badge" 
+                 [class.assigned]="job.status === 'Assigned'"
+                 [class.assigning]="job.status === 'Assigning In Progress'"
+                 [class.completed]="job.status === 'Completed'"
+                 [class.cancelled]="job.status === 'Cancelled'"
+                 [class.inactive]="job.status === 'InActive'"
+                 [class.declined]="job.status === 'Declined'">
+              {{ job.status }}
+            </div>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
 </ion-content>
