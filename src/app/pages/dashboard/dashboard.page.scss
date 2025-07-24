@@ -1,0 +1,129 @@
+:root {
+  --primary-color: #4a90e2;
+  --secondary-color: #50e3c2;
+  --background-color: #f4f7fc;
+  --card-background-color: #ffffff;
+  --text-color: #333;
+  --text-color-light: #777;
+  --shadow-color: rgba(0, 0, 0, 0.1);
+  --border-radius: 12px;
+}
+
+ion-content {
+  --background: var(--background-color);
+}
+
+.dashboard-grid {
+  padding: 16px;
+}
+
+.stat-card {
+  background: var(--card-background-color);
+  border-radius: var(--border-radius);
+  box-shadow: 0 4px 12px var(--shadow-color);
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  padding: 20px;
+  margin-bottom: 16px;
+
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 24px var(--shadow-color);
+  }
+
+  .stat-icon {
+    font-size: 36px;
+    margin-right: 20px;
+    padding: 15px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .stat-info {
+    h2 {
+      font-size: 28px;
+      font-weight: bold;
+      margin: 0;
+      color: var(--text-color);
+    }
+    p {
+      font-size: 16px;
+      margin: 0;
+      color: var(--text-color-light);
+    }
+  }
+}
+
+// Icon-specific colors
+.jobs-icon {
+  background-color: rgba(74, 144, 226, 0.1);
+  color: #4a90e2;
+}
+.clients-icon {
+  background-color: rgba(80, 227, 194, 0.1);
+  color: #50e3c2;
+}
+.temps-icon {
+  background-color: rgba(245, 166, 35, 0.1);
+  color: #f5a623;
+}
+.shifts-icon {
+  background-color: rgba(208, 2, 27, 0.1);
+  color: #d0021b;
+}
+.timesheets-icon {
+  background-color: rgba(126, 211, 33, 0.1);
+  color: #7ed321;
+}
+
+.chart-card, .list-card {
+  background: var(--card-background-color);
+  border-radius: var(--border-radius);
+  box-shadow: 0 4px 12px var(--shadow-color);
+  padding: 20px;
+  margin-top: 20px;
+
+  ion-card-header {
+    padding-bottom: 16px;
+    border-bottom: 1px solid #eee;
+  }
+
+  ion-card-title {
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--text-color);
+  }
+}
+
+.worker-list {
+  ion-list-header {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--primary-color);
+    border-bottom: 1px solid #eee;
+    padding-bottom: 8px;
+    margin-bottom: 8px;
+  }
+
+  ion-item {
+    --padding-start: 0;
+    --inner-padding-end: 0;
+    border-bottom: 1px solid #f0f0f0;
+
+    &:last-child {
+      border-bottom: none;
+    }
+
+    h2 {
+      font-weight: 600;
+    }
+
+    p {
+      color: var(--text-color-light);
+      font-size: 14px;
+    }
+  }
+}
