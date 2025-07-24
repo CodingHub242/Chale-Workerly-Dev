@@ -8,7 +8,7 @@ export interface Job {
     startDate: Date;
     endDate: Date;
     workhours: string;
-    experience: string[];
+    experience: number[];
     status: 'Assigning In Progress' | 'Assigned' | 'Completed' | 'Cancelled' | 'InActive' | 'Declined';
     attachments: File[];
     payRate: number;

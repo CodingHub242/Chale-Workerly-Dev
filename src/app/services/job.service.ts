@@ -10,7 +10,7 @@ import { environment } from '../../environments/environment';
 export class JobService {
 
   private apiUrl = `${environment.apiUrl}/jobs`;
-  private postapiUrl = `${environment.apiUrl}/Addjob`;
+  private postapiUrl = `${environment.apiUrl}/updateJobStat`;
 
   constructor(private http: HttpClient) { }
 
@@ -30,5 +30,11 @@ export class JobService {
     const id = job.get('id');
     // Use POST for updates to handle FormData correctly, and let Laravel spoof the method.
     return this.http.post(`${this.apiUrl}/${id}`, job);
+  }
+
+  updateJobStat(id:number,job:any): Observable<any> {
+   // const id = job.get('id');
+    // Use POST for updates to handle FormData correctly, and let Laravel spoof the method.
+    return this.http.put(`${this.postapiUrl}/${id}`, job);
   }
 }

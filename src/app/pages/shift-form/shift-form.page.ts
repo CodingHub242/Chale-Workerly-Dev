@@ -94,10 +94,17 @@ export class ShiftFormPage implements OnInit {
     this.shiftId = this.route.snapshot.params['id'];
     if (this.shiftId) {
       this.isEditMode = true;
-      // Edit mode is more complex with multiple assignments, so I'll disable it for now.
-      // A real implementation would need to decide how to handle editing a shift
-      // that was originally assigned to multiple people.
-      this.isEditMode = false;
+      this.shiftService.getShift(this.shiftId).subscribe((shift:any) => {
+        console.log('Shift details:', shift);
+        this.form.patchValue({
+          jobId: shift[0].job.id,
+          clientId: shift[0].client.id,
+          tempIds: shift[0].temps.map((t:any) => t.id),
+          startTime: new Date(shift[0].startTime).toISOString().slice(0, 16),
+          endTime: new Date(shift[0].endTime).toISOString().slice(0, 16),
+          notes: shift[0].notes
+        });
+      });
     }
   }
 
@@ -122,30 +129,22 @@ export class ShiftFormPage implements OnInit {
   }
 
   filterTempsByJob(job: Job) {
-    const jobExperienceRanges = job.experience;
+    const jobExperienceRange = job.experience;
 
-    if (!jobExperienceRanges || jobExperienceRanges.length === 0) {
+    if (!jobExperienceRange || jobExperienceRange.length !== 2) {
       this.filteredTemps = this.temps;
+      console.warn('Job does not have a valid experience range:', job);
       return;
     }
 
+    const [minExp, maxExp] = jobExperienceRange;
+
     this.filteredTemps = this.temps.filter(temp => {
-      return jobExperienceRanges.some(rangeStr => {
-        if (rangeStr.includes('+')) {
-          const min = parseInt(rangeStr.replace('+', ''), 10);
-          return temp.experience >= min;
-        }
-        
-        const parts = rangeStr.split('-');
-        if (parts.length === 2) {
-          const min = parseInt(parts[0], 10);
-          const max = parseInt(parts[1], 10);
-          if (!isNaN(min) && !isNaN(max)) {
-            return temp.experience >= min && temp.experience <= max;
-          }
-        }
+      if (typeof temp.experience !== 'number') {
+        console.warn(`Temp with ID ${temp.id} has an invalid experience value.`);
         return false;
-      });
+      }
+      return temp.experience >= minExp && temp.experience <= maxExp;
     });
   }
 
@@ -154,37 +153,44 @@ export class ShiftFormPage implements OnInit {
       return;
     }
 
+    // Destructure the form values
     const { jobId, clientId, tempIds, startTime, endTime, notes } = this.form.value;
 
-    const shifts: Shift[] = [];
+    // Create the data object that matches the Laravel backend validator
+    const shiftData = {
+      job_id: jobId,
+      client_id: clientId,
+      temp_ids: tempIds,
+      start_time: startTime,
+      end_time: endTime,
+      notes: notes,
+    };
 
-    const job = this.jobs.find(j => j.id === jobId);
-    const client = this.clients.find(c => c.id === clientId);
-
-    if (job && client) {
-      tempIds.forEach((tempId: number) => {
-        const temp = this.temps.find(t => t.id === tempId);
-        if (temp) {
-          shifts.push({
-            id: 0, // 0 for new shifts
-            job,
-            client,
-            temp,
-            startTime,
-            endTime,
-            notes,
-            status: 'pending'
+    if (this.isEditMode) {
+      this.shiftService.updateShift(this.shiftId, shiftData).subscribe({
+        next: () => {
+          this.router.navigate(['/shifts']).then(() => {
+          window.location.reload();
           });
+        },
+        error: (err) => {
+          console.error('Error updating shift:', err);
+        }
+      });
+    } else {
+      // Call the service with the correctly formatted object
+      this.shiftService.addShift(shiftData).subscribe({
+        next: () => {
+          // Navigate to the shifts page on successful creation
+          this.router.navigate(['/shifts']).then(() => {
+          window.location.reload();
+          });
+        },
+        error: (err) => {
+          // Log any errors to the console for debugging
+          console.error('Error creating shift:', err);
         }
       });
     }
-
-    // In a real app, you would likely have a service method
-    // that can handle creating multiple shifts at once.
-    shifts.forEach(shift => {
-      this.shiftService.addShift(shift).subscribe();
-    });
-
-    this.router.navigate(['/shifts']);
   }
 }

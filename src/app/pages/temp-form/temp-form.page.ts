@@ -66,11 +66,15 @@ export class TempFormPage implements OnInit {
     if (this.isEditMode) {
       tempDate.id = this.tempId;
       this.tempService.updateTemp(tempDate).subscribe(() => {
-        this.router.navigate(['/temps']);
+        this.router.navigate(['/temps']).then(() => {
+          window.location.reload();
+        });
       });
     } else {
       this.tempService.addTemp(tempDate).subscribe(() => {
-        this.router.navigate(['/temps']);
+        this.router.navigate(['/temps']).then(() => {
+          window.location.reload();
+        });;
       });
     }
   }

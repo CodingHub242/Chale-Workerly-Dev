@@ -10,7 +10,7 @@ import { environment } from '../../environments/environment';
 export class ShiftService {
 
   private apiUrl = `${environment.apiUrl}/shifts`;
-  private postapiUrl = `${environment.apiUrl}/shiftAdd`;
+  private postapiUrl = `${environment.apiUrl}/updateStat`;
 
   constructor(private http: HttpClient) { }
 
@@ -22,11 +22,15 @@ export class ShiftService {
     return this.http.get<Shift>(`${this.apiUrl}/${id}`);
   }
 
-  addShift(shift: Shift): Observable<Shift> {
-    return this.http.post<Shift>(this.postapiUrl, shift);
+  addShift(shiftData: any): Observable<Shift> {
+    return this.http.post<Shift>(this.apiUrl, shiftData);
   }
 
-  updateShift(shift: Shift): Observable<any> {
-    return this.http.put(`${this.apiUrl}/${shift.id}`, shift);
+  updateShift(id: number, shiftData: any): Observable<any> {
+    return this.http.put(`${this.apiUrl}/${id}`, shiftData);
+  }
+
+  updateShiftStat(id: number, shiftData: any): Observable<any> {
+    return this.http.put(`${this.postapiUrl}/${id}`, shiftData);
   }
 }

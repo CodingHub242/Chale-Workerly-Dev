@@ -85,3 +85,24 @@ ion-content {
     &.declined { background-color: #f5a623; }
   }
 }
+
+
+ion-footer {
+    padding: 8px;
+    border-top: 1px solid #f0f0f0;
+    display: flex;
+    justify-content: space-around;
+
+    ion-button {
+      --color: var(--text-color-light);
+      font-weight: 500;
+      text-transform: none;
+
+      &:hover {
+        --color: var(--primary-color);
+      }
+    }
+  }
+  ion-toolbar{
+    --background:rgb(0 76 78 / 85%);
+}

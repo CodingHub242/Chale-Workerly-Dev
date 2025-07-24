@@ -3,7 +3,7 @@
     <ion-buttons slot="start">
       <ion-back-button defaultHref="/timesheets"></ion-back-button>
     </ion-buttons>
-    <ion-title>{{ isEditMode ? 'Edit' : 'Add' }} Timesheet</ion-title>
+    <ion-title style="color:whitesmoke;">{{ isEditMode ? 'Edit' : 'Add' }} Timesheet</ion-title>
   </ion-toolbar>
 </ion-header>
 
@@ -14,7 +14,11 @@
         <ion-label>Shifts</ion-label>
         <ion-select formControlName="shiftIds" multiple="true" interface="popover">
           <ion-select-option *ngFor="let shift of shifts" [value]="shift.id">
-            {{ shift.job.title }} - <span *ngIf="shift.temp">{{ shift.temp?.firstName }} {{ shift.temp?.lastName }}</span><span *ngIf="shift.client">{{ shift.client?.name }}</span>
+            {{ shift.job.title }} -
+            <span *ngIf="shift.temps && shift.temps.length > 0">
+              {{ shift.temps[0].firstName }} {{ shift.temps[0].lastName }}
+            </span>
+            <span *ngIf="shift.client">{{ shift.client.name }}</span>
           </ion-select-option>
         </ion-select>
       </ion-item>

@@ -88,7 +88,9 @@ export class DashboardPage implements OnInit {
   processShifts() {
     this.tempsWithShifts = this.temps.map(temp => ({
       ...temp,
-      shifts: this.shifts.filter(shift => shift.temp?.id === temp.id)
+      shifts: this.shifts.filter(shift =>
+        shift.temps.some(t => t.id === temp.id)
+      )
     }));
 
     this.clientsWithShifts = this.clients.map(client => ({

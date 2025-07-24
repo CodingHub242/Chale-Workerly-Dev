@@ -3,7 +3,7 @@
     <ion-buttons slot="start">
       <ion-menu-button></ion-menu-button>
     </ion-buttons>
-    <ion-title>Dashboard</ion-title>
+    <ion-title style="color:whitesmoke;">Dashboard</ion-title>
   </ion-toolbar>
 </ion-header>
 
@@ -102,22 +102,23 @@
                 <ion-label>
                   <h2>{{ temp.firstName }} {{ temp.lastName }}</h2>
                   <p *ngFor="let shift of temp.shifts">
-                    {{ shift.job.title }} - {{ shift.status }}
+                    {{ shift.job.title }} - <span class="status-{{ shift.status }}">{{ shift.status }}</span>
+                    <span *ngIf="shift.status === 'started'"> - ${{ shift.job.hourlyRate }}/hr</span>
                   </p>
                 </ion-label>
               </ion-item>
             </ion-list>
-            <ion-list class="worker-list" style="margin-top: 20px;">
+            <!-- <ion-list class="worker-list" style="margin-top: 20px;">
               <ion-list-header>Clients</ion-list-header>
               <ion-item *ngFor="let client of clientsWithShifts">
                 <ion-label>
                   <h2>{{ client.name }}</h2>
                   <p *ngFor="let shift of client.shifts">
-                    {{ shift.job.title }} - {{ shift.status }}
+                    {{ shift.job_id.title }} - {{ shift.status }}
                   </p>
                 </ion-label>
               </ion-item>
-            </ion-list>
+            </ion-list> -->
           </ion-card-content>
         </ion-card>
       </ion-col>

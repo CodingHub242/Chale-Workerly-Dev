@@ -1,0 +1,103 @@
+:root {
+  --background-color: #f4f7fc;
+  --card-background-color: #ffffff;
+  --text-color: #333;
+  --text-color-light: #777;
+  --primary-color: #4a90e2;
+  --shadow-color: rgba(0, 0, 0, 0.08);
+  --border-radius: 12px;
+}
+
+ion-content {
+  --background: var(--background-color);
+}
+
+.shifts-grid {
+  padding: 16px;
+}
+
+.shift-card {
+  background: var(--card-background-color);
+  border-radius: var(--border-radius);
+  box-shadow: 0 4px 16px var(--shadow-color);
+  margin-bottom: 20px;
+  
+  ion-card-header {
+    background-color: rgba(74, 144, 226, 0.05);
+    border-bottom: 1px solid #eaf1f8;
+  }
+
+  ion-card-title {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: var(--primary-color);
+  }
+
+  ion-card-subtitle {
+    color: var(--text-color-light);
+    font-size: 0.9rem;
+  }
+
+  .shift-time {
+    font-weight: 500;
+    color: var(--text-color);
+  }
+
+  .temps-list {
+    margin-top: 16px;
+    
+    .list-header {
+      font-weight: 600;
+      color: var(--text-color);
+      margin-bottom: 8px;
+    }
+
+    .temp-item {
+      display: flex;
+      align-items: center;
+      padding: 8px;
+      border-radius: 8px;
+      background-color: #f9f9f9;
+      margin-bottom: 6px;
+
+      ion-icon {
+        color: var(--primary-color);
+        margin-right: 10px;
+      }
+    }
+  }
+}
+.status-badge {
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: #fff;
+    text-transform: uppercase;
+    display: inline-block;
+    margin-top: 16px;
+
+    &.pending { background-color: #ffc107; color: #333; }
+    &.started { background-color: #17a2b8; }
+    &.completed { background-color: #28a745; }
+    &.checked-in { background-color: #4a90e2; }
+  }
+ion-footer {
+    padding: 8px;
+    border-top: 1px solid #f0f0f0;
+    display: flex;
+    justify-content: space-around;
+
+    ion-button {
+      --color: var(--text-color-light);
+      font-weight: 500;
+      text-transform: none;
+
+      &:hover {
+        --color: var(--primary-color);
+      }
+    }
+  }
+  ion-toolbar{
+    --background:rgb(0 76 78 / 85%);
+}

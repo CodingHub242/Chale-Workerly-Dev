@@ -3,7 +3,7 @@
     <ion-buttons slot="start">
       <ion-back-button defaultHref="/timesheets"></ion-back-button>
     </ion-buttons>
-    <ion-title>Timesheet #{{ timesheet?.id }}</ion-title>
+    <ion-title style="color:whitesmoke;">Timesheet #{{ timesheet?.id }}</ion-title>
     <ion-buttons slot="end">
       <ion-button (click)="editTimesheet()">
         <ion-icon slot="icon-only" name="create"></ion-icon>
@@ -29,7 +29,10 @@
         <ion-item *ngFor="let shift of timesheet.shifts">
           <ion-label>
             <h2>{{ shift.job.title }}</h2>
-            <p *ngIf="shift.temp">Temp: {{ shift.temp?.firstName }} {{ shift.temp?.lastName }}</p>
+            <p *ngIf="shift.temps && shift.temps.length > 0">
+              {{ shift.temps[0].firstName }} {{ shift.temps[0].lastName }}
+            </p>
+            <!-- <p *ngIf="shift.temp">Temp: {{ shift.temp?.firstName }} {{ shift.temp?.lastName }}</p> -->
             <p *ngIf="shift.client">Client: {{ shift.client?.name }}</p>
             <p>Start: {{ shift.startTime | date:'short' }}</p>
             <p>End: {{ shift.endTime | date:'short' }}</p>

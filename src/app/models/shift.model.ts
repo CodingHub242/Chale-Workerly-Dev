@@ -5,7 +5,7 @@ import { Client } from './client.model';
 export interface Shift {
     id: number;
     job: Job;
-    temp?: Temp;
+    temps: Temp[];
     client: Client;
     startTime: Date;
     endTime: Date;

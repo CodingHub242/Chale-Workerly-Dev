@@ -3,25 +3,56 @@
     <ion-buttons slot="start">
       <ion-menu-button></ion-menu-button>
     </ion-buttons>
-    <ion-title>Shifts</ion-title>
+    <ion-title style="color:whitesmoke;">Shifts</ion-title>
     <ion-buttons slot="end">
       <ion-button (click)="addShift()">
-        <ion-icon slot="icon-only" name="add"></ion-icon>
+        <ion-icon slot="icon-only" name="add-circle-outline"></ion-icon>
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
-  <ion-list>
-    <ion-item *ngFor="let shift of shifts" (click)="viewShift(shift.id)">
-      <ion-label>
-        <h2>{{ shift.job.title }}</h2>
-        <p *ngIf="shift.temp">Temp: {{ shift.temp?.firstName }} {{ shift.temp?.lastName }}</p>
-        <p *ngIf="shift.client">Client: {{ shift.client?.name }}</p>
-        <p>Start: {{ shift.startTime | date:'short' }}</p>
-        <p>End: {{ shift.endTime | date:'short' }}</p>
-      </ion-label>
-    </ion-item>
-  </ion-list>
+  <ion-grid class="shifts-grid">
+    <ion-row>
+      <ion-col size="12" size-md="6" size-lg="4" *ngFor="let shift of shifts">
+        <ion-card class="shift-card">
+          <ion-card-header>
+            <ion-card-title >Job : {{ shift.job.title }}</ion-card-title>
+            <ion-card-subtitle>Client : {{ shift.client.name }}</ion-card-subtitle>
+          </ion-card-header>
+          <ion-card-content>
+            <p class="shift-time">
+              Starting On : {{ shift.startTime | date:'short' }} - To : {{ shift.endTime | date:'short' }}
+            </p>
+            
+            <div class="temps-list" *ngIf="shift.temps && shift.temps.length > 0">
+              <div class="list-header">Assigned Temps</div>
+              <div *ngFor="let temp of shift.temps" class="temp-item">
+                <ion-icon name="person-circle-outline"></ion-icon>
+                <span>{{ temp.firstName }} {{ temp.lastName }}</span>
+              </div>
+            </div>
+<div class="status-badge" 
+                 [class.pending]="shift.status === 'pending'"
+                 [class.started]="shift.status === 'started'"
+                 [class.completed]="shift.status === 'completed'"
+                 [class.checked-in]="shift.status === 'checked-in'">
+              {{ shift.status }}
+            </div>
+          </ion-card-content>
+          <ion-footer>
+            <ion-button fill="clear" size="small" (click)="updateStatus(shift)">
+              <ion-icon slot="start" name="sync-outline"></ion-icon>
+              Update Status
+            </ion-button>
+            <ion-button fill="clear" size="small" (click)="viewShift(shift.id)">
+              <ion-icon slot="start" name="eye-outline"></ion-icon>
+              View Details
+            </ion-button>
+          </ion-footer>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
 </ion-content>
