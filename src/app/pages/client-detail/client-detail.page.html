@@ -16,7 +16,9 @@
   <div *ngIf="client">
     <div class="profile-header">
       <ion-avatar class="profile-avatar">
-        <img [src]="client.avatar ? client.avatar : 'assets/icon/favicon.png'">
+        <!-- <img [src]="client.avatar ? client.avatar : 'assets/icon/favicon.png'"> -->
+        <img *ngIf="client.avatar!=''" src="https://app.chaleapp.org/public/storage/{{client.avatar}}" />
+        <img *ngIf="client.avatar==''" src="https://i.pravatar.cc/80?u={{client.id}}" />
       </ion-avatar>
       <h1 class="profile-name">{{ client.name }}</h1>
     </div>
