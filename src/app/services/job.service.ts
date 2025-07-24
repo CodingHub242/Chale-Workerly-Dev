@@ -26,6 +26,10 @@ export class JobService {
     return this.http.post<Job>(this.apiUrl, job);
   }
 
+  getJobsByClient(clientId: number): Observable<Job[]> {
+    return this.http.get<Job[]>(`${this.apiUrl}/client/${clientId}`);
+  }
+
   updateJob(job: FormData): Observable<any> {
     const id = job.get('id');
     // Use POST for updates to handle FormData correctly, and let Laravel spoof the method.

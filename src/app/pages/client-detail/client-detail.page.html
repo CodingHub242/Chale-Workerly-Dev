@@ -1,26 +1,67 @@
 <ion-header>
   <ion-toolbar>
     <ion-buttons slot="start">
-      <ion-back-button (click)="back()"></ion-back-button>
+      <ion-back-button defaultHref="/clients"></ion-back-button>
     </ion-buttons>
-    <ion-title style="color:whitesmoke;">{{ client?.name }}</ion-title>
+    <ion-title>{{ client?.name }}</ion-title>
     <ion-buttons slot="end">
       <ion-button (click)="editClient()">
-        <ion-icon slot="icon-only" name="create"></ion-icon>
+        <ion-icon slot="icon-only" name="create-outline"></ion-icon>
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
-  <ion-card *ngIf="client">
-    <ion-card-header>
-      <ion-card-title>{{ client.name }}</ion-card-title>
-    </ion-card-header>
-    <ion-card-content>
-      <p><strong>Address:</strong> {{ client.address }}</p>
-      <p><strong>Phone:</strong> {{ client.phone }}</p>
-      <p><strong>Email:</strong> {{ client.email }}</p>
-    </ion-card-content>
-  </ion-card>
+<ion-content class="ion-padding">
+  <div *ngIf="client">
+    <div class="profile-header">
+      <ion-avatar class="profile-avatar">
+        <img [src]="client.avatar ? client.avatar : 'assets/icon/favicon.png'">
+      </ion-avatar>
+      <h1 class="profile-name">{{ client.name }}</h1>
+    </div>
+
+    <ion-grid>
+      <ion-row>
+        <ion-col size="12">
+          <ion-card class="details-card">
+            <ion-card-header>
+              <ion-card-title>Contact Information</ion-card-title>
+            </ion-card-header>
+            <ion-card-content>
+              <p><strong><ion-icon name="location-outline"></ion-icon> Address:</strong> {{ client.address }}</p>
+              <p><strong><ion-icon name="call-outline"></ion-icon> Phone:</strong> {{ client.phone }}</p>
+              <p><strong><ion-icon name="mail-outline"></ion-icon> Email:</strong> {{ client.email }}</p>
+            </ion-card-content>
+          </ion-card>
+        </ion-col>
+      </ion-row>
+
+      <ion-row>
+        <ion-col size="12">
+          <ion-card class="details-card">
+            <ion-card-header>
+              <ion-card-title>Associated Jobs</ion-card-title>
+            </ion-card-header>
+            <ion-card-content>
+              <div *ngIf="jobs.length > 0; else noJobs">
+                <ion-card *ngFor="let job of jobs" class="job-card" (click)="goToJob(job.id)">
+                  <ion-card-header>
+                    <ion-card-title>{{ job.title }}</ion-card-title>
+                  </ion-card-header>
+                  <ion-card-content>
+                    <p><strong><ion-icon name="calendar-outline"></ion-icon> Start Date:</strong> {{ job.startDate | date:'short' }}</p>
+                    <p><strong><ion-icon name="calendar-outline"></ion-icon> End Date:</strong> {{ job.endDate | date:'short' }}</p>
+                  </ion-card-content>
+                </ion-card>
+              </div>
+              <ng-template #noJobs>
+                <p>No jobs associated with this client.</p>
+              </ng-template>
+            </ion-card-content>
+          </ion-card>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </div>
 </ion-content>

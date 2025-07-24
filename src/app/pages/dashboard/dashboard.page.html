@@ -103,7 +103,7 @@
                   <h2>{{ temp.firstName }} {{ temp.lastName }}</h2>
                   <p *ngFor="let shift of temp.shifts">
                     {{ shift.job.title }} - <span class="status-{{ shift.status }}">{{ shift.status }}</span>
-                    <span *ngIf="shift.status === 'started'"> - ${{ shift.job.hourlyRate }}/hr</span>
+                    <span *ngIf="shift.status === 'started'"> - ${{ shift.job.payRate }}/hr</span>
                   </p>
                 </ion-label>
               </ion-item>

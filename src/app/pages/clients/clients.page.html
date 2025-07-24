@@ -6,21 +6,27 @@
     <ion-title style="color:whitesmoke;">Clients</ion-title>
     <ion-buttons slot="end">
       <ion-button (click)="addClient()">
-        <ion-icon slot="icon-only" name="add"></ion-icon>
+        <ion-icon style="color: whitesmoke" slot="icon-only" name="add"></ion-icon>
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
-  <ion-list>
-    <ion-item *ngFor="let client of clients" (click)="viewClient(client.id)">
-      <ion-label>
-        <h2>{{ client.name }}</h2>
-        <p>{{ client.address }}</p>
-        <p>{{ client.phone }}</p>
-        <p>{{ client.email }}</p>
-      </ion-label>
-    </ion-item>
+<ion-content class="ion-padding">
+  <ion-list lines="none">
+    <ion-card *ngFor="let client of clients" class="client-card" (click)="viewClient(client.id)">
+      <ion-item lines="none">
+        <ion-avatar slot="start">
+          <img *ngIf="client.avatar!=''" src="https://app.chaleapp.org/public/storage/{{client.avatar}}" />
+          <img *ngIf="client.avatar==''" src="https://i.pravatar.cc/80?u={{client.id}}" />
+        </ion-avatar>
+        <ion-label>
+          <h2>{{ client.name }}</h2>
+          <p><ion-icon name="location-outline"></ion-icon> {{ client.address }}</p>
+          <p><ion-icon name="call-outline"></ion-icon> {{ client.phone }}</p>
+          <p><ion-icon name="mail-outline"></ion-icon> {{ client.email }}</p>
+        </ion-label>
+      </ion-item>
+    </ion-card>
   </ion-list>
 </ion-content>

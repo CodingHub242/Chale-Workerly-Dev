@@ -5,6 +5,7 @@ import { ClientService } from '../../services/client.service';
 import { Client } from '../../models/client.model';
 import { IonicModule } from '@ionic/angular';
 import { CommonModule } from '@angular/common';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-client-form',
@@ -18,6 +19,7 @@ export class ClientFormPage implements OnInit {
   form!: FormGroup;
   isEditMode = false;
   clientId: number = 0;
+  imagePreview: string | ArrayBuffer | null = null;
 
   constructor(
     private fb: FormBuilder,
@@ -32,6 +34,7 @@ export class ClientFormPage implements OnInit {
       address: ['', Validators.required],
       phone: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
+      avatar: [null]
     });
 
     this.clientId = this.route.snapshot.params['id'];
@@ -39,7 +42,24 @@ export class ClientFormPage implements OnInit {
       this.isEditMode = true;
       this.clientService.getClient(this.clientId).subscribe(client => {
         this.form.patchValue(client);
+        this.imagePreview = client.avatar ? `${environment.apiUrl}/${client.avatar}` : null;
       });
+    }
+  }
+
+  onFileChange(event: any) {
+    const file = (event.target as HTMLInputElement).files?.[0];
+    if (file) {
+      this.form.patchValue({
+        avatar: file
+      });
+      this.form.get('avatar')?.updateValueAndValidity();
+
+      const reader = new FileReader();
+      reader.onload = () => {
+        this.imagePreview = reader.result;
+      };
+      reader.readAsDataURL(file);
     }
   }
 
@@ -48,18 +68,21 @@ export class ClientFormPage implements OnInit {
       return;
     }
 
-    const clientData: Client = this.form.value;
+    const formData = new FormData();
+    Object.keys(this.form.value).forEach(key => {
+      formData.append(key, this.form.value[key]);
+    });
 
     if (this.isEditMode) {
-      clientData.id = this.clientId;
-      this.clientService.updateClient(clientData).subscribe(() => {
+      formData.append('_method', 'PUT');
+      this.clientService.updateClient(this.clientId, formData).subscribe(() => {
         //this.clientService.getClient(this.clientId);
         this.router.navigate(['/clients']).then(() => {
           window.location.reload();
           });
       });
     } else {
-      this.clientService.addClient(clientData).subscribe(() => {
+      this.clientService.addClient(formData).subscribe(() => {
         this.router.navigate(['/clients']).then(() => {
           window.location.reload();
           });

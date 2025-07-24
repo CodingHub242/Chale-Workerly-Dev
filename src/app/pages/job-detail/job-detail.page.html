@@ -3,26 +3,54 @@
     <ion-buttons slot="start">
       <ion-back-button defaultHref="/jobs"></ion-back-button>
     </ion-buttons>
-    <ion-title style="color:whitesmoke;">{{ job?.title }}</ion-title>
+    <ion-title>{{ job?.title }}</ion-title>
     <ion-buttons slot="end">
       <ion-button (click)="editJob()">
-        <ion-icon slot="icon-only" name="create"></ion-icon>
+        <ion-icon slot="icon-only" name="create-outline"></ion-icon>
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
-  <ion-card *ngIf="job">
-    <ion-card-header>
-      <ion-card-title>{{ job.title }}</ion-card-title>
-      <ion-card-subtitle>{{ job.client.name }}</ion-card-subtitle>
-    </ion-card-header>
-    <ion-card-content>
-      <p><strong>Description:</strong> {{ job.description }}</p>
-      <p><strong>Start Date:</strong> {{ job.startDate | date:'short' }}</p>
-      <p><strong>End Date:</strong> {{ job.endDate | date:'short' }}</p>
-      <p><strong>Pay Rate:</strong> GHS{{ job.payRate }}</p>
-    </ion-card-content>
-  </ion-card>
+<ion-content class="ion-padding">
+  <div *ngIf="job">
+    <ion-grid>
+      <ion-row>
+        <ion-col size="12">
+          <ion-card class="details-card">
+            <ion-card-header>
+              <ion-card-title>{{ job.title }}</ion-card-title>
+              <ion-card-subtitle>{{ job.client.name }}</ion-card-subtitle>
+            </ion-card-header>
+          </ion-card>
+        </ion-col>
+      </ion-row>
+
+      <ion-row>
+        <ion-col size="12" size-md="6">
+          <ion-card class="details-card">
+            <ion-card-header>
+              <ion-card-title>Job Details</ion-card-title>
+            </ion-card-header>
+            <ion-card-content>
+              <p><strong><ion-icon name="document-text-outline"></ion-icon> Description:</strong> {{ job.description }}</p>
+              <p><strong><ion-icon name="cash-outline"></ion-icon> Pay Rate:</strong> GHS{{ job.payRate }}</p>
+            </ion-card-content>
+          </ion-card>
+        </ion-col>
+
+        <ion-col size="12" size-md="6">
+          <ion-card class="details-card">
+            <ion-card-header>
+              <ion-card-title>Dates</ion-card-title>
+            </ion-card-header>
+            <ion-card-content>
+              <p><strong><ion-icon name="calendar-outline"></ion-icon> Start Date:</strong> {{ job.startDate | date:'short' }}</p>
+              <p><strong><ion-icon name="calendar-outline"></ion-icon> End Date:</strong> {{ job.endDate | date:'short' }}</p>
+            </ion-card-content>
+          </ion-card>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </div>
 </ion-content>

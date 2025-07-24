@@ -1,3 +1,52 @@
-ion-toolbar{
-    --background:rgb(0 76 78 / 85%);
+ion-toolbar {
+  --background: rgb(0 76 78 / 85%);
+}
+
+ion-content {
+  --background: #f0f2f5;
+}
+
+.client-card {
+  margin-bottom: 1rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  transition: all 0.3s ease-in-out;
+
+  &:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+    cursor: pointer;
+  }
+}
+
+ion-item {
+  --background: transparent;
+  --padding-start: 1rem;
+  --padding-end: 1rem;
+}
+
+ion-avatar {
+  width: 60px;
+  height: 60px;
+  border: 3px solid rgb(0 76 78 / 85%);
+}
+
+ion-label {
+  h2 {
+    font-weight: 600;
+    color: #333;
+    font-size: 1.2rem;
+  }
+
+  p {
+    color: #666;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+
+    ion-icon {
+      margin-right: 0.5rem;
+      color: rgb(0 76 78 / 85%);
+    }
+  }
 }

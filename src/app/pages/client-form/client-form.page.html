@@ -10,6 +10,17 @@
 <ion-content>
   <form [formGroup]="form" (ngSubmit)="saveClient()">
     <ion-list>
+      <div class="avatar-upload">
+        <ion-avatar>
+          <img [src]="imagePreview || 'assets/icon/favicon.png'">
+        </ion-avatar>
+        <input type="file" (change)="onFileChange($event)" #fileInput>
+        <ion-button (click)="fileInput.click()" size="small" fill="outline">
+          <ion-icon name="camera-outline" slot="start"></ion-icon>
+          Choose Image
+        </ion-button>
+      </div>
+
       <ion-item>
         <ion-label position="floating">Name</ion-label>
         <ion-input formControlName="name" type="text"></ion-input>

@@ -3,24 +3,86 @@
     <ion-buttons slot="start">
       <ion-back-button defaultHref="/temps"></ion-back-button>
     </ion-buttons>
-    <ion-title style="color:whitesmoke;">{{ temp?.firstName }} {{ temp?.lastName }}</ion-title>
+    <ion-title>{{ temp?.firstName }} {{ temp?.lastName }}</ion-title>
     <ion-buttons slot="end">
       <ion-button (click)="editTemp()">
-        <ion-icon slot="icon-only" name="create"></ion-icon>
+        <ion-icon slot="icon-only" name="create-outline"></ion-icon>
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
-  <ion-card *ngIf="temp">
-    <ion-card-header>
-      <ion-card-title>{{ temp.firstName }} {{ temp.lastName }}</ion-card-title>
-    </ion-card-header>
-    <ion-card-content>
-      <p><strong>Phone:</strong> {{ temp.phone }}</p>
-      <p><strong>Email:</strong> {{ temp.email }}</p>
-      <p><strong>Skills:</strong> {{ temp.skills.join(', ') }}</p>
-    </ion-card-content>
-  </ion-card>
+<ion-content class="ion-padding">
+  <div *ngIf="temp">
+    <ion-grid>
+      <ion-row>
+        <ion-col size="12">
+          <ion-card class="details-card">
+            <ion-card-header>
+              <ion-card-title>{{ temp.firstName }} {{ temp.lastName }}</ion-card-title>
+            </ion-card-header>
+            <ion-card-content>
+              <p><strong><ion-icon name="call-outline"></ion-icon> Phone:</strong> {{ temp.phone }}</p>
+              <p><strong><ion-icon name="mail-outline"></ion-icon> Email:</strong> {{ temp.email }}</p>
+              <p><strong><ion-icon name="build-outline"></ion-icon> Skills:</strong> {{ temp.skills.join(', ') }}</p>
+            </ion-card-content>
+          </ion-card>
+        </ion-col>
+      </ion-row>
+
+      <ion-row>
+        <ion-col size="12">
+          <ion-card class="details-card">
+            <ion-card-header>
+              <ion-card-title>Active Shifts</ion-card-title>
+            </ion-card-header>
+            <ion-card-content>
+              <div *ngIf="activeShifts.length > 0; else noActiveShifts">
+                <ion-card *ngFor="let shift of activeShifts" class="shift-card" (click)="goToShift(shift.id)">
+                  <ion-card-header>
+                    <ion-card-title>{{ shift.job.title }}</ion-card-title>
+                    <ion-card-subtitle>{{ shift.client.name }}</ion-card-subtitle>
+                  </ion-card-header>
+                  <ion-card-content>
+                    <p><strong><ion-icon name="time-outline"></ion-icon> Start Time:</strong> {{ shift.startTime | date:'short' }}</p>
+                    <p><strong><ion-icon name="time-outline"></ion-icon> End Time:</strong> {{ shift.endTime | date:'short' }}</p>
+                  </ion-card-content>
+                </ion-card>
+              </div>
+              <ng-template #noActiveShifts>
+                <p>No active shifts.</p>
+              </ng-template>
+            </ion-card-content>
+          </ion-card>
+        </ion-col>
+      </ion-row>
+
+      <ion-row>
+        <ion-col size="12">
+          <ion-card class="details-card">
+            <ion-card-header>
+              <ion-card-title>Completed Shifts</ion-card-title>
+            </ion-card-header>
+            <ion-card-content>
+              <div *ngIf="completedShifts.length > 0; else noCompletedShifts">
+                <ion-card *ngFor="let shift of completedShifts" class="shift-card completed" (click)="goToShift(shift.id)">
+                  <ion-card-header>
+                    <ion-card-title>{{ shift.job.title }}</ion-card-title>
+                    <ion-card-subtitle>{{ shift.client.name }}</ion-card-subtitle>
+                  </ion-card-header>
+                  <ion-card-content>
+                    <p><strong><ion-icon name="time-outline"></ion-icon> Start Time:</strong> {{ shift.startTime | date:'short' }}</p>
+                    <p><strong><ion-icon name="time-outline"></ion-icon> End Time:</strong> {{ shift.endTime | date:'short' }}</p>
+                  </ion-card-content>
+                </ion-card>
+              </div>
+              <ng-template #noCompletedShifts>
+                <p>No completed shifts.</p>
+              </ng-template>
+            </ion-card-content>
+          </ion-card>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </div>
 </ion-content>

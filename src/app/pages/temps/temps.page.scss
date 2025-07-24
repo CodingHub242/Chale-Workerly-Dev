@@ -1,3 +1,74 @@
-ion-toolbar{
-    --background:rgb(0 76 78 / 85%);
+ion-toolbar {
+  --background: rgb(0 76 78 / 85%);
+}
+
+ion-content {
+  --background: #f0f2f5;
+}
+
+.temp-card {
+  margin-bottom: 1rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  transition: all 0.3s ease-in-out;
+
+  &:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+    cursor: pointer;
+  }
+}
+
+ion-item {
+  --background: transparent;
+  --padding-start: 1.5rem;
+  --padding-end: 1.5rem;
+}
+
+ion-label {
+  h2 {
+    font-weight: 700;
+    color: #222;
+    font-size: 1.3rem;
+    margin-bottom: 1rem;
+  }
+
+  p {
+    color: #555;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    transition: background-color 0.3s ease;
+
+    ion-icon {
+      margin-right: 0.75rem;
+      color: rgb(0 76 78 / 85%);
+      font-size: 1.2rem;
+    }
+  }
+
+  .contact-info {
+    background-color: #151f2717;
+    border-left: 4px solid #004c4e;
+    color: #1d2e3f;
+
+    ion-icon {
+      color: #007bff;
+    }
+  }
+
+  .skills {
+    background-color: #e6f4f4;
+    margin-top: 0.5rem;
+    border-left: 4px solid #004c4e;
+
+    strong {
+      color: #004c4e;
+      margin-right: 0.5rem;
+    }
+  }
 }
