@@ -1,0 +1,26 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Temps</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="addTemp()">
+        <ion-icon slot="icon-only" name="add"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-list>
+    <ion-item *ngFor="let temp of temps" (click)="viewTemp(temp.id)">
+      <ion-label>
+        <h2>{{ temp.firstName }} {{ temp.lastName }}</h2>
+        <p>{{ temp.phone }}</p>
+        <p>{{ temp.email }}</p>
+        <p>Skills: {{ temp.skills.join(', ') }}</p>
+      </ion-label>
+    </ion-item>
+  </ion-list>
+</ion-content>

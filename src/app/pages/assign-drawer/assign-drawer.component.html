@@ -1,0 +1,29 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Assign to</ion-title>
+    <ion-buttons slot="start">
+      <ion-button (click)="dismiss()">Cancel</ion-button>
+    </ion-buttons>
+    <ion-buttons slot="end">
+      <ion-button (click)="save()">Done</ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-list>
+    <ion-list-header>Temps</ion-list-header>
+    <div *ngIf="temps.length === 0" class="empty-message">
+      <p>No temps available that match the job's experience requirements.</p>
+    </div>
+    <ion-item *ngFor="let temp of temps">
+      <ion-label>{{ temp.firstName }} {{ temp.lastName }}</ion-label>
+      <ion-checkbox
+        slot="end"
+        [checked]="isTempSelected(temp.id)"
+        (ionChange)="toggleTemp(temp.id)"
+      ></ion-checkbox>
+    </ion-item>
+  </ion-list>
+
+</ion-content>

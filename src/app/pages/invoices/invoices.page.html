@@ -1,0 +1,26 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Invoices</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="addInvoice()">
+        <ion-icon slot="icon-only" name="add"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-list>
+    <ion-item *ngFor="let invoice of invoices" (click)="viewInvoice(invoice.id)">
+      <ion-label>
+        <h2>Invoice #{{ invoice.id }}</h2>
+        <p>Client: {{ invoice.client.name }}</p>
+        <p>Amount: {{ invoice.totalAmount | currency }}</p>
+        <p>Status: {{ invoice.paid ? 'Paid' : 'Unpaid' }}</p>
+      </ion-label>
+    </ion-item>
+  </ion-list>
+</ion-content>

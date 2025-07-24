@@ -1,0 +1,41 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/timesheets"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Timesheet #{{ timesheet?.id }}</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="editTimesheet()">
+        <ion-icon slot="icon-only" name="create"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-card *ngIf="timesheet">
+    <ion-card-header>
+      <ion-card-title>Timesheet #{{ timesheet.id }}</ion-card-title>
+      <ion-card-subtitle>Submitted: {{ timesheet.submittedDate | date:'short' }}</ion-card-subtitle>
+    </ion-card-header>
+    <ion-card-content>
+      <p><strong>Total Hours:</strong> {{ timesheet.totalHours }}</p>
+      <p><strong>Total Pay:</strong> {{ timesheet.totalPay | currency }}</p>
+      <p><strong>Status:</strong> {{ timesheet.approved ? 'Approved' : 'Pending' }}</p>
+      <ion-list>
+        <ion-list-header>
+          Shifts
+        </ion-list-header>
+        <ion-item *ngFor="let shift of timesheet.shifts">
+          <ion-label>
+            <h2>{{ shift.job.title }}</h2>
+            <p *ngIf="shift.temp">Temp: {{ shift.temp?.firstName }} {{ shift.temp?.lastName }}</p>
+            <p *ngIf="shift.client">Client: {{ shift.client?.name }}</p>
+            <p>Start: {{ shift.startTime | date:'short' }}</p>
+            <p>End: {{ shift.endTime | date:'short' }}</p>
+          </ion-label>
+        </ion-item>
+      </ion-list>
+    </ion-card-content>
+  </ion-card>
+</ion-content>

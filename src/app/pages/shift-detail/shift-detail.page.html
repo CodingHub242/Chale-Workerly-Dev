@@ -1,0 +1,28 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/shifts"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Shift Details</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="editShift()">
+        <ion-icon slot="icon-only" name="create"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-card *ngIf="shift">
+    <ion-card-header>
+      <ion-card-title>{{ shift.job.title }}</ion-card-title>
+      <ion-card-subtitle *ngIf="shift.temp">{{ shift.temp?.firstName }} {{ shift.temp?.lastName }}</ion-card-subtitle>
+      <ion-card-subtitle *ngIf="shift.client">{{ shift.client?.name }}</ion-card-subtitle>
+    </ion-card-header>
+    <ion-card-content>
+      <p><strong>Start Time:</strong> {{ shift.startTime | date:'short' }}</p>
+      <p><strong>End Time:</strong> {{ shift.endTime | date:'short' }}</p>
+      <p><strong>Notes:</strong> {{ shift.notes }}</p>
+    </ion-card-content>
+  </ion-card>
+</ion-content>

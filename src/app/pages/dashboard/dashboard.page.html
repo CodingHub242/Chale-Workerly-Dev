@@ -1,0 +1,104 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Dashboard</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-grid>
+    <ion-row>
+      <ion-col size="6">
+        <ion-card>
+          <ion-card-header>
+            <ion-card-title>{{ jobs.length }}</ion-card-title>
+            <ion-card-subtitle>Jobs</ion-card-subtitle>
+          </ion-card-header>
+        </ion-card>
+      </ion-col>
+      <ion-col size="6">
+        <ion-card>
+          <ion-card-header>
+            <ion-card-title>{{ clients.length }}</ion-card-title>
+            <ion-card-subtitle>Clients</ion-card-subtitle>
+          </ion-card-header>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col size="6">
+        <ion-card>
+          <ion-card-header>
+            <ion-card-title>{{ temps.length }}</ion-card-title>
+            <ion-card-subtitle>Temps</ion-card-subtitle>
+          </ion-card-header>
+        </ion-card>
+      </ion-col>
+      <ion-col size="6">
+        <ion-card>
+          <ion-card-header>
+            <ion-card-title>{{ shifts.length }}</ion-card-title>
+            <ion-card-subtitle>Shifts</ion-card-subtitle>
+          </ion-card-header>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+     <ion-row>
+      <ion-col>
+        <ion-card>
+          <ion-card-header>
+            <ion-card-title>{{ timesheets.length }}</ion-card-title>
+            <ion-card-subtitle>Timesheets</ion-card-subtitle>
+          </ion-card-header>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        <ion-card>
+          <ion-card-header>
+            <ion-card-title>Shifts per Day</ion-card-title>
+          </ion-card-header>
+          <ion-card-content>
+            <canvas #barChart></canvas>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        <ion-card>
+          <ion-card-header>
+            <ion-card-title>Worker Status</ion-card-title>
+          </ion-card-header>
+          <ion-card-content>
+            <ion-list>
+              <ion-list-header>Temps</ion-list-header>
+              <ion-item *ngFor="let temp of tempsWithShifts">
+                <ion-label>
+                  <h2>{{ temp.firstName }} {{ temp.lastName }}</h2>
+                  <p *ngFor="let shift of temp.shifts">
+                    {{ shift.job.title }} - {{ shift.status }}
+                  </p>
+                </ion-label>
+              </ion-item>
+            </ion-list>
+            <ion-list>
+              <ion-list-header>Clients</ion-list-header>
+              <ion-item *ngFor="let client of clientsWithShifts">
+                <ion-label>
+                  <h2>{{ client.name }}</h2>
+                  <p *ngFor="let shift of client.shifts">
+                    {{ shift.job.title }} - {{ shift.status }}
+                  </p>
+                </ion-label>
+              </ion-item>
+            </ion-list>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>

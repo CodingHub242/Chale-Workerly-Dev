@@ -1,0 +1,78 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/jobs"></ion-back-button>
+    </ion-buttons>
+    <ion-title>{{ isEditMode ? 'Edit' : 'Add' }} Job</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <form [formGroup]="form" (ngSubmit)="saveJob()" enctype="multipart/form-data">
+    <ion-list>
+      <ion-item>
+        <ion-label position="floating">Title</ion-label>
+        <ion-input formControlName="title" type="text"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label position="floating">Description</ion-label>
+        <ion-input formControlName="description" type="text"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label>Client</ion-label>
+        <ion-select formControlName="client_id" interface="popover">
+          <ion-select-option *ngFor="let client of clients" [value]="client.id">{{ client.name }}</ion-select-option>
+        </ion-select>
+      </ion-item>
+      <ion-item>
+        <ion-label position="floating">Start Date</ion-label>
+        <ion-input formControlName="startDate" type="date"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label position="floating">End Date</ion-label>
+        <ion-input formControlName="endDate" type="date"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label position="floating">Pay Rate</ion-label>
+        <ion-input formControlName="payRate" type="number"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label position="floating">Work Hours</ion-label>
+        <ion-input formControlName="workhours" type="text"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label>Experience (years)</ion-label>
+        <ion-range dualKnobs="true" formControlName="experience" min="0" max="20" step="1" snaps="true">
+          <ion-label slot="start">{{ form.get('experience')?.value.lower }}</ion-label>
+          <ion-label slot="end">{{ form.get('experience')?.value.upper }}</ion-label>
+        </ion-range>
+      </ion-item>
+      <ion-item>
+        <ion-label>Status</ion-label>
+        <ion-select formControlName="status" interface="popover">
+          <ion-select-option value="Assigning In Progress">Assigning In Progress</ion-select-option>
+          <ion-select-option value="Assigned">Assigned</ion-select-option>
+          <ion-select-option value="Completed">Completed</ion-select-option>
+          <ion-select-option value="Cancelled">Cancelled</ion-select-option>
+          <ion-select-option value="InActive">InActive</ion-select-option>
+          <ion-select-option value="Declined">Declined</ion-select-option>
+        </ion-select>
+      </ion-item>
+      <ion-item>
+        <ion-label>Attachments</ion-label>
+        <input type="file" (change)="onFileChange($event)" multiple>
+      </ion-item>
+
+      <!-- Display existing attachments -->
+      <ion-list *ngIf="isEditMode && existingAttachments.length > 0">
+        <ion-item-divider>
+          <ion-label>Existing Attachments</ion-label>
+        </ion-item-divider>
+        <ion-item *ngFor="let attachment of existingAttachments">
+          <a href="https://app.chaleapp.org/public/storage/jobs/{{attachment}}" target="_blank">{{ attachment }}</a>
+        </ion-item>
+      </ion-list>
+    </ion-list>
+    <ion-button expand="full" type="submit" [disabled]="form.invalid">Save</ion-button>
+  </form>
+</ion-content>

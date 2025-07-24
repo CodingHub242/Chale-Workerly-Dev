@@ -1,0 +1,30 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/invoices"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Generate Invoice</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <form [formGroup]="form" (ngSubmit)="generateInvoice()">
+    <ion-list>
+      <ion-item>
+        <ion-label>Client</ion-label>
+        <ion-select formControlName="clientId" interface="popover">
+          <ion-select-option *ngFor="let client of clients" [value]="client.id">{{ client.name }}</ion-select-option>
+        </ion-select>
+      </ion-item>
+      <ion-item>
+        <ion-label position="floating">Issue Date</ion-label>
+        <ion-input formControlName="issueDate" type="date"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label position="floating">Due Date</ion-label>
+        <ion-input formControlName="dueDate" type="date"></ion-input>
+      </ion-item>
+    </ion-list>
+    <ion-button expand="full" type="submit" [disabled]="form.invalid">Generate</ion-button>
+  </form>
+</ion-content>

@@ -1,0 +1,32 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/timesheets"></ion-back-button>
+    </ion-buttons>
+    <ion-title>{{ isEditMode ? 'Edit' : 'Add' }} Timesheet</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <form [formGroup]="form" (ngSubmit)="saveTimesheet()">
+    <ion-list>
+      <ion-item>
+        <ion-label>Shifts</ion-label>
+        <ion-select formControlName="shiftIds" multiple="true" interface="popover">
+          <ion-select-option *ngFor="let shift of shifts" [value]="shift.id">
+            {{ shift.job.title }} - <span *ngIf="shift.temp">{{ shift.temp?.firstName }} {{ shift.temp?.lastName }}</span><span *ngIf="shift.client">{{ shift.client?.name }}</span>
+          </ion-select-option>
+        </ion-select>
+      </ion-item>
+      <ion-item>
+        <ion-label position="floating">Submitted Date</ion-label>
+        <ion-input formControlName="submittedDate" type="date"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label>Approved</ion-label>
+        <ion-checkbox formControlName="approved" slot="start"></ion-checkbox>
+      </ion-item>
+    </ion-list>
+    <ion-button expand="full" type="submit" [disabled]="form.invalid">Save</ion-button>
+  </form>
+</ion-content>

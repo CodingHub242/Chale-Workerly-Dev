@@ -1,0 +1,28 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/jobs"></ion-back-button>
+    </ion-buttons>
+    <ion-title>{{ job?.title }}</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="editJob()">
+        <ion-icon slot="icon-only" name="create"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-card *ngIf="job">
+    <ion-card-header>
+      <ion-card-title>{{ job.title }}</ion-card-title>
+      <ion-card-subtitle>{{ job.client.name }}</ion-card-subtitle>
+    </ion-card-header>
+    <ion-card-content>
+      <p><strong>Description:</strong> {{ job.description }}</p>
+      <p><strong>Start Date:</strong> {{ job.startDate | date:'short' }}</p>
+      <p><strong>End Date:</strong> {{ job.endDate | date:'short' }}</p>
+      <p><strong>Pay Rate:</strong> GHS{{ job.payRate }}</p>
+    </ion-card-content>
+  </ion-card>
+</ion-content>

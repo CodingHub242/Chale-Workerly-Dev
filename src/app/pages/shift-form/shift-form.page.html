@@ -1,0 +1,50 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/shifts"></ion-back-button>
+    </ion-buttons>
+    <ion-title>{{ isEditMode ? 'Edit' : 'Add' }} Shift</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <form [formGroup]="form" (ngSubmit)="saveShift()">
+    <ion-list>
+      <ion-item>
+        <ion-label>Job</ion-label>
+        <ion-select formControlName="jobId" interface="popover">
+          <ion-select-option *ngFor="let job of jobs" [value]="job.id">{{ job.title }}</ion-select-option>
+        </ion-select>
+      </ion-item>
+      <ion-item>
+        <ion-label>Client</ion-label>
+        <ion-select formControlName="clientId" interface="popover">
+          <ion-select-option *ngFor="let client of clients" [value]="client.id">{{ client.name }}</ion-select-option>
+        </ion-select>
+      </ion-item>
+      <ion-item button (click)="openAssignDrawer()" [disabled]="!form.get('jobId')?.value">
+        <ion-label>Assign Temps</ion-label>
+        <ion-note slot="end">{{ form.get('tempIds')?.value?.length || 0 }} selected</ion-note>
+      </ion-item>
+      <ion-item>
+        <ion-label>All Day</ion-label>
+        <ion-checkbox formControlName="allDay" slot="end"></ion-checkbox>
+      </ion-item>
+      <div *ngIf="!form.get('allDay')?.value">
+        <ion-item>
+          <ion-label position="floating">Start Time</ion-label>
+          <ion-input formControlName="startTime" type="datetime-local"></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-label position="floating">End Time</ion-label>
+          <ion-input formControlName="endTime" type="datetime-local"></ion-input>
+        </ion-item>
+      </div>
+      <ion-item>
+        <ion-label position="floating">Notes</ion-label>
+        <ion-input formControlName="notes" type="text"></ion-input>
+      </ion-item>
+    </ion-list>
+    <ion-button expand="full" type="submit" [disabled]="form.invalid">Save</ion-button>
+  </form>
+</ion-content>
