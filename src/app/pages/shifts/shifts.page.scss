@@ -98,7 +98,12 @@ ion-toolbar {
     }
   }
 }
-
+h3{color: #000;}
+ion-card {
+  --background: #f0f2f5;
+  --border-radius: 12px;
+  
+}
 .status-badge {
   position: absolute;
   top: 1rem;
