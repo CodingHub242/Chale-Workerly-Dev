@@ -51,6 +51,40 @@
           </ion-card>
         </ion-col>
       </ion-row>
+
+      <ion-row>
+        <ion-col size="12">
+          <ion-card class="details-card">
+            <ion-card-header class="attachments-header">
+              <ion-card-title>Attachments</ion-card-title>
+              <ion-button fill="clear" (click)="fileInput.click()">
+                <ion-icon slot="icon-only" name="add-circle-outline"></ion-icon>
+              </ion-button>
+              <input type="file" multiple (change)="addAttachments($event)" #fileInput style="display: none;" accept="application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/pdf,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet">
+            </ion-card-header>
+            <ion-card-content>
+              <ion-list *ngIf="job.attachments.length > 0; else noAttachments">
+                <ion-item *ngFor="let attachment of job.attachments">
+                  <ion-icon *ngIf="extensionGot!='xlsx'" [name]="getFileIcon(attachment.fileName)" slot="start"></ion-icon>
+                  <img *ngIf="extensionGot=='xlsx'" src="../../../assets/xlsx.png" width="30" slot="start"/>
+                  <ion-label>{{ attachment.fileName }}</ion-label>
+                  <ion-buttons slot="end">
+                    <ion-button (click)="presentEmailPopover($event, attachment)">
+                      <ion-icon name="mail-outline"></ion-icon>
+                    </ion-button>
+                    <ion-button (click)="deleteAttachment(attachment.id)">
+                      <ion-icon name="trash-outline"></ion-icon>
+                    </ion-button>
+                  </ion-buttons>
+                </ion-item>
+              </ion-list>
+              <ng-template #noAttachments>
+                <p>No attachments for this job.</p>
+              </ng-template>
+            </ion-card-content>
+          </ion-card>
+        </ion-col>
+      </ion-row>
     </ion-grid>
   </div>
 </ion-content>

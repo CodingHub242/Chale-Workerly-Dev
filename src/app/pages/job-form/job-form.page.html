@@ -60,7 +60,7 @@
       </ion-item>
       <ion-item>
         <ion-label>Attachments</ion-label>
-        <input type="file" (change)="onFileChange($event)" multiple>
+        <input type="file" (change)="onFileChange($event)" accept="application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/pdf,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" multiple>
       </ion-item>
 
       <!-- Display existing attachments -->
@@ -69,10 +69,10 @@
           <ion-label>Existing Attachments</ion-label>
         </ion-item-divider>
         <ion-item *ngFor="let attachment of existingAttachments">
-          <a href="https://app.chaleapp.org/public/storage/jobs/{{attachment}}" target="_blank">{{ attachment }}</a>
+          <a style="color: chocolate;font-weight: 600;" href="https://app.chaleapp.org/public/storage/{{attachment.file_path}}" target="_blank">{{ attachment.file_name }}</a>
         </ion-item>
       </ion-list>
     </ion-list>
-    <ion-button expand="full" type="submit" [disabled]="form.invalid">Save</ion-button>
+    <ion-button expand="full" type="submit" [disabled]="form.invalid" style="background: rgb(0 76 78 / 85%);--background:rgb(0 76 78 / 85%);">Save</ion-button>
   </form>
 </ion-content>

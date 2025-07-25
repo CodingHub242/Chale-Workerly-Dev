@@ -1,103 +1,115 @@
-:root {
-  --background-color: #f4f7fc;
-  --card-background-color: #ffffff;
-  --text-color: #333;
-  --text-color-light: #777;
-  --primary-color: #4a90e2;
-  --shadow-color: rgba(0, 0, 0, 0.08);
-  --border-radius: 12px;
+ion-toolbar {
+  --background: #004c4d;
+  --color: white;
+}
+.calendar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  background-color: #f4f7fc;
+
+  h3 {
+    margin: 0;
+    font-weight: 600;
+  }
 }
 
-ion-content {
-  --background: var(--background-color);
+:host ::ng-deep .cal-cell-top {
+  min-height: 120px;
+  position: relative;
+}
+
+:host ::ng-deep .cal-day-cell {
+  position: relative;
+}
+
+.add-shift-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(255, 255, 255, 0.8);
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out;
+  z-index: 10;
+}
+.navs:hover{
+  cursor: pointer;
+}
+.navs{
+  font-size: 30px;
+  color: #000;
+}
+:host ::ng-deep .cal-day-cell:hover .add-shift-overlay {
+  opacity: 1;
+}
+
+.add-shift-button {
+  --background: #004c4e;
+  --color: white;
+  --border-radius: 8px;
+  font-weight: 600;
+}
+
+:host ::ng-deep .cal-event {
+  background-color: #004c4e;
+  color: rgb(214, 146, 56);
+  border-radius: 4px;
+  padding: 5px;
+  margin-top: 5px;
+  white-space: normal;
+  overflow: visible;
+  font-size: 0.8rem;
+  display: contents;
 }
 
 .shifts-grid {
-  padding: 16px;
+  padding: 1rem;
 }
 
 .shift-card {
-  background: var(--card-background-color);
-  border-radius: var(--border-radius);
-  box-shadow: 0 4px 16px var(--shadow-color);
-  margin-bottom: 20px;
-  
-  ion-card-header {
-    background-color: rgba(74, 144, 226, 0.05);
-    border-bottom: 1px solid #eaf1f8;
-  }
+  margin-bottom: 1rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
 
-  ion-card-title {
-    font-size: 1.2rem;
+.shift-time {
+  font-size: 0.9rem;
+  color: #666;
+}
+
+.temps-list {
+  margin-top: 1rem;
+  .list-header {
     font-weight: 600;
-    color: var(--primary-color);
+    margin-bottom: 0.5rem;
   }
-
-  ion-card-subtitle {
-    color: var(--text-color-light);
-    font-size: 0.9rem;
-  }
-
-  .shift-time {
-    font-weight: 500;
-    color: var(--text-color);
-  }
-
-  .temps-list {
-    margin-top: 16px;
-    
-    .list-header {
-      font-weight: 600;
-      color: var(--text-color);
-      margin-bottom: 8px;
-    }
-
-    .temp-item {
-      display: flex;
-      align-items: center;
-      padding: 8px;
-      border-radius: 8px;
-      background-color: #f9f9f9;
-      margin-bottom: 6px;
-
-      ion-icon {
-        color: var(--primary-color);
-        margin-right: 10px;
-      }
+  .temp-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 0.25rem;
+    ion-icon {
+      margin-right: 0.5rem;
     }
   }
 }
+
 .status-badge {
-    padding: 6px 12px;
-    border-radius: 20px;
-    font-size: 0.8rem;
-    font-weight: 500;
-    color: #fff;
-    text-transform: uppercase;
-    display: inline-block;
-    margin-top: 16px;
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  padding: 5px 10px;
+  border-radius: 12px;
+  color: white;
+  font-weight: 600;
 
-    &.pending { background-color: #ffc107; color: #333; }
-    &.started { background-color: #17a2b8; }
-    &.completed { background-color: #28a745; }
-    &.checked-in { background-color: #4a90e2; }
-  }
-ion-footer {
-    padding: 8px;
-    border-top: 1px solid #f0f0f0;
-    display: flex;
-    justify-content: space-around;
-
-    ion-button {
-      --color: var(--text-color-light);
-      font-weight: 500;
-      text-transform: none;
-
-      &:hover {
-        --color: var(--primary-color);
-      }
-    }
-  }
-  ion-toolbar{
-    --background:rgb(0 76 78 / 85%);
+  &.pending { background-color: #ffc107; }
+  &.checked-in { background-color: #28a745; }
+  &.started { background-color: #007bff; }
+  &.completed { background-color: #6c757d; }
 }

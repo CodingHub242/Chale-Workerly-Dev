@@ -10,6 +10,12 @@ export interface Job {
     workhours: string;
     experience: number[];
     status: 'Assigning In Progress' | 'Assigned' | 'Completed' | 'Cancelled' | 'InActive' | 'Declined';
-    attachments: File[];
+    attachments: Attachment[];
     payRate: number;
+}
+
+export interface Attachment {
+    id: number;
+    fileName: string;
+    filePath: string;
 }

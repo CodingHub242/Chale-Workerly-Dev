@@ -74,7 +74,7 @@ export class TempFormPage implements OnInit {
       this.tempService.addTemp(tempDate).subscribe(() => {
         this.router.navigate(['/temps']).then(() => {
           window.location.reload();
-        });;
+        });
       });
     }
   }

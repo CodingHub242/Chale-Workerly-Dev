@@ -3,7 +3,7 @@
     <ion-buttons slot="start">
       <ion-back-button defaultHref="/shifts"></ion-back-button>
     </ion-buttons>
-    <ion-title style="color:whitesmoke;">{{ isEditMode ? 'Edit' : 'Add' }} Shift</ion-title>
+    <ion-title>{{ isEditMode ? 'Edit' : 'Add' }} Shift</ion-title>
   </ion-toolbar>
 </ion-header>
 
@@ -14,12 +14,6 @@
         <ion-label>Job</ion-label>
         <ion-select formControlName="jobId" interface="popover">
           <ion-select-option *ngFor="let job of jobs" [value]="job.id">{{ job.title }}</ion-select-option>
-        </ion-select>
-      </ion-item>
-      <ion-item>
-        <ion-label>Client</ion-label>
-        <ion-select formControlName="clientId" interface="popover">
-          <ion-select-option *ngFor="let client of clients" [value]="client.id">{{ client.name }}</ion-select-option>
         </ion-select>
       </ion-item>
       <ion-item button (click)="openAssignDrawer()" [disabled]="!form.get('jobId')?.value">

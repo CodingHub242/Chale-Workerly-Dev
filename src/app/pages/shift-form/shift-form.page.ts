@@ -77,6 +77,7 @@ export class ShiftFormPage implements OnInit {
     this.form.get('jobId')?.valueChanges.subscribe(jobId => {
       const selectedJob = this.jobs.find(j => j.id === jobId);
       if (selectedJob) {
+        this.form.patchValue({ clientId: selectedJob.client.id });
         this.filterTempsByJob(selectedJob);
       } else {
         this.filteredTemps = this.temps;
@@ -91,11 +92,17 @@ export class ShiftFormPage implements OnInit {
     });
     this.clientService.getClients().subscribe(clients => this.clients = clients);
 
+    const date = this.route.snapshot.queryParams['date'];
+    if (date) {
+      this.form.patchValue({
+        startTime: new Date(date).toISOString().slice(0, 16)
+      });
+    }
+
     this.shiftId = this.route.snapshot.params['id'];
     if (this.shiftId) {
       this.isEditMode = true;
       this.shiftService.getShift(this.shiftId).subscribe((shift:any) => {
-        console.log('Shift details:', shift);
         this.form.patchValue({
           jobId: shift[0].job.id,
           clientId: shift[0].client.id,
@@ -153,13 +160,17 @@ export class ShiftFormPage implements OnInit {
       return;
     }
 
-    // Destructure the form values
-    const { jobId, clientId, tempIds, startTime, endTime, notes } = this.form.value;
+    const { tempIds, startTime, endTime, notes } = this.form.value;
 
-    // Create the data object that matches the Laravel backend validator
+    const selectedJob = this.jobs.find(j => j.id === this.form.value.jobId);
+    if (!selectedJob) {
+      console.error('No job selected');
+      return;
+    }
+
     const shiftData = {
-      job_id: jobId,
-      client_id: clientId,
+      job_id: selectedJob.id,
+      client_id: selectedJob.client.id,
       temp_ids: tempIds,
       start_time: startTime,
       end_time: endTime,
@@ -170,7 +181,7 @@ export class ShiftFormPage implements OnInit {
       this.shiftService.updateShift(this.shiftId, shiftData).subscribe({
         next: () => {
           this.router.navigate(['/shifts']).then(() => {
-          window.location.reload();
+            window.location.reload();
           });
         },
         error: (err) => {
@@ -178,16 +189,13 @@ export class ShiftFormPage implements OnInit {
         }
       });
     } else {
-      // Call the service with the correctly formatted object
       this.shiftService.addShift(shiftData).subscribe({
         next: () => {
-          // Navigate to the shifts page on successful creation
           this.router.navigate(['/shifts']).then(() => {
-          window.location.reload();
+            window.location.reload();
           });
         },
         error: (err) => {
-          // Log any errors to the console for debugging
           console.error('Error creating shift:', err);
         }
       });

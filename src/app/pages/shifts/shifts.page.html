@@ -3,16 +3,46 @@
     <ion-buttons slot="start">
       <ion-menu-button></ion-menu-button>
     </ion-buttons>
-    <ion-title style="color:whitesmoke;">Shifts</ion-title>
+    <ion-title>Shifts</ion-title>
     <ion-buttons slot="end">
       <ion-button (click)="addShift()">
-        <ion-icon style="color: whitesmoke" slot="icon-only" name="add-circle-outline"></ion-icon>
+        <ion-icon slot="icon-only" name="add-circle-outline"></ion-icon>
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
+  <div class="calendar-header">
+    <ion-icon class="navs" (click)="prev()" name="chevron-back-outline"></ion-icon>
+    <!-- <ion-button (click)="prev()">Prev</ion-button> -->
+    <h3>{{ viewDate | date:'MMMM yyyy' }}</h3>
+    <!-- <ion-button (click)="next()">Next</ion-button> -->
+    <ion-icon class="navs" name="chevron-forward-outline" (click)="next()"></ion-icon>
+  </div>
+
+  <ng-template #customCellTemplate let-day="day" let-locale="locale">
+    <div class="cal-cell-top">
+      <span class="cal-day-number">{{ day.date | calendarDate:'monthViewDayNumber':locale }}</span>
+    </div>
+    <div class="cal-events">
+      <div *ngFor="let event of day.events" class="cal-event">
+        {{ event.title }}
+      </div>
+    </div>
+    <div class="add-shift-overlay" *ngIf="!isPastDate(day.date) || day.isToday">
+      <ion-button (click)="addShift(day.date)" expand="block" size="small" class="add-shift-button">
+        Add Shift
+      </ion-button>
+    </div>
+  </ng-template>
+
+  <mwl-calendar-month-view
+    [viewDate]="viewDate"
+    [events]="events"
+    [cellTemplate]="customCellTemplate">
+  </mwl-calendar-month-view>
+
   <ion-grid class="shifts-grid">
     <ion-row>
       <ion-col size="12" size-md="6" size-lg="4" *ngFor="let shift of shifts">

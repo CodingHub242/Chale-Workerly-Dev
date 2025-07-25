@@ -41,4 +41,16 @@ export class JobService {
     // Use POST for updates to handle FormData correctly, and let Laravel spoof the method.
     return this.http.put(`${this.postapiUrl}/${id}`, job);
   }
+
+  addAttachments(jobId: number, attachments: FormData): Observable<any> {
+    return this.http.post(`${this.apiUrl}/${jobId}/attachments`, attachments);
+  }
+
+  deleteAttachment(jobId: number, attachmentId: number): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/${jobId}/attachments/${attachmentId}`);
+  }
+
+  sendAttachmentByEmail(emailData: any): Observable<any> {
+    return this.http.post(`${this.apiUrl}/attachments/send-email`, emailData);
+  }
 }

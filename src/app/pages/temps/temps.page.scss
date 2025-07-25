@@ -5,12 +5,16 @@ ion-toolbar {
 ion-content {
   --background: #f0f2f5;
 }
-
+ion-list {
+  --background: #f0f2f5;
+}
 .temp-card {
   margin-bottom: 1rem;
   border-radius: 12px;
   box-shadow: 0 4px 8px rgba(0,0,0,0.1);
   transition: all 0.3s ease-in-out;
+  background: whitesmoke;
+  --background: whitesmoke;
 
   &:hover {
     transform: translateY(-3px);
