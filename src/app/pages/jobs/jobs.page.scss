@@ -9,11 +9,16 @@
 }
 
 ion-content {
-  --background: var(--background-color);
+  --background: white;
 }
 
 .jobs-grid {
   padding: 16px;
+}
+
+ion-card {
+  --background: #f0f2f5;
+  --border-radius: 12px;
 }
 
 .job-card {
