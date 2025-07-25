@@ -18,7 +18,9 @@ ion-content {
     cursor: pointer;
   }
 }
-
+ion-list {
+  --background: #f0f2f5;
+}
 ion-item {
   --background: transparent;
   --padding-start: 1rem;
