@@ -76,6 +76,7 @@ export class ShiftFormPage implements OnInit {
 
     this.form.get('jobId')?.valueChanges.subscribe(jobId => {
       const selectedJob = this.jobs.find(j => j.id === jobId);
+      console.log('Selected Job:', selectedJob);
       if (selectedJob) {
         this.form.patchValue({ clientId: selectedJob.client.id });
         this.filterTempsByJob(selectedJob);

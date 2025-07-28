@@ -1,122 +1,170 @@
 <ion-header>
   <ion-toolbar class="form-toolbar">
     <ion-buttons slot="start">
-      <ion-back-button defaultHref="/shifts"></ion-back-button>
+      <ion-back-button defaultHref="/shifts" text=""></ion-back-button>
     </ion-buttons>
-    <ion-title>{{ isEditMode ? 'Edit' : 'Add' }} Shift</ion-title>
+    <ion-title>
+      <div class="title-content">
+        <ion-icon name="{{ isEditMode ? 'create' : 'add-circle' }}-outline"></ion-icon>
+        <span>{{ isEditMode ? 'Edit' : 'New' }} Shift</span>
+      </div>
+    </ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content class="form-content">
+  <div class="page-header">
+    <div class="header-content">
+      <h1 class="main-title">{{ isEditMode ? 'Edit Shift Details' : 'Create New Shift' }}</h1>
+      <p class="subtitle">Fill in the information below to {{ isEditMode ? 'update the' : 'create a new' }} shift</p>
+    </div>
+  </div>
+
   <div class="form-container">
-    <form [formGroup]="form" (ngSubmit)="saveShift()">
-      <div class="form-section">
-        <h2 class="section-title">
-          <ion-icon name="briefcase-outline"></ion-icon>
-          Job Details
-        </h2>
-        <div class="form-group">
-          <ion-item class="custom-select">
-            <ion-label>Select Job</ion-label>
-            <ion-select formControlName="jobId" interface="popover" placeholder="Choose a job">
-              <ion-select-option *ngFor="let job of jobs" [value]="job.id">{{ job.title }}</ion-select-option>
-            </ion-select>
-          </ion-item>
-        </div>
+    <div class="form-wrapper">
+      <form [formGroup]="form" (ngSubmit)="saveShift()">
+        <div class="form-card">
+          <div class="card-header">
+            <div class="header-icon">
+              <ion-icon name="briefcase-outline"></ion-icon>
+            </div>
+            <div class="header-text">
+              <h2>Job Details</h2>
+              <p>Select job</p>
+            </div>
+          </div>
+        
+        <div class="card-content">
+          <div class="form-group">
+            <label class="form-label">Select Job</label>
+            <div class="select-wrapper">
+              <ion-select formControlName="jobId" interface="popover" placeholder="Choose a job" class="modern-select">
+                <ion-select-option *ngFor="let job of jobs" [value]="job.id">{{ job.title }}</ion-select-option>
+              </ion-select>
+            </div>
+          </div>
 
-        <div class="form-group">
-          <ion-item class="custom-item" button (click)="openAssignDrawer()" [disabled]="!form.get('jobId')?.value">
-            <div class="item-content">
-              <div class="label-group">
-                <ion-icon name="people-outline"></ion-icon>
-                <ion-label>Assign Workers</ion-label>
+          <div class="form-group">
+            <div class="assign-workers" (click)="openAssignDrawer()" [class.disabled]="!form.get('jobId')?.value">
+              <div class="assign-content">
+               
+                <div class="assign-text">
+                  <h3>Assign Workers</h3>
+                  <p style="cursor: pointer;">Select workers for this shift</p>
+                </div>
               </div>
-              <div class="badge">
-                {{ form.get('tempIds')?.value?.length || 0 }}
-                <span class="badge-text">selected</span>
+              <div class="workers-count">
+                <span class="count">{{ form.get('tempIds')?.value?.length || 0 }}</span>
+                <span class="label"> Worker(s)</span>
               </div>
             </div>
-          </ion-item>
-        </div>
-      </div>
-
-      <div class="section-divider">
-        <div class="divider-line"></div>
-        <div class="divider-icon">
-          <ion-icon name="time-outline"></ion-icon>
-        </div>
-        <div class="divider-line"></div>
-      </div>
-
-      <div class="form-section">
-        <h2 class="section-title">
-          <ion-icon name="time-outline"></ion-icon>
-          Time Details
-        </h2>
-        <div class="form-group time-group">
-          <ion-item class="custom-toggle">
-            <div class="toggle-content">
-              <ion-label>All Day Shift</ion-label>
-              <ion-checkbox formControlName="allDay" mode="ios"></ion-checkbox>
-            </div>
-          </ion-item>
-
-          <div class="time-inputs" *ngIf="!form.get('allDay')?.value">
-            <ion-item class="custom-input">
-              <ion-label position="stacked">Start Time</ion-label>
-              <div class="input-with-icon">
-                <ion-icon name="calendar-outline"></ion-icon>
-                <ion-input formControlName="startTime" type="datetime-local"></ion-input>
-              </div>
-            </ion-item>
-
-            <ion-item class="custom-input">
-              <ion-label position="stacked">End Time</ion-label>
-              <div class="input-with-icon">
-                <ion-icon name="calendar-outline"></ion-icon>
-                <ion-input formControlName="endTime" type="datetime-local"></ion-input>
-              </div>
-            </ion-item>
           </div>
         </div>
       </div>
 
-      <div class="section-divider">
-        <div class="divider-line"></div>
-        <div class="divider-icon">
-          <ion-icon name="document-text-outline"></ion-icon>
+      <div class="form-card">
+        <div class="card-header">
+          <h2>Schedule</h2>
         </div>
-        <div class="divider-line"></div>
+        
+        <div class="card-content">
+          <div class="schedule-toggle">
+            <div class="toggle-label">
+              <span>All Day Shift</span>
+              <small>Enable for full day shifts</small>
+            </div>
+            <ion-toggle formControlName="allDay" mode="ios" class="modern-toggle"></ion-toggle>
+          </div>
+
+          <div class="time-inputs" *ngIf="!form.get('allDay')?.value">
+            <div class="form-group">
+              <label class="form-label">
+                <ion-icon name="calendar-outline"></ion-icon>
+                Start Time
+              </label>
+              <div class="datetime-wrapper">
+                <ion-icon name="time-outline"></ion-icon>
+                <ion-datetime-button datetime="startTime"></ion-datetime-button>
+                <ion-modal [keepContentsMounted]="true">
+                  <ng-template>
+                    <ion-datetime 
+                      id="startTime"
+                      formControlName="startTime"
+                      presentation="date-time"
+                      preferWheel="true"
+                      [showDefaultButtons]="true">
+                    </ion-datetime>
+                  </ng-template>
+                </ion-modal>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">
+                <ion-icon name="calendar-outline"></ion-icon>
+                End Time
+              </label>
+              <div class="datetime-wrapper">
+                <ion-icon name="time-outline"></ion-icon>
+                <ion-datetime-button datetime="endTime"></ion-datetime-button>
+                <ion-modal [keepContentsMounted]="true">
+                  <ng-template>
+                    <ion-datetime 
+                      id="endTime"
+                      formControlName="endTime"
+                      presentation="date-time"
+                      preferWheel="true"
+                      [showDefaultButtons]="true">
+                    </ion-datetime>
+                  </ng-template>
+                </ion-modal>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
 
-      <div class="form-section">
-        <h2 class="section-title">
+      <div class="form-card">
+        <div class="card-header">
           <ion-icon name="document-text-outline"></ion-icon>
-          Additional Information
-        </h2>
-        <div class="form-group">
-          <ion-item class="custom-textarea">
-            <ion-label position="stacked">Notes</ion-label>
-            <ion-textarea 
-              formControlName="notes" 
-              placeholder="Add any additional notes about the shift..."
-              rows="4"
-              class="custom-textarea">
-            </ion-textarea>
-          </ion-item>
+          <h2>Additional Details</h2>
+        </div>
+        
+        <div class="card-content">
+          <div class="form-group">
+            <label class="form-label">Notes</label>
+            <div class="textarea-wrapper">
+              <ion-textarea 
+                formControlName="notes" 
+                placeholder="Add any important details or instructions for this shift..."
+                rows="4"
+                class="modern-textarea"
+                autoGrow="true">
+              </ion-textarea>
+            </div>
+          </div>
         </div>
       </div>
 
       <div class="form-actions">
         <ion-button 
+          type="button" 
+          fill="outline" 
+          class="cancel-button"
+          routerLink="/shifts">
+          <ion-icon name="close-outline" slot="start"></ion-icon>
+          Cancel
+        </ion-button>
+
+        <ion-button 
           type="submit" 
-          expand="block" 
-          [disabled]="form.invalid"
-          class="submit-button">
-          <ion-icon name="save-outline" slot="start"></ion-icon>
-          {{ isEditMode ? 'Update' : 'Create' }} Shift
+          class="submit-button" 
+          [disabled]="form.invalid">
+          <ion-icon name="{{ isEditMode ? 'save' : 'add-circle' }}-outline" slot="start"></ion-icon>
+          {{ isEditMode ? 'Save Changes' : 'Create Shift' }}
         </ion-button>
       </div>
     </form>
+  </div>
   </div>
 </ion-content>
