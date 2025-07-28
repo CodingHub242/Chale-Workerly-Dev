@@ -136,7 +136,7 @@
       .icon-wrapper {
         ion-icon {
           font-size: 22px;
-          color: var(--primary-color);
+          color: #2c3e50;
           padding: 8px;
           background: rgba(0, 76, 77, 0.08);
           border-radius: 8px;
@@ -174,8 +174,9 @@
     justify-content: flex-end;
 
     .action-button {
-      --color: var(--text-secondary);
+      --color: #2c3e50;
       font-size: 0.9rem;
+      color:#2c3e50;
       height: 40px;
       --padding-start: 16px;
       --padding-end: 16px;
