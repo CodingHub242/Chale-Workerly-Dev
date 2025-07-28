@@ -3,58 +3,58 @@
     <ion-buttons slot="start">
       <ion-menu-button></ion-menu-button>
     </ion-buttons>
-    <ion-title style="color:whitesmoke;">Jobs</ion-title>
+    <ion-title>Job Management</ion-title>
     <ion-buttons slot="end">
-      <ion-button (click)="addJob()">
-        <ion-icon style="color: whitesmoke" slot="icon-only" name="add-circle-outline"></ion-icon>
+      <ion-button (click)="addJob()" class="add-job-button">
+        <ion-icon name="add-circle-outline"></ion-icon>
+        <span class="button-text">New Job</span>
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
-  <ion-grid class="jobs-grid">
-    <ion-row>
-      <ion-col size="12" size-md="6" size-lg="4" *ngFor="let job of jobs">
-        <ion-card class="job-card">
-          <ion-card-header>
-            <ion-card-title>{{ job.title }}</ion-card-title>
-            <ion-card-subtitle>
-              <ion-icon name="business-outline"></ion-icon>
-              {{ job.client?.name }}
-            </ion-card-subtitle>
-          </ion-card-header>
-          <ion-card-content>
-            <div class="job-detail">
-              <ion-icon name="cash-outline"></ion-icon>
-              <span>Pay Rate: GHS{{ job.payRate }}</span>
-            </div>
-            <div class="job-detail">
-              <ion-icon name="calendar-outline"></ion-icon>
-              <span>{{ job.startDate | date: 'mediumDate' }} - {{ job.endDate | date: 'mediumDate' }}</span>
-            </div>
-            <div class="status-badge" 
-                 [class.assigned]="job.status === 'Assigned'"
-                 [class.assigning]="job.status === 'Assigning In Progress'"
-                 [class.completed]="job.status === 'Completed'"
-                 [class.cancelled]="job.status === 'Cancelled'"
-                 [class.inactive]="job.status === 'InActive'"
-                 [class.declined]="job.status === 'Declined'">
-              {{ job.status }}
-            </div>
-          </ion-card-content>
-           <ion-footer>
-            <ion-button fill="clear" size="small" (click)="updateStatus(job)">
-              <ion-icon slot="start" name="sync-outline"></ion-icon>
-              Update Status
-            </ion-button>
-            <ion-button fill="clear" size="small" (click)="viewJob(job.id)">
-              <ion-icon slot="start" name="eye-outline"></ion-icon>
-              View Details
-            </ion-button>
-          </ion-footer>
-        </ion-card>
-      </ion-col>
-    </ion-row>
-  </ion-grid>
+  <div class="jobs-grid">
+    <ion-card class="job-card" *ngFor="let job of jobs">
+      <div class="status-badge" 
+           [class.assigned]="job.status === 'Assigned'"
+           [class.assigning]="job.status === 'Assigning In Progress'"
+           [class.completed]="job.status === 'Completed'"
+           [class.cancelled]="job.status === 'Cancelled'"
+           [class.inactive]="job.status === 'InActive'"
+           [class.declined]="job.status === 'Declined'">
+        {{ job.status }}
+      </div>
+      
+      <ion-card-header>
+        <ion-card-title>{{ job.title }}</ion-card-title>
+        <ion-card-subtitle>
+          <ion-icon name="business-outline"></ion-icon>
+          {{ job.client?.name }}
+        </ion-card-subtitle>
+      </ion-card-header>
+      
+      <ion-card-content>
+        <div class="job-detail">
+          <ion-icon name="cash-outline"></ion-icon>
+          <span>GHS {{ job.payRate }}/hr</span>
+        </div>
+        <div class="job-detail">
+          <ion-icon name="calendar-outline"></ion-icon>
+          <span>{{ job.startDate | date: 'MMM d, y' }} - {{ job.endDate | date: 'MMM d, y' }}</span>
+        </div>
+      </ion-card-content>
+      
+      <ion-footer>
+        <ion-button fill="clear" (click)="updateStatus(job)">
+          <ion-icon slot="start" name="sync-outline"></ion-icon>
+          Update Status
+        </ion-button>
+        <ion-button fill="clear" (click)="viewJob(job.id)" class="primary">
+          <ion-icon slot="start" name="eye-outline"></ion-icon>
+          View Details
+        </ion-button>
+      </ion-footer>
+    </ion-card>
+  </div>
 </ion-content>

@@ -1,88 +1,138 @@
 <ion-header>
-  <ion-toolbar>
+  <ion-toolbar class="shifts-toolbar">
     <ion-buttons slot="start">
       <ion-menu-button></ion-menu-button>
     </ion-buttons>
-    <ion-title>Shifts</ion-title>
+    <ion-title>Shift Management</ion-title>
     <ion-buttons slot="end">
-      <ion-button (click)="addShift()">
-        <ion-icon slot="icon-only" name="add-circle-outline"></ion-icon>
+      <ion-button (click)="addShift()" class="add-shift-main">
+        <ion-icon name="add-circle-outline"></ion-icon>
+        <span class="button-text">New Shift</span>
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
-  <div class="calendar-header">
-    <ion-icon class="navs" (click)="prev()" name="chevron-back-outline"></ion-icon>
-    <!-- <ion-button (click)="prev()">Prev</ion-button> -->
-    <h3>{{ viewDate | date:'MMMM yyyy' }}</h3>
-    <!-- <ion-button (click)="next()">Next</ion-button> -->
-    <ion-icon class="navs" name="chevron-forward-outline" (click)="next()"></ion-icon>
-  </div>
-
-  <ng-template #customCellTemplate let-day="day" let-locale="locale">
-    <div class="cal-cell-top">
-      <span class="cal-day-number">{{ day.date | calendarDate:'monthViewDayNumber':locale }}</span>
-    </div>
-    <div class="cal-events">
-      <div *ngFor="let event of day.events" class="cal-event">
-        {{ event.title }}
+<ion-content class="shifts-content">
+  <div class="calendar-container">
+    <div class="calendar-header">
+      <div class="header-content">
+        <ion-button fill="clear" (click)="prev()" class="nav-button">
+          <ion-icon class="navs" name="chevron-back-outline"></ion-icon>
+        </ion-button>
+        <h2 class="month-title">{{ viewDate | date:'MMMM yyyy' }}</h2>
+        <ion-button fill="clear" (click)="next()" class="nav-button">
+          <ion-icon class="navs" name="chevron-forward-outline"></ion-icon>
+        </ion-button>
       </div>
     </div>
-    <div class="add-shift-overlay" *ngIf="!isPastDate(day.date) || day.isToday">
-      <ion-button (click)="addShift(day.date)" expand="block" size="small" class="add-shift-button">
-        Add Shift
-      </ion-button>
+
+    <ng-template #customCellTemplate let-day="day" let-locale="locale">
+      <div class="cal-cell-content">
+        <div class="cal-cell-top">
+          <span class="cal-day-number" [class.today]="day.isToday">
+            {{ day.date | calendarDate:'monthViewDayNumber':locale }}
+          </span>
+        </div>
+        <div class="cal-events" [class.has-events]="day.events?.length > 0">
+          <div *ngFor="let event of day.events" class="cal-event" [style.backgroundColor]="event.color?.primary">
+            <ion-icon name="time-outline"></ion-icon>
+            <span class="event-title">{{ event.title }}</span>
+          </div>
+        </div>
+        <div class="add-shift-overlay" *ngIf="!isPastDate(day.date) || day.isToday">
+          <ion-button (click)="addShift(day.date)" class="add-shift-button" fill="clear" size="small">
+            <ion-icon name="add-circle-outline"></ion-icon>
+            <span class="button-text">Add</span>
+          </ion-button>
+        </div>
+      </div>
+    </ng-template>
+
+    <div class="calendar-wrapper">
+      <mwl-calendar-month-view
+        [viewDate]="viewDate"
+        [events]="events"
+        [cellTemplate]="customCellTemplate"
+        [refresh]="refresh"
+        [activeDayIsOpen]="true">
+      </mwl-calendar-month-view>
     </div>
-  </ng-template>
 
-  <mwl-calendar-month-view
-    [viewDate]="viewDate"
-    [events]="events"
-    [cellTemplate]="customCellTemplate">
-  </mwl-calendar-month-view>
-
-  <ion-grid class="shifts-grid">
-    <ion-row>
-      <ion-col size="12" size-md="6" size-lg="4" *ngFor="let shift of shifts">
-        <ion-card class="shift-card">
-          <ion-card-header>
-            <ion-card-title >Job : {{ shift.job.title }}</ion-card-title>
-            <ion-card-subtitle>Client : {{ shift.client.name }}</ion-card-subtitle>
-          </ion-card-header>
-          <ion-card-content>
-            <p class="shift-time">
-              Starting On : {{ shift.startTime | date:'short' }} - To : {{ shift.endTime | date:'short' }}
-            </p>
+    <div class="shifts-container">
+      <div class="shifts-grid">
+        <div class="shift-card-wrapper" *ngFor="let shift of shifts">
+          <ion-card class="shift-card" [class.active]="shift.status === 'started'">
+            <div class="status-indicator" [class.pending]="shift.status === 'pending'"
+                [class.started]="shift.status === 'started'"
+                [class.completed]="shift.status === 'completed'"
+                [class.checked-in]="shift.status === 'checked-in'">
+              <ion-icon [name]="getStatusIcon(shift.status)"></ion-icon>
+            </div>
             
-            <div class="temps-list" *ngIf="shift.temps && shift.temps.length > 0">
-              <div class="list-header">Assigned Temps</div>
-              <div *ngFor="let temp of shift.temps" class="temp-item">
-                <ion-icon name="person-circle-outline"></ion-icon>
-                <span>{{ temp.firstName }} {{ temp.lastName }}</span>
+            <ion-card-header>
+              <div class="card-header-content">
+                <ion-card-title>{{ shift.job.title }}</ion-card-title>
+                <ion-card-subtitle>
+                  <ion-icon name="business-outline"></ion-icon>
+                  {{ shift.client.name }}
+                </ion-card-subtitle>
               </div>
+            </ion-card-header>
+
+            <ion-card-content>
+              <div class="shift-details">
+                <div class="time-section">
+                  <div class="time-item">
+                    <ion-icon name="time-outline"></ion-icon>
+                    <div class="time-info">
+                      <span class="label">Start</span>
+                      <span class="value">{{ shift.startTime | date:'MMM d, y h:mm a' }}</span>
+                    </div>
+                  </div>
+                  <div class="time-separator"></div>
+                  <div class="time-item">
+                    <ion-icon name="time-outline"></ion-icon>
+                    <div class="time-info">
+                      <span class="label">End</span>
+                      <span class="value">{{ shift.endTime | date:'MMM d, y h:mm a' }}</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="temps-section" *ngIf="shift?.temps && shift.temps.length > 0">
+                  <h4 class="section-title">
+                    <ion-icon name="people-outline"></ion-icon>
+                    Assigned Workers
+                  </h4>
+                  <div class="temps-grid">
+                    <div class="temp-item" *ngFor="let temp of shift.temps">
+                      <div class="temp-avatar">
+                        <ion-icon name="person-circle-outline"></ion-icon>
+                      </div>
+                      <div class="temp-info">
+                        <span class="temp-name">{{ temp.firstName }} {{ temp.lastName }}</span>
+                        <span class="temp-status" [class]="temp.status">{{ temp.status }}</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </ion-card-content>
+
+            <div class="card-actions">
+              <ion-button fill="clear" (click)="updateStatus(shift)" class="action-button">
+                <ion-icon slot="start" name="sync-outline"></ion-icon>
+                Update Status
+              </ion-button>
+              <ion-button fill="clear" (click)="viewShift(shift.id)" class="action-button primary">
+                <ion-icon slot="start" name="eye-outline"></ion-icon>
+                View Details
+              </ion-button>
             </div>
-<div class="status-badge" 
-                 [class.pending]="shift.status === 'pending'"
-                 [class.started]="shift.status === 'started'"
-                 [class.completed]="shift.status === 'completed'"
-                 [class.checked-in]="shift.status === 'checked-in'">
-              {{ shift.status }}
-            </div>
-          </ion-card-content>
-          <ion-footer>
-            <ion-button fill="clear" size="small" (click)="updateStatus(shift)">
-              <ion-icon slot="start" name="sync-outline"></ion-icon>
-              Update Status
-            </ion-button>
-            <ion-button fill="clear" size="small" (click)="viewShift(shift.id)">
-              <ion-icon slot="start" name="eye-outline"></ion-icon>
-              View Details
-            </ion-button>
-          </ion-footer>
-        </ion-card>
-      </ion-col>
-    </ion-row>
-  </ion-grid>
+          </ion-card>
+        </div>
+      </div>
+    </div>
+  </div>
 </ion-content>

@@ -1,32 +1,57 @@
 :root {
-  --primary-color: #4a90e2;
-  --background-color: #f4f7fc;
-  --card-background-color: #ffffff;
-  --text-color: #333;
-  --text-color-light: #777;
-  --shadow-color: rgba(0, 0, 0, 0.08);
+  --primary-color: #004c4d;
+  --secondary-color: #f4f7fc;
+  --accent-color: #ffa500;
+  --success-color: #28a745;
+  --warning-color: #ffc107;
+  --danger-color: #dc3545;
+  --text-primary: #2c3e50;
+  --text-secondary: #6c757d;
   --border-radius: 12px;
+  --card-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  --transition-speed: 0.3s;
 }
-
+ion-toolbar{
+    --background:#004c4d;
+    --color:whitesmoke;
+    color:whitesmoke;
+}
 ion-content {
   --background: white;
+  color:#000;
+}
+
+.button-text{
+  margin-top: 3px;
+  margin-left: 3px;
 }
 
 .jobs-grid {
-  padding: 16px;
+  padding: var(--padding, 16px);
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 20px;
+  
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+    padding: 12px;
+  }
 }
 
 ion-card {
-  --background: #f0f2f5;
-  --border-radius: 12px;
+  margin: 0;
+  --background: white;
+  --border-radius: var(--border-radius);
 }
 
 .job-card {
-  background: var(--card-background-color);
+  background: white;
+  color:#000;
   border-radius: var(--border-radius);
-  box-shadow: 0 4px 16px var(--shadow-color);
-  margin-bottom: 20px;
-  transition: all 0.3s ease;
+  box-shadow: var(--card-shadow);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  margin: 0;
+  transition: transform var(--transition-speed), box-shadow var(--transition-speed);
   cursor: pointer;
 
   &:hover {
@@ -35,79 +60,164 @@ ion-card {
   }
 
   ion-card-header {
-    padding-bottom: 12px;
-    border-bottom: 1px solid #f0f0f0;
+    padding: 20px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    background: var(--secondary-color);
   }
 
   ion-card-title {
     font-size: 1.2rem;
     font-weight: 600;
-    color: var(--primary-color);
+    color: #000;
+    margin-bottom: 8px;
   }
 
   ion-card-subtitle {
-    color: var(--text-color-light);
+    color: #000;
     font-size: 0.9rem;
     display: flex;
     align-items: center;
+    gap: 8px;
+    
     ion-icon {
-      margin-right: 6px;
+      font-size: 18px;
     }
   }
 
   ion-card-content {
-    padding-top: 16px;
+    padding: 20px;
   }
 
   .job-detail {
     display: flex;
     align-items: center;
+    padding: 12px;
+    background: var(--secondary-color);
+    border-radius: 8px;
     margin-bottom: 12px;
-    color: var(--text-color);
+    transition: background-color 0.2s ease;
+
+    &:hover {
+      background-color: rgba(0, 76, 77, 0.05);
+    }
 
     ion-icon {
-      font-size: 1.1rem;
-      margin-right: 10px;
-      color: var(--text-color-light);
+      font-size: 20px;
+      color: var(--primary-color);
+      margin-right: 12px;
+      padding: 8px;
+      background: rgba(0, 76, 77, 0.08);
+      border-radius: 8px;
+    }
+
+    span {
+      font-size: 0.95rem;
+      color: var(--text-primary);
+      font-weight: 500;
     }
   }
 
   .status-badge {
-    padding: 6px 12px;
-    border-radius: 20px;
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    padding: 6px 14px;
+    border-radius: var(--border-radius);
     font-size: 0.8rem;
-    font-weight: 500;
-    color: #fff;
+    font-weight: 600;
+    color: white;
     text-transform: uppercase;
-    display: inline-block;
-    margin-top: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(4px);
+    letter-spacing: 0.5px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
 
-    &.assigned { background-color: #28a745; }
-    &.assigning { background-color: #ffc107; color: #333; }
-    &.completed { background-color: #17a2b8; }
-    &.cancelled { background-color: #dc3545; }
-    &.inactive { background-color: #6c757d; }
-    &.declined { background-color: #f5a623; }
+    &:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    }
+
+    &.assigned { 
+      background:  #219a3a;
+      color:whitesmoke;
+      border: 1px solid rgba(40, 167, 69, 0.3);
+    }
+    &.assigning { 
+      background: orange;
+      color: whitesmoke;
+      border: 1px solid rgba(255, 193, 7, 0.3);
+    }
+    &.completed { 
+      background: #003738;
+      color: whitesmoke;
+      border: 1px solid rgba(0, 76, 77, 0.3);
+    }
+    &.cancelled { 
+      background: #c82333;
+      color: whitesmoke;
+      border: 1px solid rgba(220, 53, 69, 0.3);
+    }
+    &.inactive { 
+      background: #5a6268;
+      color: whitesmoke;
+      border: 1px solid rgba(108, 117, 125, 0.3);
+    }
+    &.declined { 
+      background: #e69500;
+      color: whitesmoke;
+      border: 1px solid rgba(255, 165, 0, 0.3);
+    }
+  }
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.12);
   }
 }
 
-
 ion-footer {
-    padding: 8px;
-    border-top: 1px solid #f0f0f0;
-    display: flex;
-    justify-content: space-around;
+  padding: 16px 20px;
+  border-top: 1px solid rgba(0, 76, 77, 0.08);
+  background: rgba(0, 76, 77, 0.02);
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
 
-    ion-button {
-      --color: var(--text-color-light);
-      font-weight: 500;
-      text-transform: none;
+  ion-button {
+    --color: var(--text-secondary);
+    font-size: 0.9rem;
+    height: 40px;
+    --padding-start: 16px;
+    --padding-end: 16px;
+    font-weight: 500;
+    position: relative;
+    overflow: hidden;
 
-      &:hover {
-        --color: var(--primary-color);
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: currentColor;
+      opacity: 0;
+      transition: opacity 0.2s ease;
+    }
+
+    &:hover {
+      --color: var(--primary-color);
+      &::before {
+        opacity: 0.1;
       }
     }
+
+    ion-icon {
+      font-size: 18px;
+      margin-right: 8px;
+    }
   }
+}
   ion-toolbar{
     --background:rgb(0 76 78 / 85%);
 }

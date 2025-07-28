@@ -88,9 +88,13 @@ const routes: Routes = [
     loadChildren: () => import('./pages/temp-detail/temp-detail.module').then( m => m.TempDetailPageModule)
   },
   {
-    path: 'shift-detail',
+    path: 'shift-detail/:id',
     loadChildren: () => import('./pages/shift-detail/shift-detail.module').then( m => m.ShiftDetailPageModule)
   },
+  //  {
+  //   path: 'shift-detail',
+  //   loadChildren: () => import('./pages/shift-detail/shift-detail.module').then( m => m.ShiftDetailPageModule)
+  // },
   {
     path: 'timesheet-detail',
     loadChildren: () => import('./pages/timesheet-detail/timesheet-detail.module').then( m => m.TimesheetDetailPageModule)

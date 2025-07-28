@@ -1,10 +1,20 @@
 import { Component } from '@angular/core';
+import { trigger, state, style, animate, transition } from '@angular/animations';
 
 @Component({
   selector: 'app-root',
   templateUrl: 'app.component.html',
   styleUrls: ['app.component.scss'],
-  standalone: false
+  standalone: false,
+  animations: [
+    trigger('collapse', [
+      state('expanded', style({ height: '*', opacity: 1 })),
+      state('collapsed', style({ height: '0', opacity: 0 })),
+      transition('expanded <=> collapsed', [
+        animate('200ms ease-out')
+      ])
+    ])
+  ]
 })
 export class AppComponent {
   public appPages = [

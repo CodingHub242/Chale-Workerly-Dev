@@ -3,6 +3,13 @@ import { Routes, RouterModule } from '@angular/router';
 
 import { ShiftsPage } from './shifts.page';
 
+// const routes: Routes = [
+//   {
+//     path: 'shifts',
+//     component: ShiftsPage,
+//     pathMatch: 'full'
+//   }
+// ];
 const routes: Routes = [
   {
     path: '',

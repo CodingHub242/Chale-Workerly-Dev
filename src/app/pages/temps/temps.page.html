@@ -1,28 +1,75 @@
 <ion-header>
-  <ion-toolbar>
+  <ion-toolbar class="temps-toolbar">
     <ion-buttons slot="start">
       <ion-menu-button></ion-menu-button>
     </ion-buttons>
-    <ion-title style="color:whitesmoke;">Temps</ion-title>
+    <ion-title>Temporary Workers</ion-title>
     <ion-buttons slot="end">
-      <ion-button (click)="addTemp()">
-        <ion-icon style="color: whitesmoke" slot="icon-only" name="add"></ion-icon>
+      <ion-button (click)="addTemp()" class="add-temp-button">
+        <ion-icon name="add-circle-outline"></ion-icon>
+        <span class="button-text">New Worker</span>
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
-<ion-content class="ion-padding">
-  <ion-list lines="none">
-    <ion-card *ngFor="let temp of temps" class="temp-card" (click)="viewTemp(temp.id)">
-      <ion-item lines="none">
-        <ion-label>
-          <h2>{{ temp.firstName }} {{ temp.lastName }}</h2>
-          <p class="contact-info"><ion-icon name="call-outline"></ion-icon> {{ temp.phone }}</p>
-          <p class="contact-info"><ion-icon name="mail-outline"></ion-icon> {{ temp.email }}</p>
-          <p class="skills"><ion-icon name="build-outline"></ion-icon> <strong>Skills:</strong> {{ temp.skills.join(', ') }}</p>
-        </ion-label>
-      </ion-item>
-    </ion-card>
-  </ion-list>
+<ion-content class="temps-content">
+  <div class="temps-grid">
+    <div class="temp-card" *ngFor="let temp of temps" (click)="viewTemp(temp.id)">
+      <div class="temp-header">
+        <div class="temp-avatar">
+          <!-- <ion-avatar>
+            <img [src]="'https://i.pravatar.cc/300?u=' + temp.id" alt="Worker avatar"/>
+          </ion-avatar> -->
+          <div class="status-indicator" [class.online]="temp.status"></div>
+        </div>
+        <h2 class="temp-name">{{ temp.firstName }} {{ temp.lastName }}</h2>
+      </div>
+
+      <div class="temp-details">
+        <div class="detail-item">
+          <div class="icon-wrapper">
+            <ion-icon name="call-outline"></ion-icon>
+          </div>
+          <div class="detail-content">
+            <span class="label">Phone</span>
+            <span class="value">{{ temp.phone }}</span>
+          </div>
+        </div>
+
+        <div class="detail-item">
+          <div class="icon-wrapper">
+            <ion-icon name="mail-outline"></ion-icon>
+          </div>
+          <div class="detail-content">
+            <span class="label">Email</span>
+            <span class="value">{{ temp.email }}</span>
+          </div>
+        </div>
+
+        <div class="skills-section">
+          <div class="section-header">
+            <ion-icon name="build-outline"></ion-icon>
+            <h3>Skills</h3>
+          </div>
+          <div class="skills-grid">
+            <div class="skill-tag" *ngFor="let skill of temp.skills">
+              {{ skill }}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card-actions">
+        <ion-button fill="clear" class="action-button">
+          <ion-icon slot="start" name="eye-outline"></ion-icon>
+          View Profile
+        </ion-button>
+        <ion-button fill="clear" class="action-button primary">
+          <ion-icon slot="start" name="calendar-outline"></ion-icon>
+          View Shifts
+        </ion-button>
+      </div>
+    </div>
+  </div>
 </ion-content>

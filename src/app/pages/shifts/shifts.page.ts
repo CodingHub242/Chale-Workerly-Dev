@@ -21,6 +21,7 @@ export class ShiftsPage implements OnInit {
   viewDate: Date = new Date();
   view: CalendarView = CalendarView.Month;
   events: CalendarEvent[] = [];
+  refresh: any;
 
   constructor(
     private shiftService: ShiftService,
@@ -104,5 +105,20 @@ export class ShiftsPage implements OnInit {
 
   isPastDate(date: Date): boolean {
     return date <= new Date();
+  }
+
+  getStatusIcon(status: string): string {
+    switch (status) {
+      case 'pending':
+        return 'time-outline';
+      case 'checked-in':
+        return 'checkmark-circle-outline';
+      case 'started':
+        return 'play-circle-outline';
+      case 'completed':
+        return 'flag-outline';
+      default:
+        return 'help-circle-outline';
+    }
   }
 }

@@ -9,105 +9,86 @@
 
 <ion-content>
   <ion-grid class="dashboard-grid">
-    <ion-row>
-      <!-- Jobs Stat Card -->
-      <ion-col size="12" size-md="6" size-lg="4">
-        <div class="stat-card">
-          <div class="stat-icon jobs-icon">
-            <ion-icon name="briefcase-outline"></ion-icon>
-          </div>
-          <div class="stat-info">
-            <h2>{{ jobs.length }}</h2>
-            <p>Active Jobs</p>
-          </div>
-        </div>
-      </ion-col>
-
-      <!-- Clients Stat Card -->
-      <ion-col size="12" size-md="6" size-lg="4">
-        <div class="stat-card">
-          <div class="stat-icon clients-icon">
-            <ion-icon name="people-outline"></ion-icon>
-          </div>
-          <div class="stat-info">
-            <h2>{{ clients.length }}</h2>
-            <p>Total Clients</p>
-          </div>
-        </div>
-      </ion-col>
-
-      <!-- Temps Stat Card -->
-      <ion-col size="12" size-md="6" size-lg="4">
-        <div class="stat-card">
-          <div class="stat-icon temps-icon">
-            <ion-icon name="person-outline"></ion-icon>
-          </div>
-          <div class="stat-info">
-            <h2>{{ temps.length }}</h2>
-            <p>Available Temps</p>
-          </div>
-        </div>
-      </ion-col>
-
-      <!-- Shifts Stat Card -->
-      <ion-col size="12" size-md="6" size-lg="6">
-        <div class="stat-card">
-          <div class="stat-icon shifts-icon">
-            <ion-icon name="calendar-outline"></ion-icon>
-          </div>
-          <div class="stat-info">
-            <h2>{{ shifts.length }}</h2>
-            <p>Scheduled Shifts</p>
-          </div>
-        </div>
-      </ion-col>
-
-      <!-- Timesheets Stat Card -->
-      <ion-col size="12" size-md="6" size-lg="6">
-        <div class="stat-card">
-          <div class="stat-icon timesheets-icon">
-            <ion-icon name="document-text-outline"></ion-icon>
-          </div>
-          <div class="stat-info">
-            <h2>{{ timesheets.length }}</h2>
-            <p>Pending Timesheets</p>
-          </div>
-        </div>
-      </ion-col>
-    </ion-row>
-
-    <ion-row>
-      <!-- Bar Chart -->
-      <ion-col size="12" size-lg="8">
-        <ion-card class="chart-card">
-          <ion-card-header>
-            <ion-card-title>Shifts per Day</ion-card-title>
-          </ion-card-header>
-          <ion-card-content>
-            <canvas #barChart></canvas>
-          </ion-card-content>
-        </ion-card>
-      </ion-col>
-
+    <ion-row style="margin-top: -40px;">
       <!-- Worker Status List -->
-      <ion-col size="12" size-lg="4">
+      <ion-col size="12">
         <ion-card class="list-card">
           <ion-card-header>
-            <ion-card-title>Worker Status</ion-card-title>
+            <ion-card-title>Worker Overview</ion-card-title>
           </ion-card-header>
           <ion-card-content>
-            <ion-list class="worker-list">
-              <ion-list-header>Temps</ion-list-header>
-              <ion-item *ngFor="let temp of tempsWithShifts">
-                <ion-label>
-                  <h2>{{ temp.firstName }} {{ temp.lastName }}</h2>
-                  <p *ngFor="let shift of temp.shifts">
-                    {{ shift.job.title }} - <span class="status-{{ shift.status }}">{{ shift.status }}</span>
-                    <span *ngIf="shift.status === 'started'"> - ${{ shift.job.payRate }}/hr</span>
-                  </p>
-                </ion-label>
-              </ion-item>
-            </ion-list>
+            <div class="worker-list">
+              <div class="worker-header">
+                <div class="title-buttons">
+                  <h4>An overview of currently working temps and pending shifts...</h4>
+                  <ion-button fill="clear" routerLink="/shifts" style="color:orange;">
+                    View All
+                    <ion-icon name="chevron-forward-outline" slot="end"></ion-icon>
+                  </ion-button>
+                </div>
+              </div>
+
+              <ion-segment [(ngModel)]="selectedTab" mode="ios" color="primary">
+                <ion-segment-button value="working">
+                  <ion-label>
+                    <ion-icon name="play-circle-outline"></ion-icon>
+                    Working
+                  </ion-label>
+                </ion-segment-button>
+                <ion-segment-button value="pending">
+                  <ion-label>
+                    <ion-icon name="time-outline"></ion-icon>
+                    Pending
+                  </ion-label>
+                </ion-segment-button>
+              </ion-segment>
+
+              <div class="tab-content" [ngClass]="selectedTab">
+                <!-- Working Tab Content -->
+                <ion-list *ngIf="selectedTab === 'working'" class="status-section">
+                  <ion-item *ngFor="let temp of tempsWithShifts | filterByStatus:'started'">
+                    <ion-label>
+                      <h2>
+                        <ion-icon name="person"></ion-icon>
+                        {{ temp.firstName }} {{ temp.lastName }}
+                      </h2>
+                      <p *ngFor="let shift of temp.shifts">
+                        <ion-icon name="briefcase-outline"></ion-icon>
+                        {{ shift.job.title }}
+                        <span class="status-started">
+                          <ion-icon name="pulse-outline"></ion-icon>
+                          Working
+                        </span>
+                        <span class="pay-rate">
+                          <ion-icon name="cash-outline"></ion-icon>
+                          {{ shift.job.payRate }}/hr
+                        </span>
+                      </p>
+                    </ion-label>
+                  </ion-item>
+                </ion-list>
+
+                <!-- Pending Tab Content -->
+                <ion-list *ngIf="selectedTab === 'pending'" class="status-section">
+                  <ion-item *ngFor="let temp of tempsWithShifts | filterByStatus:'pending'">
+                    <ion-label>
+                      <h2>
+                        <ion-icon name="person"></ion-icon>
+                        {{ temp.firstName }} {{ temp.lastName }}
+                      </h2>
+                      <p *ngFor="let shift of temp.shifts">
+                        <ion-icon name="briefcase-outline"></ion-icon>
+                        {{ shift.job.title }}
+                        <span class="status-pending">
+                          <ion-icon name="hourglass-outline"></ion-icon>
+                          Pending
+                        </span>
+                      </p>
+                    </ion-label>
+                  </ion-item>
+                </ion-list>
+              </div>
+            </div>
             <!-- <ion-list class="worker-list" style="margin-top: 20px;">
               <ion-list-header>Clients</ion-list-header>
               <ion-item *ngFor="let client of clientsWithShifts">
@@ -123,5 +104,123 @@
         </ion-card>
       </ion-col>
     </ion-row>
+
+    <ion-row>
+      <!-- Jobs Stat Card -->
+      <ion-col size="12" size-md="6" size-lg="4">
+        <div class="stat-card jobs-gradient">
+          <div class="stat-content">
+            <div class="stat-header">
+              <div class="stat-icon jobs-icon">
+                <ion-icon name="briefcase-outline"></ion-icon>
+              </div>
+              <div class="trend-indicator positive">
+                <ion-icon name="trending-up-outline"></ion-icon>
+              </div>
+            </div>
+            <div class="stat-info">
+              <h2>{{ jobs.length }}</h2>
+              <p>Active Jobs</p>
+            </div>
+          </div>
+        </div>
+      </ion-col>
+
+      <!-- Clients Stat Card -->
+      <ion-col size="12" size-md="6" size-lg="4">
+        <div class="stat-card clients-gradient">
+          <div class="stat-content">
+            <div class="stat-header">
+              <div class="stat-icon clients-icon">
+                <ion-icon name="people-outline"></ion-icon>
+              </div>
+              <div class="trend-indicator positive">
+                <ion-icon name="trending-up-outline"></ion-icon>
+              </div>
+            </div>
+            <div class="stat-info">
+              <h2>{{ clients.length }}</h2>
+              <p>Total Clients</p>
+            </div>
+          </div>
+        </div>
+      </ion-col>
+
+      <!-- Temps Stat Card -->
+      <ion-col size="12" size-md="6" size-lg="4">
+        <div class="stat-card temps-gradient">
+          <div class="stat-content">
+            <div class="stat-header">
+              <div class="stat-icon temps-icon">
+                <ion-icon name="person-outline"></ion-icon>
+              </div>
+              <div class="trend-indicator positive">
+                <ion-icon name="trending-up-outline"></ion-icon>
+              </div>
+            </div>
+            <div class="stat-info">
+              <h2>{{ temps.length }}</h2>
+              <p>Available Temps</p>
+            </div>
+          </div>
+        </div>
+      </ion-col>
+
+      <!-- Shifts Stat Card -->
+      <ion-col size="12" size-md="6" size-lg="6">
+        <div class="stat-card shifts-gradient">
+          <div class="stat-content">
+            <div class="stat-header">
+              <div class="stat-icon shifts-icon">
+                <ion-icon name="calendar-outline"></ion-icon>
+              </div>
+              <div class="trend-indicator positive">
+                <ion-icon name="trending-up-outline"></ion-icon>
+              </div>
+            </div>
+            <div class="stat-info">
+              <h2>{{ shifts.length }}</h2>
+              <p>Scheduled Shifts</p>
+            </div>
+          </div>
+        </div>
+      </ion-col>
+
+      <!-- Timesheets Stat Card -->
+      <ion-col size="12" size-md="6" size-lg="6">
+        <div class="stat-card timesheets-gradient">
+          <div class="stat-content">
+            <div class="stat-header">
+              <div class="stat-icon timesheets-icon">
+                <ion-icon name="document-text-outline"></ion-icon>
+              </div>
+              <div class="trend-indicator neutral">
+                <ion-icon name="trending-up-outline"></ion-icon>
+              </div>
+            </div>
+            <div class="stat-info">
+              <h2>{{ timesheets.length }}</h2>
+              <p>Pending Timesheets</p>
+            </div>
+          </div>
+        </div>
+      </ion-col>
+    </ion-row>
+
+    <ion-row>
+      <!-- Bar Chart -->
+      <ion-col size="12">
+        <ion-card class="chart-card">
+          <ion-card-header>
+            <ion-card-title>Shifts per Day</ion-card-title>
+          </ion-card-header>
+          <ion-card-content>
+            <canvas #barChart></canvas>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+
+    
   </ion-grid>
 </ion-content>

@@ -1,32 +1,69 @@
 <ion-header>
-  <ion-toolbar>
+  <ion-toolbar class="client-toolbar">
     <ion-buttons slot="start">
       <ion-menu-button></ion-menu-button>
     </ion-buttons>
-    <ion-title style="color:whitesmoke;">Clients</ion-title>
+    <ion-title>Client Management</ion-title>
     <ion-buttons slot="end">
-      <ion-button (click)="addClient()">
-        <ion-icon style="color: whitesmoke" slot="icon-only" name="add"></ion-icon>
+      <ion-button (click)="addClient()" class="add-client-button">
+        <ion-icon name="add-circle-outline"></ion-icon>
+        <span class="button-text">New Client</span>
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
-<ion-content class="ion-padding">
-  <ion-list lines="none">
-    <ion-card *ngFor="let client of clients" class="client-card" (click)="viewClient(client.id)">
-      <ion-item lines="none">
-        <ion-avatar slot="start">
-          <img *ngIf="client.avatar!=''" src="https://app.chaleapp.org/public/storage/{{client.avatar}}" />
-          <img *ngIf="client.avatar==''" src="https://i.pravatar.cc/80?u={{client.id}}" />
-        </ion-avatar>
-        <ion-label>
-          <h2>{{ client.name }}</h2>
-          <p><ion-icon name="location-outline"></ion-icon> {{ client.address }}</p>
-          <p><ion-icon name="call-outline"></ion-icon> {{ client.phone }}</p>
-          <p><ion-icon name="mail-outline"></ion-icon> {{ client.email }}</p>
-        </ion-label>
-      </ion-item>
-    </ion-card>
-  </ion-list>
+<ion-content class="clients-content">
+  <div class="clients-grid">
+    <div class="client-card" *ngFor="let client of clients" (click)="viewClient(client.id)">
+      <div class="card-header">
+        <div class="avatar-wrapper">
+          <ion-avatar>
+            <img *ngIf="client.avatar" [src]="'https://app.chaleapp.org/public/storage/' + client.avatar" />
+            <img *ngIf="!client.avatar" [src]="'https://i.pravatar.cc/80?u=' + client.id" />
+          </ion-avatar>
+        </div>
+        <h2 class="client-name">{{ client.name }}</h2>
+      </div>
+      
+      <div class="client-details">
+        <div class="detail-item">
+          <div class="icon-wrapper">
+            <ion-icon name="location-outline"></ion-icon>
+          </div>
+          <div class="detail-content">
+            <span class="label">Address</span>
+            <span class="value">{{ client.address }}</span>
+          </div>
+        </div>
+        
+        <div class="detail-item">
+          <div class="icon-wrapper">
+            <ion-icon name="call-outline"></ion-icon>
+          </div>
+          <div class="detail-content">
+            <span class="label">Phone</span>
+            <span class="value">{{ client.phone }}</span>
+          </div>
+        </div>
+        
+        <div class="detail-item">
+          <div class="icon-wrapper">
+            <ion-icon name="mail-outline"></ion-icon>
+          </div>
+          <div class="detail-content">
+            <span class="label">Email</span>
+            <span class="value">{{ client.email }}</span>
+          </div>
+        </div>
+      </div>
+      
+      <div class="card-actions">
+        <ion-button fill="clear" class="action-button">
+          <ion-icon slot="start" name="eye-outline"></ion-icon>
+          View Details
+        </ion-button>
+      </div>
+    </div>
+  </div>
 </ion-content>

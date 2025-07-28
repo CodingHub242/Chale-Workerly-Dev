@@ -10,6 +10,9 @@ import { Temp } from '../../models/temp.model';
 import { Shift } from '../../models/shift.model';
 import { Timesheet } from '../../models/timesheet.model';
 import { Chart, registerables } from 'chart.js';
+import { RouterModule } from '@angular/router';
+import { FormsModule } from '@angular/forms';
+import { FilterByStatusPipe } from '../../pipes/filter-by-status.pipe';
 Chart.register(...registerables);
 
 import { IonicModule } from '@ionic/angular';
@@ -20,12 +23,13 @@ import { CommonModule } from '@angular/common';
   templateUrl: './dashboard.page.html',
   styleUrls: ['./dashboard.page.scss'],
   standalone: true,
-  imports: [IonicModule, CommonModule]
+  imports: [IonicModule, CommonModule, RouterModule, FilterByStatusPipe, FormsModule]
 })
 export class DashboardPage implements OnInit {
 
   @ViewChild('barChart') barChart!: ElementRef;
 
+  selectedTab = 'working';
   jobs: Job[] = [];
   clients: Client[] = [];
   temps: Temp[] = [];
@@ -70,30 +74,53 @@ export class DashboardPage implements OnInit {
         datasets: [{
           label: 'Shifts',
           data: Object.values(shiftsByDay),
-          backgroundColor: 'rgba(54, 162, 235, 0.2)',
-          borderColor: 'rgba(54, 162, 235, 1)',
-          borderWidth: 1
+          backgroundColor: 'rgba(74, 144, 226, 0.2)',
+          borderColor: 'rgba(74, 144, 226, 1)',
+          borderWidth: 1,
+          borderRadius: 6
         }]
       },
       options: {
+        responsive: true,
+        maintainAspectRatio: false,
         scales: {
           y: {
-            beginAtZero: true
+            beginAtZero: true,
+            grid: {
+              color: 'rgba(0, 0, 0, 0.05)'
+            }
+          },
+          x: {
+            grid: {
+              display: false
+            }
+          }
+        },
+        plugins: {
+          legend: {
+            display: false
           }
         }
       }
     });
   }
 
-  processShifts() {
-    this.tempsWithShifts = this.temps.map(temp => ({
+processShifts() {
+  // Get only active shifts (not completed)
+  const activeShifts = this.shifts.filter(shift => 
+    ['pending', 'checked-in', 'started'].includes(shift.status)
+  );
+
+  // Get temps with their active shifts, limited to 10
+  this.tempsWithShifts = this.temps
+    .map(temp => ({
       ...temp,
-      shifts: this.shifts.filter(shift =>
+      shifts: activeShifts.filter(shift =>
         shift.temps.some(t => t.id === temp.id)
       )
-    }));
-
-    this.clientsWithShifts = this.clients.map(client => ({
+    }))
+    .filter(temp => temp.shifts.length > 0)
+    .slice(0, 10);    this.clientsWithShifts = this.clients.map(client => ({
       ...client,
       shifts: this.shifts.filter(shift => shift.client.id === client.id)
     }));
