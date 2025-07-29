@@ -55,8 +55,14 @@ export class JobFormPage implements OnInit {
       this.isEditMode = true;
       this.jobService.getJob(this.jobId).subscribe((job:any) => {
         const jobData = job;
-        //console.log('Job Data:', jobData);
+        console.log('Job Data:', jobData);
         this.existingAttachments = jobData.attachments;
+        if(jobData.experience==null)
+        {
+           jobData.experience = [0,5];
+        }
+
+        //console.log(jobData.experience);
        // console.log('Existing Attachments:', this.existingAttachments);
         this.form.patchValue({
           ...jobData,

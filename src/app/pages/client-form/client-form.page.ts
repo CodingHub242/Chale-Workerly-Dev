@@ -42,7 +42,7 @@ export class ClientFormPage implements OnInit {
       this.isEditMode = true;
       this.clientService.getClient(this.clientId).subscribe(client => {
         this.form.patchValue(client);
-        this.imagePreview = client.avatar ? `${environment.apiUrl}/${client.avatar}` : null;
+        this.imagePreview = client.avatar ? `https://app.chaleapp.org/public/storage/${client.avatar}` : null;
       });
     }
   }
