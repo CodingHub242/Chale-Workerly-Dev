@@ -111,9 +111,9 @@ export class JobFormPage implements OnInit {
       });
     } else {
       this.jobService.addJob(formData).subscribe(() => {
-        this.router.navigate(['/jobs']).then(() => {
-          window.location.reload();
-          });
+        // this.router.navigate(['/jobs']).then(() => {
+        //   window.location.reload();
+        //   });
       });
     }
   }
