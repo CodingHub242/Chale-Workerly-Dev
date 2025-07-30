@@ -486,17 +486,24 @@ ion-content.shifts-content {
     display: flex;
     align-items: center;
     justify-content: center;
+
+
     
-    &.pending { background-color: var(--warning-color); }
-    &.started { background-color: var(--success-color); }
-    &.completed { background-color: var(--text-secondary); }
-    &.checked-in { background-color: var(--primary-color); }
+    &.pending { background-color: #ffc107; }
+    &.started { background-color: #28a745; }
+    &.completed { background-color: #6c757d; }
+    &.checked-in { background-color: #6c757d; }
 
     ion-icon {
       color: white;
       font-size: 18px;
     }
   }
+
+   .pending { background-color: #ffc107; }
+    .started { background-color: #28a745; }
+    .completed { background-color: #6c757d; }
+    .checked-in { background-color: #6c757d; }
 
   ion-card-header {
     padding: 16px;

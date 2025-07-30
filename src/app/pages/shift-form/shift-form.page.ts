@@ -173,9 +173,10 @@ export class ShiftFormPage implements OnInit {
       job_id: selectedJob.id,
       client_id: selectedJob.client.id,
       temp_ids: tempIds,
-      start_time: startTime,
-      end_time: endTime,
+      startTime: startTime,
+      endTime: endTime,
       notes: notes,
+      status: 'pending'
     };
 
     if (this.isEditMode) {

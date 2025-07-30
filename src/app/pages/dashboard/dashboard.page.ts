@@ -17,6 +17,7 @@ Chart.register(...registerables);
 
 import { IonicModule } from '@ionic/angular';
 import { CommonModule } from '@angular/common';
+import { AuthService } from 'src/app/services/auth.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -28,6 +29,8 @@ import { CommonModule } from '@angular/common';
 export class DashboardPage implements OnInit {
 
   @ViewChild('barChart') barChart!: ElementRef;
+
+  currentUser:any;
 
   selectedTab = 'working';
   jobs: Job[] = [];
@@ -44,6 +47,7 @@ export class DashboardPage implements OnInit {
     private clientService: ClientService,
     private tempService: TempService,
     private shiftService: ShiftService,
+    private authService: AuthService,
     private timesheetService: TimesheetService
   ) { }
 
@@ -57,6 +61,8 @@ export class DashboardPage implements OnInit {
       this.createBarChart();
     });
     this.timesheetService.getTimesheets().subscribe(timesheets => this.timesheets = timesheets);
+
+    this.currentUser = this.authService.getCurrentUser();
   }
 
   createBarChart() {
@@ -124,5 +130,9 @@ processShifts() {
       ...client,
       shifts: this.shifts.filter(shift => shift.client.id === client.id)
     }));
+  }
+
+  logout() {
+    this.authService.logout();
   }
 }

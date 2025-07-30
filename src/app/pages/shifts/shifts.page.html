@@ -113,6 +113,10 @@
                       <div class="temp-info">
                         <span class="temp-name">{{ temp.firstName }} {{ temp.lastName }}</span>
                         <span class="temp-status" [class]="temp.status">{{ temp.status }}</span>
+                        <span [class.pending]="shift.status === 'pending'"
+                          [class.started]="shift.status === 'started'"
+                          [class.completed]="shift.status === 'completed'"
+                          [class.checked-in]="shift.status === 'checked-in'">{{ shift.status }}</span>
                       </div>
                     </div>
                   </div>

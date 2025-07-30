@@ -27,6 +27,9 @@
   pointer-events: none;
   cursor: pointer;
 }
+.workers-count:hover{
+  cursor: pointer;
+}
 .form-toolbar {
   --background: var(--primary-color);
   --color: white;
@@ -588,7 +591,9 @@ ion-textarea.custom-textarea {
   }
 
   .submit-button {
-    --background: var(--primary-color);
+    --background: #003738;
+    color:whitesmoke;
+    --color:whitesmoke;
     --border-radius: 12px;
     --box-shadow: 0 4px 12px rgba(0, 76, 77, 0.2);
     --padding-start: 32px;

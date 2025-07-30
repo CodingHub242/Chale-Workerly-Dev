@@ -20,7 +20,7 @@
         <p>Submitted: {{ timesheet.submittedDate | date:'short' }}</p>
         <p>Total Hours: {{ timesheet.totalHours }}</p>
         <p>Total Pay: {{ timesheet.totalPay | currency }}</p>
-        <p>Status: {{ timesheet.approved ? 'Approved' : 'Pending' }}</p>
+        <p>Status: {{ timesheet.approvedBy ? 'Approved' : 'Pending' }}</p>
       </ion-label>
     </ion-item>
   </ion-list>

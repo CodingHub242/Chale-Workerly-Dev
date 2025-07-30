@@ -21,7 +21,7 @@
     <ion-card-content>
       <p><strong>Total Hours:</strong> {{ timesheet.totalHours }}</p>
       <p><strong>Total Pay:</strong> {{ timesheet.totalPay | currency }}</p>
-      <p><strong>Status:</strong> {{ timesheet.approved ? 'Approved' : 'Pending' }}</p>
+      <p><strong>Status:</strong> {{ timesheet.approvedBy ? 'Approved' : 'Pending' }}</p>
       <ion-list>
         <ion-list-header>
           Shifts

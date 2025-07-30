@@ -35,7 +35,7 @@ export class InvoiceService {
       }).subscribe(({ client, timesheets }: { client: Client, timesheets: Timesheet[] }) => {
         const relevantTimesheets = timesheets.filter((timesheet: Timesheet) =>
           timesheet.shifts.every((shift: Shift) => shift.job.client.id === clientId) &&
-          timesheet.approved
+          timesheet.approvedBy
         );
 
         const newInvoice: Invoice = {

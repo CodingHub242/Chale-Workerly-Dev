@@ -14,6 +14,15 @@ ion-toolbar{
 ion-content {
   --background: var(--background-color);
 }
+ion-buttons{
+  color:whitesmoke;
+  --color:whitesmoke;
+}
+
+ion-popover {
+  --width: 200px;
+  --max-height: 150px;
+}
 
 .dashboard-grid {
   padding: 16px;

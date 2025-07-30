@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { trigger, state, style, animate, transition } from '@angular/animations';
+import { AuthService } from './services/auth.service';
 
 @Component({
   selector: 'app-root',
@@ -17,6 +18,7 @@ import { trigger, state, style, animate, transition } from '@angular/animations'
   ]
 })
 export class AppComponent {
+  currentUser: any;
   public appPages = [
     { title: 'Dashboard', url: '/dashboard', icon: 'home' },
     { title: 'Shifts', url: '/shifts', icon: 'calendar' },
@@ -29,5 +31,7 @@ export class AppComponent {
     { title: 'Settings', url: '/settings', icon: 'settings' },
   ];
 
-  constructor() {}
+  constructor(private authService: AuthService) {
+    this.currentUser = this.authService.getCurrentUser();
+  }
 }
