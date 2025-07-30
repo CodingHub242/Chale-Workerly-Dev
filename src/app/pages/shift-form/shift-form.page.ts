@@ -46,12 +46,27 @@ export class ShiftFormPage implements OnInit {
       jobId: ['', Validators.required],
       clientId: ['', Validators.required],
       tempIds: [[]],
-      startTime: ['', Validators.required],
-      endTime: ['', Validators.required],
+      startTime: [ new Date().toISOString(),Validators.required],
+      endTime: [new Date().toISOString(),Validators.required],
       notes: [''],
       allDay: [false]
     });
 
+    
+    //console.log(this.form.get('startTime')?.value);
+
+    // if(!this.form.get('allDay')?.value) {
+    //  console.log('yes');
+    // }
+
+    // console.log(this.form.get('startTime')?.value);
+    // this.form.get('startTime')?.valueChanges.subscribe(startTime => {
+    //   if (!this.form.get('allDay')?.value) {
+    //     const startOfDay = new Date(startTime);
+    //     startOfDay.setHours(0, 0, 0, 0);
+    //     this.form.patchValue({ startTime: startOfDay.toISOString().slice(0, 16) });
+    //   }
+    // });
     this.form.get('allDay')?.valueChanges.subscribe(allDay => {
       const startTime = this.form.get('startTime');
       const endTime = this.form.get('endTime');
@@ -69,6 +84,7 @@ export class ShiftFormPage implements OnInit {
       } else {
         startTime?.setValidators([Validators.required]);
         endTime?.setValidators([Validators.required]);
+        allDay = '';
       }
       startTime?.updateValueAndValidity();
       endTime?.updateValueAndValidity();
