@@ -22,7 +22,7 @@
   --track-width: 60px;
 }
 ion-toolbar{
-    --background:rgb(0 76 78 / 85%);
+    --background:#004c4d;
 }
 .disabled {
   opacity: 0.6;
@@ -33,7 +33,7 @@ ion-toolbar{
   cursor: pointer;
 }
 .form-toolbar {
-  --background: var(--primary-color);
+  // --background: var(--primary-color);
   --color: white;
   --border-width: 0;
   --min-height: 64px;
@@ -58,7 +58,7 @@ ion-toolbar{
   }
 
   ion-back-button {
-    --color: white;
+    --color: rgb(0, 0, 0);
     --padding-start: 4px;
   }
 }
