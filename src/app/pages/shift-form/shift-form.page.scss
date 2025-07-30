@@ -21,7 +21,9 @@
   --track-height: 34px;
   --track-width: 60px;
 }
-
+ion-toolbar{
+    --background:rgb(0 76 78 / 85%);
+}
 .disabled {
   opacity: 0.6;
   pointer-events: none;
