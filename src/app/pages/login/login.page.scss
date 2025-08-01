@@ -24,9 +24,18 @@ ion-toolbar{
   ion-input{
       margin-top: -12px;
        font-family: "Proza Display W03 Bold";
+       color:#000;
   }
 }
-
+ion-item{
+    --background:white;
+}
+p{
+    color:darkgray;
+}
+input{
+    color:#000;
+}
 ion-card{
     --bakcground:white; 
     background: white;

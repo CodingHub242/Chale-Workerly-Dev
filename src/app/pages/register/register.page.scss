@@ -13,6 +13,9 @@ ion-toolbar{
 ion-content{
     --background:#004c4d;
 }
+p{
+    color:darkgray;
+}
 .input-item{
   padding-left: 20px;
   --background:white;
@@ -22,11 +25,17 @@ ion-content{
   border: 2px solid #004c4d;
   height: 70px;
   ion-input{
-      margin-top: -12px;
-       font-family: "Proza Display W03 Bold";
+    margin-top: -12px;
+     font-family: "Proza Display W03 Bold";
+     color:#000;
   }
 }
-
+ion-item{
+    --background:white;
+}
+input{
+    color:#000;
+}
 ion-card{
     --bakcground:white; 
     background: white;
