@@ -19,28 +19,28 @@
         <ion-card>
           <p class="text-center" style="font-size: 20px;">Let's Set You Up</p>
           	<form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
-              <ion-item class="mb-3">
+              <ion-item lines="none" class="mb-3">
                 <fieldset class="input-item">
                   <legend style="color: rgb(0, 0, 0);">First Name</legend>
                   <ion-input formControlName="firstName"  type="text"></ion-input>
                 </fieldset>
               </ion-item>
 
-              <ion-item class="mb-3">
+              <ion-item lines="none" class="mb-3">
                 <fieldset class="input-item">
                   <legend style="color: rgb(0, 0, 0);">Last Name</legend>
                   <ion-input formControlName="lastName"  type="text"></ion-input>
                 </fieldset>
               </ion-item>
 
-              <ion-item class="mb-3">
+              <ion-item lines="none" class="mb-3">
                 <fieldset class="input-item">
                   <legend style="color: rgb(0, 0, 0);">Email</legend>
                   <ion-input formControlName="email"  type="email"></ion-input>
                 </fieldset>
               </ion-item>
 
-              <ion-item>
+              <ion-item lines="none">
                 <fieldset class="input-item">
                   <legend style="color: rgb(0, 0, 0);">Password</legend>
                   <ion-input formControlName="password"  type="password"></ion-input>
