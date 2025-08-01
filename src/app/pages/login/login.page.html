@@ -1,8 +1,6 @@
 <ion-header>
   <ion-toolbar>
-    <div class="lc-block text-center">
-				<h3 editable="inline" class="display-4 mb-3"><b>Chale Workerly</b></h3>
-			</div>
+    
   </ion-toolbar>
 </ion-header>
 <ion-content>
@@ -26,6 +24,9 @@
 
 			<div class="lc-block text-center">
         <ion-card>
+           <div class="lc-block text-center">
+            <h3 editable="inline" class="display-4 mb-3"><b>Workerly</b></h3>
+          </div>
           <p class="text-center" style="font-size: 20px;">Welcome back, Let's Sign You In</p>
           	<form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
               <ion-item lines="none" class="mb-3">
