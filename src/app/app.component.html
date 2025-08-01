@@ -1,6 +1,6 @@
 <ion-app>
   <ion-split-pane contentId="main-content">
-    <ion-menu contentId="main-content" type="overlay">
+    <ion-menu contentId="main-content" type="overlay" *ngIf="currentUser">
       <ion-header>
         <ion-toolbar>
           <ion-title style="color:whitesmoke;">Workerly</ion-title>
@@ -21,4 +21,19 @@
     </ion-menu>
     <ion-router-outlet id="main-content"></ion-router-outlet>
   </ion-split-pane>
+  
+  <!-- Notification Button -->
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed" *ngIf="showNotifications">
+    <ion-fab-button (click)="toggleNotifications()">
+      <ion-icon name="chatbox"></ion-icon>
+      <ion-badge color="danger" *ngIf="unreadCount > 0">{{ unreadCount }}</ion-badge>
+    </ion-fab-button>
+  </ion-fab>
+  
+  <!-- Notification Panel -->
+  <ion-modal [isOpen]="notificationsOpen" (didDismiss)="notificationsOpen = false">
+    <ng-template>
+      <app-notification></app-notification>
+    </ng-template>
+  </ion-modal>
 </ion-app>

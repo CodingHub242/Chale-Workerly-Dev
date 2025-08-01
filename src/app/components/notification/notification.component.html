@@ -1,0 +1,36 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Notifications</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="markAllAsRead()" *ngIf="getUnreadCount() > 0">
+        <ion-icon name="checkmark-done"></ion-icon>
+        Mark All as Read
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-list>
+    <ion-item *ngFor="let notification of notifications" [color]="getColorForType(notification.type)">
+      <ion-icon slot="start" [name]="getIconForType(notification.type)"></ion-icon>
+      <ion-label>
+        <h2>{{ notification.title }}</h2>
+        <p>{{ notification.message }}</p>
+        <p class="notification-time">{{ notification.timestamp | date:'short' }}</p>
+      </ion-label>
+      <ion-buttons slot="end">
+        <ion-button (click)="markAsRead(notification.id)" *ngIf="!notification.read">
+          <ion-icon name="checkmark"></ion-icon>
+        </ion-button>
+        <ion-button (click)="removeNotification(notification.id)" color="danger">
+          <ion-icon name="close"></ion-icon>
+        </ion-button>
+      </ion-buttons>
+    </ion-item>
+  </ion-list>
+  
+  <ion-text *ngIf="notifications.length === 0" class="no-notifications">
+    <p class="ion-text-center">No notifications</p>
+  </ion-text>
+</ion-content>

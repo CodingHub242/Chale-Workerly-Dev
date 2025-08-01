@@ -1,0 +1,242 @@
+<div class="invoice-preview-container">
+  <!-- Invoice Header -->
+  <div class="invoice-header">
+    <div class="company-info">
+      <div class="company-logo">
+        <ion-icon name="business-outline" class="logo-icon"></ion-icon>
+        <h1 class="company-name">{{ companyInfo.name }}</h1>
+      </div>
+      <div class="company-details">
+        <p>{{ companyInfo.address }}</p>
+        <p>{{ companyInfo.city }}</p>
+        <p>{{ companyInfo.phone }}</p>
+        <p>{{ companyInfo.email }}</p>
+        <p class="website">{{ companyInfo.website }}</p>
+      </div>
+    </div>
+    
+    <div class="invoice-info">
+      <div class="invoice-title">
+        <h2>INVOICE</h2>
+        <div class="preview-badge" *ngIf="invoiceNumber === 'PREVIEW'">
+          <ion-badge color="warning">PREVIEW</ion-badge>
+        </div>
+      </div>
+      <div class="invoice-details">
+        <div class="detail-row">
+          <span class="label">Invoice #:</span>
+          <span class="value">{{ invoiceNumber }}</span>
+        </div>
+        <div class="detail-row">
+          <span class="label">Issue Date:</span>
+          <span class="value">{{ issueDate }}</span>
+        </div>
+        <div class="detail-row">
+          <span class="label">Due Date:</span>
+          <span class="value">{{ dueDate }}</span>
+        </div>
+        <div class="detail-row" *ngIf="invoiceData.period_range">
+          <span class="label">Service Period:</span>
+          <span class="value">{{ invoiceData.period_range.start_formatted }} - {{ invoiceData.period_range.end_formatted }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Client Information -->
+  <div class="client-section">
+    <div class="section-header">
+      <h3>Bill To:</h3>
+    </div>
+    <div class="client-info">
+      <h4>{{ invoiceData.client.name }}</h4>
+      <p *ngIf="invoiceData.client.address">{{ invoiceData.client.address }}</p>
+      <p *ngIf="invoiceData.client.email">{{ invoiceData.client.email }}</p>
+    </div>
+  </div>
+
+  <!-- Service Summary -->
+  <div class="summary-section" *ngIf="invoiceData.temp_summary && invoiceData.temp_summary.length > 0">
+    <div class="section-header">
+      <h3>Service Summary by Worker</h3>
+    </div>
+    <div class="summary-grid">
+      <div class="summary-card" *ngFor="let temp of invoiceData.temp_summary">
+        <div class="temp-header">
+          <div class="temp-name">
+            <ion-icon name="person-outline"></ion-icon>
+            {{ temp.temp_name }}
+          </div>
+          <div class="temp-badge">
+            <ion-badge color="primary">{{ temp.timesheet_count || 1 }} timesheet(s)</ion-badge>
+          </div>
+        </div>
+        
+        <div class="temp-details">
+          <div class="detail-row">
+            <span class="detail-label">
+              <ion-icon name="time-outline"></ion-icon>
+              Hours Worked:
+            </span>
+            <span class="detail-value hours-worked">{{ formatHours(temp.total_hours) }}</span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-label">
+              <ion-icon name="cash-outline"></ion-icon>
+              Hourly Rate:
+            </span>
+            <span class="detail-value">{{ formatCurrency(temp.average_rate) }}/hr</span>
+          </div>
+          <div class="detail-row total-row">
+            <span class="detail-label">
+              <ion-icon name="card-outline"></ion-icon>
+              <strong>Total to Pay:</strong>
+            </span>
+            <span class="detail-value total-amount">{{ formatCurrency(temp.total_amount) }}</span>
+          </div>
+        </div>
+        
+        <div class="temp-stats">
+          <div class="stat">
+            <span class="stat-value">{{ formatHours(temp.total_hours) }}</span>
+            <span class="stat-label">Hours</span>
+          </div>
+          <div class="stat">
+            <span class="stat-value">{{ formatCurrency(temp.average_rate) }}</span>
+            <span class="stat-label">Rate</span>
+          </div>
+          <div class="stat">
+            <span class="stat-value">{{ formatCurrency(temp.total_amount) }}</span>
+            <span class="stat-label">Total</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Overall Summary -->
+    <div class="overall-summary">
+      <div class="summary-totals">
+        <div class="total-item">
+          <ion-icon name="time-outline"></ion-icon>
+          <div class="total-info">
+            <span class="total-value">{{ formatHours(invoiceData.summary.total_hours) }}</span>
+            <span class="total-label">Total Hours Worked</span>
+          </div>
+        </div>
+        <div class="total-item">
+          <ion-icon name="people-outline"></ion-icon>
+          <div class="total-info">
+            <span class="total-value">{{ invoiceData.temp_summary.length }}</span>
+            <span class="total-label">Workers</span>
+          </div>
+        </div>
+        <div class="total-item highlight">
+          <ion-icon name="cash-outline"></ion-icon>
+          <div class="total-info">
+            <span class="total-value">{{ formatCurrency(invoiceData.summary.total_amount) }}</span>
+            <span class="total-label">Total Amount to Pay</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Line Items -->
+  <div class="items-section">
+    <div class="section-header">
+      <h3>Services Provided</h3>
+    </div>
+    
+    <div class="items-table">
+      <div class="table-header">
+        <div class="col-description">Description</div>
+        <div class="col-period">Period</div>
+        <div class="col-hours">Hours</div>
+        <div class="col-rate">Rate</div>
+        <div class="col-amount">Amount</div>
+      </div>
+      
+      <div class="table-body">
+        <div class="table-row" *ngFor="let item of invoiceData.timesheets; let i = index">
+          <div class="col-description">
+            <div class="service-description">{{ item.description }}</div>
+            <div class="worker-name">{{ item.temp_name }}</div>
+          </div>
+          <div class="col-period">{{ item.period }}</div>
+          <div class="col-hours">{{ formatHours(item.hours) }}</div>
+          <div class="col-rate">{{ formatCurrency(item.rate) }}</div>
+          <div class="col-amount">{{ formatCurrency(item.amount) }}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Totals Section -->
+  <div class="totals-section">
+    <div class="totals-container">
+      <div class="total-row subtotal">
+        <span class="total-label">Subtotal:</span>
+        <span class="total-value">{{ formatCurrency(invoiceData.summary.subtotal) }}</span>
+      </div>
+      
+      <div class="total-row tax">
+        <span class="total-label">Tax ({{ (invoiceData.summary.tax_rate * 100).toFixed(1) }}%):</span>
+        <span class="total-value">{{ formatCurrency(invoiceData.summary.tax_amount) }}</span>
+      </div>
+      
+      <div class="total-row grand-total">
+        <span class="total-label">Total Amount:</span>
+        <span class="total-value">{{ formatCurrency(invoiceData.summary.total_amount) }}</span>
+      </div>
+      
+      <div class="total-summary">
+        <div class="summary-item">
+          <ion-icon name="time-outline"></ion-icon>
+          <span>{{ formatHours(invoiceData.summary.total_hours) }} Total Hours</span>
+        </div>
+        <div class="summary-item">
+          <ion-icon name="document-text-outline"></ion-icon>
+          <span>{{ invoiceData.summary.timesheet_count }} Timesheets</span>
+        </div>
+        <div class="summary-item" *ngIf="invoiceData.period_range">
+          <ion-icon name="calendar-outline"></ion-icon>
+          <span>{{ invoiceData.period_range.duration_days }} Days</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Payment Terms -->
+  <div class="terms-section">
+    <div class="section-header">
+      <h3>Payment Terms</h3>
+    </div>
+    <div class="terms-content">
+      <p>Payment is due within 30 days of invoice date. Late payments may be subject to a 1.5% monthly service charge.</p>
+      <p>Please remit payment to the address above or contact us for electronic payment options.</p>
+    </div>
+  </div>
+
+  <!-- Action Buttons -->
+  <div class="action-buttons" *ngIf="invoiceNumber === 'PREVIEW'">
+    <ion-button fill="clear" color="medium" (click)="cancel()">
+      <ion-icon name="close-outline" slot="start"></ion-icon>
+      Cancel
+    </ion-button>
+    
+    <ion-button fill="solid" color="primary" (click)="approve()">
+      <ion-icon name="checkmark-outline" slot="start"></ion-icon>
+      Generate Invoice
+    </ion-button>
+  </div>
+
+  <!-- Footer -->
+  <div class="invoice-footer">
+    <div class="footer-content">
+      <p class="thank-you">Thank you for your business!</p>
+      <p class="contact-info">
+        For questions about this invoice, please contact us at {{ companyInfo.email }} or {{ companyInfo.phone }}
+      </p>
+    </div>
+  </div>
+</div>

@@ -1,6 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { trigger, state, style, animate, transition } from '@angular/animations';
 import { AuthService } from './services/auth.service';
+import { NotificationService } from './services/notification.service';
 
 @Component({
   selector: 'app-root',
@@ -19,6 +20,10 @@ import { AuthService } from './services/auth.service';
 })
 export class AppComponent {
   currentUser: any;
+  showNotifications = false;
+  notificationsOpen = false;
+  unreadCount = 0;
+  
   public appPages = [
     { title: 'Dashboard', url: '/dashboard', icon: 'home' },
     { title: 'Shifts', url: '/shifts', icon: 'calendar' },
@@ -26,12 +31,30 @@ export class AppComponent {
     { title: 'Clients', url: '/clients', icon: 'people' },
     { title: 'Temps', url: '/temps', icon: 'person' },
     { title: 'Timesheets', url: '/timesheets', icon: 'document' },
+    { title: 'Reports', url: '/reports', icon: 'analytics' },
     { title: 'Invoices', url: '/invoices', icon: 'cash' },
-    { title: 'Profile', url: '/profile', icon: 'person-circle' },
-    { title: 'Settings', url: '/settings', icon: 'settings' },
+    // { title: 'Profile', url: '/profile', icon: 'person-circle' },
+    // { title: 'Settings', url: '/settings', icon: 'settings' },
   ];
 
-  constructor(private authService: AuthService) {
+  constructor(
+    private authService: AuthService,
+    private notificationService: NotificationService
+  ) {
     this.currentUser = this.authService.getCurrentUser();
+  }
+  
+  ngOnInit() {
+    // Only show notifications for logged in users
+    this.showNotifications = !!this.currentUser;
+    
+    // Subscribe to notification updates
+    this.notificationService.notifications$.subscribe(notifications => {
+      this.unreadCount = this.notificationService.getUnreadCount();
+    });
+  }
+  
+  toggleNotifications() {
+    this.notificationsOpen = !this.notificationsOpen;
   }
 }

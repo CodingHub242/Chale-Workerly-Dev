@@ -1,0 +1,48 @@
+@font-face {
+    font-family: "Proza Display W03 Bold";
+    src: url("https://db.onlinewebfonts.com/t/c107202f3ecccc6fee25aabca831e096.eot");
+    src: url("https://db.onlinewebfonts.com/t/c107202f3ecccc6fee25aabca831e096.eot?#iefix")format("embedded-opentype"),
+    url("https://db.onlinewebfonts.com/t/c107202f3ecccc6fee25aabca831e096.woff2")format("woff2"),
+    url("https://db.onlinewebfonts.com/t/c107202f3ecccc6fee25aabca831e096.woff")format("woff"),
+    url("https://db.onlinewebfonts.com/t/c107202f3ecccc6fee25aabca831e096.ttf")format("truetype"),
+    url("https://db.onlinewebfonts.com/t/c107202f3ecccc6fee25aabca831e096.svg#Proza Display W03 Bold")format("svg");
+}
+ion-content{
+    --background:#004c4d;
+}
+.input-item{
+  padding-left: 20px;
+  width: 100%;
+  border-radius: 40px;
+  border: 2px solid #004c4d;
+  height: 70px;
+  ion-input{
+      margin-top: -12px;
+       font-family: "Proza Display W03 Bold";
+  }
+}
+
+ion-card{
+    --bakcground:white; 
+    background: white;
+    padding: 20px;
+    border-radius: 20px;
+}
+
+legend{
+    color: rgba(0, 0, 0, 0.664);
+    background: none;
+    width: auto;
+    font-size: 20px;
+     font-family: "Proza Display W03 Bold";
+     margin-bottom: 0;
+}
+
+ion-button{
+    width: 40%;
+    padding: 10px;
+    min-height: 38px;
+    font-size: 20px;
+    font-family: "Proza Display W03 Bold";
+    --background:#004c4d;
+}

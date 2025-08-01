@@ -5,7 +5,6 @@
     </ion-buttons>
     <ion-title>
       <div class="title-content">
-        <ion-icon name="time-outline"></ion-icon>
         <span>{{ isEditMode ? 'Edit' : 'Submit' }} Timesheet</span>
       </div>
     </ion-title>
@@ -13,178 +12,125 @@
 </ion-header>
 
 <ion-content class="form-content">
-  <div class="page-header">
-    <div class="header-content">
-      <h1 class="main-title">Time Entry</h1>
-      <p class="subtitle">Log your hours worked for the current pay period</p>
-    </div>
-  </div>
-
-  <div class="form-container">
-    <div class="form-wrapper">
-      <form [formGroup]="form" (ngSubmit)="saveTimesheet()">
-        <!-- Pay Period Section -->
-        <div class="form-card">
-          <div class="card-header">
-            <div class="header-icon">
-              <ion-icon name="calendar-outline"></ion-icon>
-            </div>
-            <div class="header-text">
-              <h2>Pay Period</h2>
-              <p>Select the dates for this timesheet submission</p>
-            </div>
-          </div>
-          <div class="card-content" formGroupName="period">
-            <div class="time-inputs">
-              <div class="form-group">
-                <label class="form-label">
-                  <ion-icon name="calendar-outline"></ion-icon>
-                  Start Date
-                </label>
-                <div class="datetime-wrapper">
-                  <ion-icon name="calendar-outline"></ion-icon>
-                  <ion-datetime-button datetime="periodStart"></ion-datetime-button>
-                  <ion-modal>
-                    <ion-datetime
-                      id="periodStart"
-                      formControlName="startDate"
-                      presentation="date">
-                    </ion-datetime>
-                  </ion-modal>
-                </div>
+  <form [formGroup]="timesheetForm" (ngSubmit)="onSubmit()">
+    <ion-grid class="form-grid">
+      <ion-row>
+        <ion-col size="12">
+          <ion-card class="form-card">
+            <ion-card-header>
+              <ion-card-title>Timesheet Information</ion-card-title>
+            </ion-card-header>
+            <ion-card-content>
+              <!-- Temp Selection (only for admins) -->
+              <ion-item *ngIf="temps.length > 0">
+                <ion-label position="stacked">Select Temporary Worker</ion-label>
+                <ion-select [value]="selectedTempId" (ionChange)="onTempChange($event)" placeholder="Choose a temp worker">
+                  <ion-select-option *ngFor="let temp of temps" [value]="temp.id">
+                    {{ temp.firstName }} {{ temp.lastName }}
+                  </ion-select-option>
+                </ion-select>
+              </ion-item>
+              
+              <div formGroupName="period">
+                <ion-item>
+                  <ion-label position="stacked">Start Date</ion-label>
+                  <ion-datetime formControlName="startDate" presentation="date"></ion-datetime>
+                </ion-item>
+                
+                <ion-item>
+                  <ion-label position="stacked">End Date</ion-label>
+                  <ion-datetime formControlName="endDate" presentation="date"></ion-datetime>
+                </ion-item>
               </div>
-              <div class="form-group">
-                <label class="form-label">
-                  <ion-icon name="calendar-outline"></ion-icon>
-                  End Date
-                </label>
-                <div class="datetime-wrapper">
-                  <ion-icon name="calendar-outline"></ion-icon>
-                  <ion-datetime-button datetime="periodEnd"></ion-datetime-button>
-                  <ion-modal>
-                    <ion-datetime
-                      id="periodEnd"
-                      formControlName="endDate"
-                      presentation="date">
-                    </ion-datetime>
-                  </ion-modal>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+            </ion-card-content>
+          </ion-card>
+        </ion-col>
+      </ion-row>
 
-        <!-- Time Entries Section -->
-        <div class="form-card">
-          <div class="card-header">
-            <div class="header-icon">
-              <ion-icon name="time-outline"></ion-icon>
-            </div>
-            <div class="header-text">
-              <h2>Time Entries</h2>
-              <p>Add your daily work hours</p>
-            </div>
-          </div>
-          <div class="card-content">
-            <div formArrayName="entries">
-              <div *ngFor="let entry of entries.controls; let i = index" [formGroupName]="i" class="entry-item">
-                <div class="entry-header">
-                  <h3>Day {{ i + 1 }}</h3>
-                  <ion-button fill="clear" color="danger" (click)="removeEntry(i)">
-                    <ion-icon name="trash-outline"></ion-icon>
+      <ion-row>
+        <ion-col size="12">
+          <ion-card class="form-card">
+            <ion-card-header>
+              <ion-card-title class="card-title">
+                <span>Work Entries</span>
+                <ion-button fill="clear" (click)="addEntry()" size="small">
+                  <ion-icon name="add-circle" slot="icon-only"></ion-icon>
+                </ion-button>
+              </ion-card-title>
+            </ion-card-header>
+            <ion-card-content>
+              <div formArrayName="entries">
+                <div *ngFor="let entry of entries.controls; let i = index" [formGroupName]="i" class="entry-item">
+                  <ion-item>
+                    <ion-label position="stacked">Date</ion-label>
+                    <ion-datetime formControlName="date" presentation="date"></ion-datetime>
+                  </ion-item>
+                  
+                  <ion-item>
+                    <ion-label position="stacked">Start Time</ion-label>
+                    <ion-input formControlName="startTime" type="time"></ion-input>
+                  </ion-item>
+                  
+                  <ion-item>
+                    <ion-label position="stacked">End Time</ion-label>
+                    <ion-input formControlName="endTime" type="time"></ion-input>
+                  </ion-item>
+                  
+                  <ion-item>
+                    <ion-label position="stacked">Break Duration (minutes)</ion-label>
+                    <ion-input formControlName="breakDuration" type="number"></ion-input>
+                  </ion-item>
+                  
+                  <ion-item>
+                    <ion-label position="stacked">Notes</ion-label>
+                    <ion-textarea formControlName="notes" rows="3"></ion-textarea>
+                  </ion-item>
+                  
+                  <ion-button fill="clear" color="danger" (click)="removeEntry(i)" size="small">
+                    <ion-icon name="trash" slot="icon-only"></ion-icon>
+                    Remove Entry
                   </ion-button>
                 </div>
-
-                <div class="time-inputs">
-                  <div class="form-group">
-                    <label class="form-label">Date</label>
-                    <div class="datetime-wrapper">
-                      <ion-icon name="calendar-outline"></ion-icon>
-                      <ion-datetime-button [datetime]="'date' + i"></ion-datetime-button>
-                      <ion-modal>
-                        <ion-datetime
-                          [id]="'date' + i"
-                          formControlName="date"
-                          presentation="date">
-                        </ion-datetime>
-                      </ion-modal>
-                    </div>
-                  </div>
-
-                  <div class="form-group">
-                    <label class="form-label">Start Time</label>
-                    <div class="datetime-wrapper">
-                      <ion-icon name="time-outline"></ion-icon>
-                      <ion-datetime-button [datetime]="'startTime' + i"></ion-datetime-button>
-                      <ion-modal>
-                        <ion-datetime
-                          [id]="'startTime' + i"
-                          formControlName="startTime"
-                          presentation="time">
-                        </ion-datetime>
-                      </ion-modal>
-                    </div>
-                  </div>
-
-                  <div class="form-group">
-                    <label class="form-label">End Time</label>
-                    <div class="datetime-wrapper">
-                      <ion-icon name="time-outline"></ion-icon>
-                      <ion-datetime-button [datetime]="'endTime' + i"></ion-datetime-button>
-                      <ion-modal>
-                        <ion-datetime
-                          [id]="'endTime' + i"
-                          formControlName="endTime"
-                          presentation="time">
-                        </ion-datetime>
-                      </ion-modal>
-                    </div>
-                  </div>
-
-                  <div class="form-group">
-                    <label class="form-label">Break Duration (minutes)</label>
-                    <ion-input
-                      type="number"
-                      formControlName="breakDuration"
-                      min="0"
-                      step="15">
-                    </ion-input>
-                  </div>
-                </div>
-
-                <div class="form-group">
-                  <label class="form-label">Notes</label>
-                  <ion-textarea
-                    formControlName="notes"
-                    placeholder="Add any notes about this day's work...">
-                  </ion-textarea>
-                </div>
-
-                <div class="hours-summary">
-                  Total Hours: {{calculateHours}} 
-                  <!-- {{ calculateHours(entry) | number:'1.1-1' }} -->
-                </div>
               </div>
-            </div>
+            </ion-card-content>
+          </ion-card>
+        </ion-col>
+      </ion-row>
 
-            <ion-button expand="block" (click)="addEntry()" class="add-entry-button">
-              <ion-icon name="add-circle-outline" slot="start"></ion-icon>
-              Add New Day
+      <ion-row>
+        <ion-col size="12">
+          <ion-card class="form-card">
+            <ion-card-header>
+              <ion-card-title>Summary</ion-card-title>
+            </ion-card-header>
+            <ion-card-content>
+              <ion-item>
+                <ion-label>Total Hours:</ion-label>
+                <ion-label>{{ timesheetForm.get('totalHours')?.value | number:'1.2-2' }}</ion-label>
+              </ion-item>
+              
+              <ion-item>
+                <ion-label>Total Pay:</ion-label>
+                <ion-label>{{ timesheetForm.get('totalPay')?.value | currency }}</ion-label>
+              </ion-item>
+            </ion-card-content>
+          </ion-card>
+        </ion-col>
+      </ion-row>
+
+      <ion-row>
+        <ion-col size="12">
+          <div class="form-actions">
+            <ion-button expand="block" type="submit" class="cancel-button">
+              Save Draft
+            </ion-button>
+            
+            <ion-button expand="block" (click)="submitForApproval()" class="submit-button">
+              Submit for Approval
             </ion-button>
           </div>
-        </div>
-
-        <!-- Action Buttons -->
-        <div class="form-actions">
-          <ion-button class="cancel-button" fill="outline" routerLink="/timesheets">
-            Cancel
-          </ion-button>
-          <ion-button class="submit-button" type="submit" [disabled]="form.invalid || entries.length === 0">
-            <ion-icon name="save-outline"></ion-icon>
-            Save Timesheet
-          </ion-button>
-        </div>
-      </form>
-    </div>
-  </div>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </form>
 </ion-content>

@@ -26,4 +26,7 @@ export interface Timesheet {
         startDate: string;
         endDate: string;
     };
+    // Backend properties that might be included in the response
+    period_start_date?: string;
+    period_end_date?: string;
 }

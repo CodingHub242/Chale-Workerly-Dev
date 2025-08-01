@@ -1,0 +1,238 @@
+ion-card {
+  margin-bottom: 16px;
+}
+ion-toolbar{
+    --background:#004c4d;
+
+    ion-icon{
+      color:whitesmoke;
+    }
+}
+ion-item {
+  --padding-start: 0;
+}
+
+.summary-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.summary-card {
+  text-align: center;
+  padding: 16px;
+}
+
+.summary-value {
+  font-size: 24px;
+  font-weight: bold;
+  margin: 8px 0;
+}
+
+.summary-label {
+  font-size: 14px;
+  color: var(--ion-color-medium);
+}
+
+.chart-container {
+  position: relative;
+  min-height: 200px;
+  width: 100%;
+  padding: 16px 0;
+}
+
+.css-chart {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+}
+
+.chart-bar-container {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--ion-color-light);
+  
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.chart-bar-info {
+  display: flex;
+  flex-direction: column;
+  min-width: 140px;
+  flex-shrink: 0;
+  
+  .temp-name {
+    font-weight: 500;
+    font-size: 14px;
+    color: var(--ion-color-dark);
+    margin-bottom: 2px;
+  }
+  
+  .temp-hours {
+    font-size: 12px;
+    color: var(--ion-color-medium);
+    font-weight: 600;
+    margin-bottom: 1px;
+  }
+  
+  .temp-timesheets {
+    font-size: 11px;
+    color: var(--ion-color-medium-shade);
+    font-style: italic;
+  }
+}
+
+.chart-bar-wrapper {
+  flex: 1;
+  height: 24px;
+  background-color: var(--ion-color-light);
+  border-radius: 12px;
+  overflow: hidden;
+  position: relative;
+}
+
+.chart-bar {
+  height: 100%;
+  background: linear-gradient(90deg, var(--ion-color-primary), var(--ion-color-primary-shade));
+  border-radius: 12px;
+  transition: width 0.6s ease-in-out;
+  position: relative;
+  min-width: 2px;
+  
+  &::after {
+    content: attr(data-hours) 'h';
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: white;
+    font-size: 11px;
+    font-weight: 600;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+  }
+}
+
+.chart-pay {
+  min-width: 100px;
+  text-align: right;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  
+  .pay-amount {
+    font-weight: 600;
+    font-size: 14px;
+    color: var(--ion-color-success);
+    margin-bottom: 1px;
+  }
+  
+  .pay-avg {
+    font-size: 11px;
+    color: var(--ion-color-medium);
+    font-style: italic;
+  }
+}
+
+.chart-no-data {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 200px;
+  color: var(--ion-color-medium);
+  
+  ion-icon {
+    margin-bottom: 12px;
+    opacity: 0.5;
+  }
+  
+  p {
+    margin: 0;
+    font-size: 14px;
+    text-align: center;
+  }
+}
+
+// Enhanced status display
+.status-item {
+  .status-details {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    
+    h3 {
+      margin: 0;
+      font-size: 16px;
+      font-weight: 600;
+    }
+    
+    p {
+      margin: 0;
+      font-size: 12px;
+      color: var(--ion-color-medium);
+    }
+  }
+}
+
+// Summary enhancements
+.summary-header {
+  .summary-subtitle {
+    color: var(--ion-color-medium);
+    font-size: 14px;
+    margin-top: 4px;
+  }
+}
+
+// Responsive design
+@media (max-width: 768px) {
+  .chart-bar-container {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+  }
+  
+  .chart-bar-info {
+    min-width: auto;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-start;
+    
+    .temp-timesheets {
+      align-self: flex-end;
+    }
+  }
+  
+  .chart-pay {
+    text-align: center;
+    min-width: auto;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    
+    .pay-avg {
+      font-style: normal;
+    }
+  }
+}
+
+// Animation for bars
+.chart-bar {
+  animation: growBar 0.8s ease-out;
+}
+
+@keyframes growBar {
+  from {
+    width: 0;
+  }
+  to {
+    width: var(--final-width, 100%);
+  }
+}

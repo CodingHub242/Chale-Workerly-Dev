@@ -1,0 +1,254 @@
+<div class="invoice-display-container">
+  <!-- Header Section -->
+  <div class="invoice-header">
+    <div class="company-info">
+      <div class="company-logo">
+        <ion-icon name="business-outline" class="logo-icon"></ion-icon>
+        <h1 class="company-name">Workerly</h1>
+      </div>
+      <div class="company-details">
+        <p>123 Business Street</p>
+        <p>City, State 12345</p>
+        <p>Phone: (555) 123-4567</p>
+        <p class="website">www.workerly.com</p>
+      </div>
+    </div>
+    
+    <div class="invoice-info">
+      <div class="invoice-title">
+        <h2>INVOICE</h2>
+        <div class="status-badge">
+          <ion-badge [color]="getStatusColor(invoiceData.status)">
+            <ion-icon [name]="getStatusIcon(invoiceData.status)"></ion-icon>
+            {{ invoiceData.status | titlecase }}
+          </ion-badge>
+        </div>
+      </div>
+      <div class="invoice-details">
+        <div class="detail-row">
+          <span class="label">Invoice #:</span>
+          <span class="value">{{ invoiceData.invoice_number }}</span>
+        </div>
+        <div class="detail-row">
+          <span class="label">Issue Date:</span>
+          <span class="value">{{ formatDate(invoiceData.issue_date) }}</span>
+        </div>
+        <div class="detail-row">
+          <span class="label">Due Date:</span>
+          <span class="value">{{ formatDate(invoiceData.due_date) }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Client Section -->
+  <div class="client-section">
+    <div class="section-header">
+      <h3>Bill To</h3>
+    </div>
+    <div class="client-info">
+      <h4>{{ invoiceData.client.name }}</h4>
+      <p>{{ invoiceData.client.email }}</p>
+      <p *ngIf="invoiceData.client.phone">{{ invoiceData.client.phone }}</p>
+      <p>{{ invoiceData.client.address }}</p>
+    </div>
+  </div>
+
+  <!-- Summary Section -->
+  <div class="summary-section">
+    <div class="section-header">
+      <h3>Invoice Summary by Worker</h3>
+    </div>
+    
+    <!-- Worker Summary Cards -->
+    <div class="worker-summary-grid">
+      <div class="worker-card" *ngFor="let worker of getWorkerSummary()">
+        <div class="worker-header">
+          <div class="worker-name">
+            <ion-icon name="person-outline"></ion-icon>
+            {{ worker.name }}
+          </div>
+          <div class="worker-badge">
+            <ion-badge color="primary">{{ worker.itemCount }} item(s)</ion-badge>
+          </div>
+        </div>
+        
+        <div class="worker-details">
+          <div class="detail-row">
+            <span class="detail-label">
+              <ion-icon name="time-outline"></ion-icon>
+              Hours Worked:
+            </span>
+            <span class="detail-value hours-worked">{{ worker.totalHours.toFixed(1) }} hrs</span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-label">
+              <ion-icon name="cash-outline"></ion-icon>
+              Average Rate:
+            </span>
+            <span class="detail-value">{{ formatCurrency(worker.averageRate) }}/hr</span>
+          </div>
+          <div class="detail-row total-row">
+            <span class="detail-label">
+              <ion-icon name="card-outline"></ion-icon>
+              <strong>Total to Pay:</strong>
+            </span>
+            <span class="detail-value total-amount">{{ formatCurrency(worker.totalAmount) }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Overall Summary -->
+    <div class="overall-summary">
+      <div class="summary-totals">
+        <div class="total-item">
+          <ion-icon name="time-outline"></ion-icon>
+          <div class="total-info">
+            <span class="total-value">{{ getTotalHours().toFixed(1) }}</span>
+            <span class="total-label">Total Hours Worked</span>
+          </div>
+        </div>
+        <div class="total-item">
+          <ion-icon name="people-outline"></ion-icon>
+          <div class="total-info">
+            <span class="total-value">{{ getUniqueTemps().length }}</span>
+            <span class="total-label">Workers</span>
+          </div>
+        </div>
+        <div class="total-item">
+          <ion-icon name="document-text-outline"></ion-icon>
+          <div class="total-info">
+            <span class="total-value">{{ invoiceData.items.length }}</span>
+            <span class="total-label">Line Items</span>
+          </div>
+        </div>
+        <div class="total-item highlight">
+          <ion-icon name="cash-outline"></ion-icon>
+          <div class="total-info">
+            <span class="total-value">{{ formatCurrency(invoiceData.total_amount) }}</span>
+            <span class="total-label">Total Amount to Pay</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Items Section -->
+  <div class="items-section">
+    <div class="section-header">
+      <h3>Services Provided</h3>
+    </div>
+    <div class="items-table">
+      <div class="table-header">
+        <div>Description</div>
+        <div>Worker</div>
+        <div>Hours</div>
+        <div>Rate</div>
+        <div>Amount</div>
+      </div>
+      <div class="table-body">
+        <div class="table-row" *ngFor="let item of invoiceData.items">
+          <div class="col-description">
+            <div class="service-description">{{ item.description }}</div>
+          </div>
+          <div class="col-worker">
+            <span class="worker-name">{{ item.temp_name }}</span>
+          </div>
+          <div class="col-hours">{{ item.hours.toFixed(1) }}</div>
+          <div class="col-rate">{{ formatCurrency(item.rate) }}</div>
+          <div class="col-amount">{{ formatCurrency(item.amount) }}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Totals Section -->
+  <div class="totals-section">
+    <div class="totals-container">
+      <div class="total-row subtotal">
+        <span class="total-label">Subtotal:</span>
+        <span class="total-value">{{ formatCurrency(invoiceData.subtotal) }}</span>
+      </div>
+      <div class="total-row tax">
+        <span class="total-label">Tax ({{ (invoiceData.tax_rate * 100).toFixed(1) }}%):</span>
+        <span class="total-value">{{ formatCurrency(invoiceData.tax_amount) }}</span>
+      </div>
+      <div class="total-row grand-total">
+        <span class="total-label">Total Amount:</span>
+        <span class="total-value">{{ formatCurrency(invoiceData.total_amount) }}</span>
+      </div>
+      
+      <div class="total-summary">
+        <div class="summary-item">
+          <ion-icon name="time-outline"></ion-icon>
+          <span>{{ getTotalHours().toFixed(1) }} hours</span>
+        </div>
+        <div class="summary-item">
+          <ion-icon name="people-outline"></ion-icon>
+          <span>{{ getUniqueTemps().length }} worker(s)</span>
+        </div>
+        <div class="summary-item">
+          <ion-icon name="calendar-outline"></ion-icon>
+          <span>Due {{ formatDate(invoiceData.due_date) }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Notes Section -->
+  <div class="notes-section" *ngIf="invoiceData.notes">
+    <div class="section-header">
+      <h3>Notes</h3>
+    </div>
+    <div class="notes-content">
+      <p>{{ invoiceData.notes }}</p>
+    </div>
+  </div>
+
+  <!-- Payment Terms Section -->
+  <div class="terms-section">
+    <div class="section-header">
+      <h3>Payment Terms</h3>
+    </div>
+    <div class="terms-content">
+      <p *ngIf="invoiceData.payment_terms; else defaultTerms">{{ invoiceData.payment_terms }}</p>
+      <ng-template #defaultTerms>
+        <p>Payment is due within 30 days of invoice date.</p>
+        <p>Late payments may be subject to a 1.5% monthly service charge.</p>
+        <p>Please include invoice number with payment.</p>
+      </ng-template>
+    </div>
+  </div>
+
+  <!-- Action Buttons -->
+  <div class="action-buttons" *ngIf="showActions">
+    <ion-button fill="outline" color="medium" (click)="handlePrint()">
+      <ion-icon name="print-outline" slot="start"></ion-icon>
+      Print
+    </ion-button>
+    <ion-button fill="outline" color="primary" (click)="handleDownload()" *ngIf="onDownload">
+      <ion-icon name="download-outline" slot="start"></ion-icon>
+      Download PDF
+    </ion-button>
+    <ion-button fill="outline" color="secondary" (click)="handleEmail()" *ngIf="onEmail">
+      <ion-icon name="mail-outline" slot="start"></ion-icon>
+      Email Client
+    </ion-button>
+    <ion-button fill="solid" color="success" (click)="handleMarkPaid()" 
+                *ngIf="onMarkPaid && invoiceData.status !== 'paid'">
+      <ion-icon name="checkmark-circle-outline" slot="start"></ion-icon>
+      Mark as Paid
+    </ion-button>
+  </div>
+
+  <!-- Footer -->
+  <div class="invoice-footer">
+    <div class="footer-content">
+      <p class="thank-you">Thank you for your business!</p>
+      <p class="contact-info">
+        For questions about this invoice, please contact us at billing@workerly.com or (555) 123-4567
+      </p>
+    </div>
+  </div>
+</div>

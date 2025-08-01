@@ -32,7 +32,9 @@ export class LoginPage implements OnInit {
     if (this.loginForm.valid) {
       this.authService.login(this.loginForm.value.email, this.loginForm.value.password)
         .subscribe((user) => {
-          this.router.navigate(['/dashboard']);
+          this.router.navigate(['/dashboard']).then(() => {
+            window.location.reload();
+          });
         }, (error) => {
           console.error(error);
         });

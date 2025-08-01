@@ -9,4 +9,6 @@ export interface Temp {
     basePay: number; // per hour
     skills: string[];
     status: 'active' | 'inactive' | 'on-leave';
+
+    tempId?:any;
 }

@@ -1,0 +1,7 @@
+name: New prompt
+version: 0.0.1
+schema: v1
+prompts:
+  - name: New prompt
+    description: New prompt
+    prompt: analyze this project and enable temps to log hours and submit timesheets for approval.(notify temps when timesheet is approved or rejected by adding a approval workflow and notifications, add reporting feature to allow admins to view timesheet data and track temp productivity - without touching existing styles.

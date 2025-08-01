@@ -1,8 +1,10 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { Timesheet, TimesheetStatus } from '../models/timesheet.model';
 import { environment } from '../../environments/environment';
+import { NotificationService } from './notification.service';
 
 @Injectable({
   providedIn: 'root'
@@ -11,7 +13,10 @@ export class TimesheetService {
 
   private apiUrl = `${environment.apiUrl}/timesheets`;
 
-  constructor(private http: HttpClient) { }
+  constructor(
+    private http: HttpClient,
+    private notificationService: NotificationService
+  ) { }
 
   getTimesheets(filters?: { tempId?: number; status?: TimesheetStatus }): Observable<Timesheet[]> {
     let url = this.apiUrl;
@@ -37,15 +42,71 @@ export class TimesheetService {
   }
 
   submitTimesheet(id: number): Observable<Timesheet> {
-    return this.http.post<Timesheet>(`${this.apiUrl}/${id}/submit`, {});
+    return this.http.post<Timesheet>(`${this.apiUrl}/${id}/submit`, {}).pipe(
+      map(timesheet => {
+        this.notificationService.showNotification(
+          'Timesheet Submitted',
+          'Your timesheet has been submitted for approval',
+          'success'
+        );
+        return timesheet;
+      })
+    );
   }
 
   approveTimesheet(id: number, approverId: number): Observable<Timesheet> {
-    return this.http.post<Timesheet>(`${this.apiUrl}/${id}/approve`, { approverId });
+    return this.http.post<Timesheet>(`${this.apiUrl}/${id}/approve`, { approverId }).pipe(
+      map(timesheet => {
+        this.notificationService.showNotification(
+          'Timesheet Approved',
+          'Your timesheet has been approved',
+          'success'
+        );
+        return timesheet;
+      })
+    );
   }
 
   rejectTimesheet(id: number, rejectionReason: string): Observable<Timesheet> {
-    return this.http.post<Timesheet>(`${this.apiUrl}/${id}/reject`, { rejectionReason });
+    return this.http.post<Timesheet>(`${this.apiUrl}/${id}/reject`, { rejectionReason }).pipe(
+      map(timesheet => {
+        this.notificationService.showNotification(
+          'Timesheet Rejected',
+          `Your timesheet has been rejected. Reason: ${rejectionReason}`,
+          'error'
+        );
+        return timesheet;
+      })
+    );
+  }
+
+  deleteTimesheet(id: number): Observable<any> {
+    return this.http.get(`${this.apiUrl}/delete/${id}`).pipe(
+      map((response:any) => {
+        if(response.success)
+        {
+          this.notificationService.showNotification(
+            'Timesheet Deleted',
+            'The timesheet has been deleted successfully',
+            'success'
+          );
+        }
+        else
+          {
+            this.notificationService.showNotification(
+              'Timesheet Deletion Failed',
+              response.error,
+              'error'
+            );
+          }
+        // this.notificationService.showNotification(
+        //   'Timesheet Deleted',
+        //   'The timesheet has been deleted successfully',
+        //   'success'
+        // );
+          return response;
+      })
+    );
   }
 
   getCurrentPeriod(): { startDate: string; endDate: string } {

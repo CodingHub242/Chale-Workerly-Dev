@@ -23,27 +23,27 @@ const routes: Routes = [
   {
     path: 'dashboard',
     loadChildren: () => import('./pages/dashboard/dashboard.module').then( m => m.DashboardPageModule),
-   // canActivate: [AuthGuard],
+    canActivate: [AuthGuard],
   },
   {
     path: 'jobs',
     loadChildren: () => import('./pages/jobs/jobs.module').then( m => m.JobsPageModule),
-    //canActivate: [AuthGuard],
+    canActivate: [AuthGuard],
   },
   {
     path: 'timesheets',
     loadChildren: () => import('./pages/timesheets/timesheets.module').then( m => m.TimesheetsPageModule),
-    //canActivate: [AuthGuard],
+    canActivate: [AuthGuard],
   },
   {
     path: 'clients',
     loadChildren: () => import('./pages/clients/clients.module').then( m => m.ClientsPageModule),
-    //canActivate: [AuthGuard],
+    canActivate: [AuthGuard],
   },
   {
     path: 'invoices',
     loadChildren: () => import('./pages/invoices/invoices.module').then( m => m.InvoicesPageModule),
-    //canActivate: [AuthGuard],
+    canActivate: [AuthGuard],
   },
   {
     path: 'profile',
@@ -56,71 +56,76 @@ const routes: Routes = [
   {
     path: 'shifts',
     loadChildren: () => import('./pages/shifts/shifts.module').then( m => m.ShiftsPageModule),
-    //canActivate: [AuthGuard],
+    canActivate: [AuthGuard],
   },
   {
     path: 'temps',
     loadChildren: () => import('./pages/temps/temps.module').then( m => m.TempsPageModule),
-    //canActivate: [AuthGuard],
+    canActivate: [AuthGuard],
   },
   {
     path: 'client-form',
     loadChildren: () => import('./pages/client-form/client-form.module').then( m => m.ClientFormPageModule),
-    //canActivate: [AuthGuard],
+    canActivate: [AuthGuard],
   },
   {
     path: 'job-form',
     loadChildren: () => import('./pages/job-form/job-form.module').then( m => m.JobFormPageModule),
-    //canActivate: [AuthGuard],
+    canActivate: [AuthGuard],
   },
   {
     path: 'temp-form',
     loadChildren: () => import('./pages/temp-form/temp-form.module').then( m => m.TempFormPageModule),
-    //canActivate: [AuthGuard],
+    canActivate: [AuthGuard],
   },
   {
     path: 'shift-form',
     loadChildren: () => import('./pages/shift-form/shift-form.module').then( m => m.ShiftFormPageModule),
-    //canActivate: [AuthGuard],
+    canActivate: [AuthGuard],
   },
   {
     path: 'timesheet-form',
     loadChildren: () => import('./pages/timesheet-form/timesheet-form.module').then( m => m.TimesheetFormPageModule),
-    //canActivate: [AuthGuard],
+    canActivate: [AuthGuard],
   },
   {
     path: 'client-detail',
     loadChildren: () => import('./pages/client-detail/client-detail.module').then( m => m.ClientDetailPageModule),
-    //canActivate: [AuthGuard],
+    canActivate: [AuthGuard],
   },
   {
     path: 'job-detail',
     loadChildren: () => import('./pages/job-detail/job-detail.module').then( m => m.JobDetailPageModule),
-    //canActivate: [AuthGuard],
+    canActivate: [AuthGuard],
   },
   {
     path: 'temp-detail',
     loadChildren: () => import('./pages/temp-detail/temp-detail.module').then( m => m.TempDetailPageModule),
-    //canActivate: [AuthGuard],
+    canActivate: [AuthGuard],
   },
   {
     path: 'shift-detail/:id',
     loadChildren: () => import('./pages/shift-detail/shift-detail.module').then( m => m.ShiftDetailPageModule),
-    //canActivate: [AuthGuard],
+    canActivate: [AuthGuard],
   },
   //  {
   //   path: 'shift-detail',
   //   loadChildren: () => import('./pages/shift-detail/shift-detail.module').then( m => m.ShiftDetailPageModule)
   // },
   {
-    path: 'timesheet-detail',
+    path: 'timesheet-detail/:id',
     loadChildren: () => import('./pages/timesheet-detail/timesheet-detail.module').then( m => m.TimesheetDetailPageModule),
-    //canActivate: [AuthGuard],
+    canActivate: [AuthGuard],
   },
   {
     path: 'invoice-form',
     loadChildren: () => import('./pages/invoice-form/invoice-form.module').then( m => m.InvoiceFormPageModule),
-    //canActivate: [AuthGuard],
+    canActivate: [AuthGuard],
+  },
+  {
+    path: 'reports',
+    loadChildren: () => import('./pages/reports/reports.module').then( m => m.ReportsPageModule),
+    canActivate: [AuthGuard],
   },
 ];
 

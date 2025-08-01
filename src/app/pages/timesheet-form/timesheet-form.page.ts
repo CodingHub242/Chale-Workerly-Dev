@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup,FormControl, FormArray, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup,FormControl, FormArray, ReactiveFormsModule, Validators, FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TimesheetService } from '../../services/timesheet.service';
 import { ShiftService } from '../../services/shift.service';
@@ -9,22 +9,24 @@ import { RouterModule } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../services/auth.service';
+import { TempService } from '../../services/temp.service';
+import { Temp } from '../../models/temp.model';
 
 @Component({
   selector: 'app-timesheet-form',
   templateUrl: './timesheet-form.page.html',
   styleUrls: ['./timesheet-form.page.scss'],
   standalone: true,
-  imports: [IonicModule, CommonModule, RouterModule, ReactiveFormsModule]
+  imports: [IonicModule, CommonModule, RouterModule, ReactiveFormsModule, FormsModule]
 })
 export class TimesheetFormPage implements OnInit {
-timesheetForm!: FormGroup;
-  form!: FormGroup;
+  timesheetForm: FormGroup;
   isEditMode = false;
-  timesheetId: number = 0;
+  timesheetId: number | null = null;
+  currentUser: any;
+  temps: Temp[] = [];
   shifts: Shift[] = [];
-  period: { startDate: string; endDate: string };
-  currentDate = new Date().toISOString().split('T')[0];
+  selectedTempId: number | null = null;
 
   constructor(
     private fb: FormBuilder,
@@ -32,69 +34,122 @@ timesheetForm!: FormGroup;
     private shiftService: ShiftService,
     private route: ActivatedRoute,
     private router: Router,
-    private authService: AuthService
+    private authService: AuthService,
+    private tempService: TempService
   ) {
-    this.period = this.timesheetService.getCurrentPeriod();
+    this.timesheetForm = this.fb.group({
+      period: this.fb.group({
+        startDate: ['', Validators.required],
+        endDate: ['', Validators.required]
+      }),
+      entries: this.fb.array([]),
+      totalHours: [0],
+      totalPay: [0]
+    });
   }
 
   ngOnInit() {
-    this.form = this.fb.group({
-      period: this.fb.group({
-        startDate: [this.period.startDate, Validators.required],
-        endDate: [this.period.endDate, Validators.required]
-      }),
-      entries: this.fb.array([]),
-      notes: ['']
-    });
-
-     this.timesheetForm = new FormGroup({
-      date: new FormControl('', Validators.required),
-      hoursWorked: new FormControl('', Validators.required),
-      typeOfWork: new FormControl('', Validators.required),
-    });
-
-    const currentUser = this.authService.getCurrentUser();
-    if (!currentUser) {
+    this.currentUser = this.authService.getCurrentUser();
+    if (!this.currentUser) {
       this.router.navigate(['/login']);
       return;
     }
 
-    this.shiftService.getShifts().subscribe(shifts => {
-      this.shifts = shifts.filter(shift => 
-        shift.temps?.some(temp => temp.id === currentUser.id)
-      );
+    //console.log(this.currentUser.role);
+
+    // Load temps for admin view
+    if (this.authService.isAdmin()) {
+      this.tempService.getTemps().subscribe(temps => {
+        this.temps = temps;
+        //console.log(this.temps);
+      });
+    } else {
+      // For temp users, set their ID
+      this.selectedTempId = this.currentUser.id;
+    }
+
+    // Check if we're editing an existing timesheet
+    this.route.params.subscribe(params => {
+      if (params['id']) {
+        this.isEditMode = true;
+        this.timesheetId = +params['id'];
+        this.loadTimesheet(this.timesheetId);
+      } else {
+        // Set default period to current month
+        const period = this.timesheetService.getCurrentPeriod();
+        this.timesheetForm.get('period')?.setValue({
+          startDate: period.startDate,
+          endDate: period.endDate
+        });
+      }
     });
 
-    this.timesheetId = this.route.snapshot.params['id'];
-    if (this.timesheetId) {
-      this.isEditMode = true;
-      this.timesheetService.getTimesheet(this.timesheetId).subscribe(timesheet => {
-        this.form.patchValue({
-          period: {
-            startDate: timesheet.period.startDate,
-            endDate: timesheet.period.endDate
-          },
-          notes: timesheet.entries[0]?.notes || ''
-        });
+    // Load shifts for the temp
+    this.loadShifts();
+  }
 
-        const entriesArray = this.form.get('entries') as FormArray;
-        timesheet.entries.forEach(entry => {
-          entriesArray.push(this.createEntryFormGroup(entry));
-        });
+  onTempChange(event: any) {
+    // Update the selected temp ID from the event
+    this.selectedTempId = event.detail.value;
+    
+    // When temp selection changes, reload shifts for the selected temp
+    this.loadShifts();
+    
+    // Clear existing entries when changing temp
+    const entries = this.timesheetForm.get('entries') as FormArray;
+    while (entries.length !== 0) {
+      entries.removeAt(0);
+    }
+    
+    // Reset totals
+    this.timesheetForm.get('totalHours')?.setValue(0);
+    this.timesheetForm.get('totalPay')?.setValue(0);
+  }
+
+  loadShifts() {
+    const tempId = this.selectedTempId || (this.authService.isTemp() ? this.currentUser.id : null);
+    if (tempId) {
+      this.shiftService.getShifts().subscribe(shifts => {
+        this.shifts = shifts.filter(shift =>
+          shift.temps.some(temp => temp.id === tempId)
+        );
       });
     }
   }
 
-  get entries() {
-    return this.form.get('entries') as FormArray;
+  loadTimesheet(id: number) {
+    this.timesheetService.getTimesheet(id).subscribe(timesheet => {
+      this.timesheetForm.get('period')?.setValue({
+        startDate: timesheet.period.startDate,
+        endDate: timesheet.period.endDate
+      });
+
+      // Clear existing entries
+      const entries = this.timesheetForm.get('entries') as FormArray;
+      while (entries.length !== 0) {
+        entries.removeAt(0);
+      }
+
+      // Add entries from timesheet
+      timesheet.entries.forEach(entry => {
+        entries.push(this.createEntryFormGroup(entry));
+      });
+
+      this.timesheetForm.get('totalHours')?.setValue(timesheet.totalHours);
+      this.timesheetForm.get('totalPay')?.setValue(timesheet.totalPay);
+    });
   }
 
-  createEntryFormGroup(entry?: TimesheetEntry) {
+  get entries(): FormArray {
+    return this.timesheetForm.get('entries') as FormArray;
+  }
+
+  createEntryFormGroup(entry?: TimesheetEntry): FormGroup {
     return this.fb.group({
-      date: [entry?.date || this.currentDate, Validators.required],
+      date: [entry?.date || '', Validators.required],
       startTime: [entry?.startTime || '', Validators.required],
       endTime: [entry?.endTime || '', Validators.required],
-      breakDuration: [entry?.breakDuration || 0, [Validators.required, Validators.min(0)]],
+      breakDuration: [entry?.breakDuration || 0],
       notes: [entry?.notes || '']
     });
   }
@@ -107,62 +162,76 @@ timesheetForm!: FormGroup;
     this.entries.removeAt(index);
   }
 
-  calculateHours(entry: FormGroup): number {
-    const startTime = new Date(`${entry.get('date')?.value}T${entry.get('startTime')?.value}`);
-    const endTime = new Date(`${entry.get('date')?.value}T${entry.get('endTime')?.value}`);
-    const breakDuration = entry.get('breakDuration')?.value || 0;
-    
-    if (startTime && endTime) {
-      const diffInHours = (endTime.getTime() - startTime.getTime()) / (1000 * 60 * 60);
-      return Math.max(0, diffInHours - (breakDuration / 60));
-    }
-    return 0;
-  }
+  calculateHours() {
+    let totalHours = 0;
+    this.entries.controls.forEach(entry => {
+      const startTime = entry.get('startTime')?.value;
+      const endTime = entry.get('endTime')?.value;
+      const breakDuration = entry.get('breakDuration')?.value || 0;
 
-  saveTimesheet() {
-    if (this.form.invalid) {
-      return;
-    }
-
-    const currentUser = this.authService.getCurrentUser();
-    if (!currentUser) {
-      this.router.navigate(['/login']);
-      return;
-    }
-
-    const entries = this.entries.controls.map(control => control.value);
-    const totalHours = entries.reduce((acc, entry) => {
-      const hours = this.calculateHours(entry as any);
-      return acc + hours;
-    }, 0);
-
-    const shifts = this.shifts.filter(shift => {
-      const shiftDate = new Date(shift.startTime).toISOString().split('T')[0];
-      return entries.some(entry => entry.date === shiftDate);
+      if (startTime && endTime) {
+        const start = new Date(`1970-01-01T${startTime}`);
+        const end = new Date(`1970-01-01T${endTime}`);
+        let diff = (end.getTime() - start.getTime()) / (1000 * 60 * 60);
+        
+        // Handle overnight shifts
+        if (end < start) {
+          diff += 24;
+        }
+        
+        diff -= breakDuration / 60; // Subtract break in hours
+        totalHours += diff;
+      }
     });
 
-    const timesheetData: Timesheet = {
-      id: this.isEditMode ? this.timesheetId : 0,
-      tempId: currentUser.id,
-      shifts,
-      entries,
-      totalHours,
-      totalPay: totalHours * (shifts[0]?.job.payRate || 0), // Using first shift's pay rate
-      submittedDate: new Date(),
-      status: 'draft',
-      period: this.form.get('period')?.value
+    this.timesheetForm.get('totalHours')?.setValue(totalHours);
+    return totalHours;
+  }
+
+  onSubmit() {
+    if (this.timesheetForm.invalid) {
+      return;
+    }
+
+    const formData = this.timesheetForm.value;
+    const totalHours = this.calculateHours();
+    
+    // Get the selected temp's data for pay calculation
+    const selectedTemp = this.temps.find(t => t.id === this.selectedTempId) || this.currentUser;
+    const basePay = selectedTemp.basePay || 0;
+    
+    const timesheetData: any = {
+      tempId: this.selectedTempId || this.currentUser.id,
+      shifts: this.shifts,
+      entries: formData.entries,
+      totalHours: totalHours,
+      submittedDate: new Date().toISOString(),
+      totalPay: totalHours * basePay,
+      status: 'submitted',
+      period: formData.period
     };
 
-    if (this.isEditMode) {
+    if (this.isEditMode && this.timesheetId) {
+      timesheetData.id = this.timesheetId;
       this.timesheetService.updateTimesheet(timesheetData).subscribe(() => {
-        this.router.navigate(['/timesheets']);
+        this.router.navigate(['/timesheets']).then(() => {
+          window.location.reload();
+        });
       });
-     
     } else {
       this.timesheetService.addTimesheet(timesheetData).subscribe(() => {
-        this.router.navigate(['/timesheets']);
+        this.router.navigate(['/timesheets']).then(() => {
+          window.location.reload();
+        });
       });
-      
     }
+  }
+
+  submitForApproval() {
+    // First save the timesheet
+    this.onSubmit();
+    
+    // Then submit for approval (this would need to be adjusted to get the timesheet ID)
+    // For now, we'll assume it's handled in the backend after saving
   }
 }

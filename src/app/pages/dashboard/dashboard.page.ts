@@ -10,7 +10,7 @@ import { Temp } from '../../models/temp.model';
 import { Shift } from '../../models/shift.model';
 import { Timesheet } from '../../models/timesheet.model';
 import { Chart, registerables } from 'chart.js';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { FilterByStatusPipe } from '../../pipes/filter-by-status.pipe';
 Chart.register(...registerables);
@@ -48,6 +48,7 @@ export class DashboardPage implements OnInit {
     private tempService: TempService,
     private shiftService: ShiftService,
     private authService: AuthService,
+    private router:Router,
     private timesheetService: TimesheetService
   ) { }
 
@@ -63,6 +64,11 @@ export class DashboardPage implements OnInit {
     this.timesheetService.getTimesheets().subscribe(timesheets => this.timesheets = timesheets);
 
     this.currentUser = this.authService.getCurrentUser();
+
+     if (!this.currentUser) {
+      this.router.navigate(['/login']);
+      return;
+    }
   }
 
   createBarChart() {

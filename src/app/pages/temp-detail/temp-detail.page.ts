@@ -7,6 +7,8 @@ import { IonicModule } from '@ionic/angular';
 import { CommonModule } from '@angular/common';
 import { ShiftService } from '../../services/shift.service';
 import { Shift } from '../../models/shift.model';
+import { TimesheetService } from '../../services/timesheet.service';
+import { Timesheet } from '../../models/timesheet.model';
  
  @Component({
    selector: 'app-temp-detail',
@@ -20,11 +22,15 @@ import { Shift } from '../../models/shift.model';
    temp!: Temp;
    activeShifts: Shift[] = [];
    completedShifts: Shift[] = [];
+   timesheets: Timesheet[] = [];
+   totalHoursWorked: number = 0;
+   totalEarnings: number = 0;
  
    constructor(
      private route: ActivatedRoute,
      private tempService: TempService,
      private shiftService: ShiftService,
+     private timesheetService: TimesheetService,
      private router: Router
    ) { }
  
@@ -38,6 +44,10 @@ import { Shift } from '../../models/shift.model';
        this.activeShifts = shifts.filter(shift => new Date(shift.endTime) > now);
        this.completedShifts = shifts.filter(shift => new Date(shift.endTime) <= now);
      });
+     this.timesheetService.getTimesheets({ tempId: tempId }).subscribe(timesheets => {
+       this.timesheets = timesheets;
+       this.calculateProductivity();
+     });
    }
  
    editTemp() {
@@ -48,4 +58,8 @@ import { Shift } from '../../models/shift.model';
      this.router.navigate(['/shift-detail', shiftId]);
    }
  
+   calculateProductivity() {
+     this.totalHoursWorked = this.timesheets.reduce((sum, timesheet) => sum + timesheet.totalHours, 0);
+     this.totalEarnings = this.timesheets.reduce((sum, timesheet) => sum + timesheet.totalPay, 0);
+   }
  }

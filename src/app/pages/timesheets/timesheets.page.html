@@ -3,25 +3,173 @@
     <ion-buttons slot="start">
       <ion-menu-button></ion-menu-button>
     </ion-buttons>
-    <ion-title style="color:whitesmoke;">Timesheets</ion-title>
+    <ion-title style="color:whitesmoke;">
+      Timesheets
+      <span *ngIf="authService.isAdmin() && getPendingTimesheetsCount() > 0" class="pending-badge">
+        ({{ getPendingTimesheetsCount() }} pending)
+      </span>
+    </ion-title>
     <ion-buttons slot="end">
+      <!-- Bulk Approve Button (Admin only) -->
+      <ion-button *ngIf="authService.isAdmin() && getPendingTimesheetsCount() > 0"
+                  (click)="bulkApproveTimesheets()"
+                  color="success"
+                  fill="outline">
+        <ion-icon name="checkmark-done-outline" slot="start"></ion-icon>
+        Approve All
+      </ion-button>
+      
+      <!-- Invoice Generation Toggle (Admin only) -->
+      <ion-button *ngIf="authService.isAdmin()"
+                  (click)="toggleInvoiceGeneration()"
+                  [color]="showInvoiceGeneration ? 'success' : 'light'">
+        <ion-icon slot="icon-only" name="receipt-outline"></ion-icon>
+      </ion-button>
+      
       <ion-button (click)="addTimesheet()">
         <ion-icon style="color: whitesmoke" slot="icon-only" name="add"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+  
+  <!-- Invoice Generation Toolbar -->
+  <ion-toolbar *ngIf="showInvoiceGeneration" color="success">
+    <ion-title size="small">Invoice Generation Mode</ion-title>
+    <ion-buttons slot="end">
+      <ion-button fill="clear" (click)="selectAllApprovedTimesheets()" size="small">
+        <ion-icon name="checkmark-done" slot="start"></ion-icon>
+        Select All Approved
+      </ion-button>
+      <ion-button fill="clear" (click)="clearSelection()" size="small">
+        <ion-icon name="close" slot="start"></ion-icon>
+        Clear
+      </ion-button>
+      <ion-button fill="solid"
+                  color="light"
+                  (click)="generateInvoice()"
+                  [disabled]="selectedTimesheets.length === 0"
+                  size="small">
+        <ion-icon name="document-text" slot="start"></ion-icon>
+        Generate Invoice ({{ selectedTimesheets.length }})
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
+  <!-- Filter for admins -->
+  <ion-item *ngIf="currentUser?.role === 'admin'" class="filter-item">
+    <ion-label>Filter by Status:</ion-label>
+    <ion-select [(ngModel)]="statusFilter" (ionChange)="filterTimesheets()">
+      <ion-select-option value="">All</ion-select-option>
+      <ion-select-option value="draft">Draft</ion-select-option>
+      <ion-select-option value="submitted">Submitted</ion-select-option>
+      <ion-select-option value="approved">Approved</ion-select-option>
+      <ion-select-option value="rejected">Rejected</ion-select-option>
+    </ion-select>
+  </ion-item>
+  
+  <!-- Filter for temps -->
+  <ion-item *ngIf="currentUser?.role === 'temp'" class="filter-item">
+    <ion-label>Filter by Status:</ion-label>
+    <ion-select [(ngModel)]="statusFilter" (ionChange)="filterTimesheets()">
+      <ion-select-option value="">All</ion-select-option>
+      <ion-select-option value="draft">Draft</ion-select-option>
+      <ion-select-option value="submitted">Submitted</ion-select-option>
+      <ion-select-option value="approved">Approved</ion-select-option>
+      <ion-select-option value="rejected">Rejected</ion-select-option>
+    </ion-select>
+  </ion-item>
+
   <ion-list>
-    <ion-item *ngFor="let timesheet of timesheets" (click)="viewTimesheet(timesheet.id)">
-      <ion-label>
-        <h2>Timesheet #{{ timesheet.id }}</h2>
-        <p>Submitted: {{ timesheet.submittedDate | date:'short' }}</p>
-        <p>Total Hours: {{ timesheet.totalHours }}</p>
-        <p>Total Pay: {{ timesheet.totalPay | currency }}</p>
-        <p>Status: {{ timesheet.approvedBy ? 'Approved' : 'Pending' }}</p>
-      </ion-label>
-    </ion-item>
+    <ion-card *ngFor="let timesheet of filteredTimesheets" class="timesheet-card">
+      <!-- Invoice Generation Checkbox (Admin only) -->
+      <ion-checkbox
+        *ngIf="showInvoiceGeneration && timesheet.status === 'approved'"
+        class="timesheet-checkbox"
+        [checked]="isTimesheetSelected(timesheet.id)"
+        (ionChange)="toggleTimesheetSelection(timesheet.id)">
+      </ion-checkbox>
+      
+      <ion-card-header (click)="viewTimesheet(timesheet.id)">
+        <div class="card-header">
+          <div class="timesheet-info">
+            <h3>Timesheet #{{ timesheet.id }}</h3>
+            <p>Period: {{ timesheet.period_start_date | date:'short' }} - {{ timesheet.period_end_date | date:'short' }}</p>
+            <p *ngIf="timesheet.tempId">Worker ID: {{ timesheet.tempId }}</p>
+            <p>Submitted: {{ timesheet.submittedDate | date:'short' }}</p>
+          </div>
+          <div class="timesheet-status">
+            <ion-badge [color]="getStatusColor(timesheet.status)">{{ timesheet.status | titlecase }}</ion-badge>
+          </div>
+        </div>
+      </ion-card-header>
+      
+      <ion-card-content>
+        <div class="timesheet-details">
+          <div class="detail-item">
+            <span class="detail-value">{{ timesheet.totalHours }}</span>
+            <span class="detail-label"> - Hours</span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-value">GHS{{ timesheet.totalPay }}</span>
+            <span class="detail-label"> - Total Pay</span>
+          </div>
+          <div class="detail-item" *ngIf="timesheet.shifts?.length">
+            <span class="detail-value">{{ timesheet.shifts.length }}</span>
+            <span class="detail-label"> - Shifts</span>
+          </div>
+        </div>
+        
+        <!-- Rejection Reason -->
+        <div *ngIf="timesheet.rejectionReason" class="rejection-reason">
+          <ion-icon name="warning-outline"></ion-icon>
+          <span>{{ timesheet.rejectionReason }}</span>
+        </div>
+        
+        <!-- Admin Actions -->
+        <div *ngIf="authService.isAdmin() && timesheet.status === 'submitted'" class="admin-actions">
+          <ion-button
+            fill="outline"
+            color="success"
+            size="small"
+            (click)="approveTimesheet(timesheet, $event)">
+            <ion-icon name="checkmark-outline" slot="start"></ion-icon>
+            Approve
+          </ion-button>
+          <ion-button
+            fill="outline"
+            color="danger"
+            size="small"
+            (click)="rejectTimesheet(timesheet, $event)">
+            <ion-icon name="close-outline" slot="start"></ion-icon>
+            Reject
+          </ion-button>
+          <ion-button
+            fill="outline"
+            color="warning"
+            size="small"
+            (click)="deleteTimesheet(timesheet, $event)">
+            <ion-icon name="trash-outline" slot="start"></ion-icon>
+            Delete
+          </ion-button>
+        </div>
+        
+        <!-- Approved/Rejected Info -->
+        <div *ngIf="timesheet.status === 'approved' && timesheet.approvedBy" class="approval-info">
+          <ion-icon name="checkmark-circle" color="success"></ion-icon>
+          <span>Approved by Admin on {{ timesheet.approvedDate | date:'short' }}</span>
+        </div>
+        
+        <div *ngIf="timesheet.status === 'rejected'" class="rejection-info">
+          <ion-icon name="close-circle" color="danger"></ion-icon>
+          <span>Rejected by Admin</span>
+        </div>
+      </ion-card-content>
+    </ion-card>
   </ion-list>
+  
+  <ion-text *ngIf="filteredTimesheets.length === 0" class="no-timesheets">
+    <p class="ion-text-center">No timesheets found</p>
+  </ion-text>
 </ion-content>

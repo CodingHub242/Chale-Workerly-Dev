@@ -1,10 +1,63 @@
 <ion-header>
     <ion-toolbar>
-      <ion-title>Register</ion-title>
+     <div class="lc-block text-center">
+				<h3 editable="inline" class="display-4 mb-3"><b>Chale Workerly</b></h3>
+			</div>
     </ion-toolbar>
 </ion-header>
 <ion-content>
-  <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+
+  <div class="container py-4">
+	
+	<div class="row">
+		<div class="col-md-6 offset-md-3">
+			<div class="lc-block text-center mb-4">
+       
+      </div>
+
+			<div class="lc-block text-center">
+        <ion-card>
+          <p class="text-center" style="font-size: 20px;">Let's Set You Up</p>
+          	<form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+              <ion-item class="mb-3">
+                <fieldset class="input-item">
+                  <legend style="color: rgb(0, 0, 0);">First Name</legend>
+                  <ion-input formControlName="firstName"  type="text"></ion-input>
+                </fieldset>
+              </ion-item>
+
+              <ion-item class="mb-3">
+                <fieldset class="input-item">
+                  <legend style="color: rgb(0, 0, 0);">Last Name</legend>
+                  <ion-input formControlName="lastName"  type="text"></ion-input>
+                </fieldset>
+              </ion-item>
+
+              <ion-item class="mb-3">
+                <fieldset class="input-item">
+                  <legend style="color: rgb(0, 0, 0);">Email</legend>
+                  <ion-input formControlName="email"  type="email"></ion-input>
+                </fieldset>
+              </ion-item>
+
+              <ion-item>
+                <fieldset class="input-item">
+                  <legend style="color: rgb(0, 0, 0);">Password</legend>
+                  <ion-input formControlName="password"  type="password"></ion-input>
+                </fieldset>
+              </ion-item>
+
+              <ion-button type="submit" class="mt-2">Register</ion-button>
+              <p class="mt-1"><span>I have an account?</span> <span (click)="login()" style="color:orange;cursor: pointer;"> -  Login</span></p> 
+            </form>
+        </ion-card>
+			
+        
+			</div><!-- /lc-block -->
+		</div><!-- /col -->
+	</div>
+</div>
+  <!-- <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
      <ion-item>
       <ion-label>First Name</ion-label>
       <ion-input formControlName="firstName" type="text"></ion-input>
@@ -22,5 +75,5 @@
       <ion-input formControlName="password" type="password"></ion-input>
     </ion-item>
     <ion-button type="submit">Register</ion-button>
-  </form>
+  </form> -->
 </ion-content>

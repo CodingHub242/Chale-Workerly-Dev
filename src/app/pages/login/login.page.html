@@ -1,19 +1,61 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title>Login</ion-title>
+    <div class="lc-block text-center">
+				<h3 editable="inline" class="display-4 mb-3"><b>Chale Workerly</b></h3>
+			</div>
   </ion-toolbar>
 </ion-header>
 <ion-content>
-  <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
-    <ion-item>
-      <ion-label>Email</ion-label>
-      <ion-input formControlName="email" type="email"></ion-input>
-    </ion-item>
-    <ion-item>
-      <ion-label>Password</ion-label>
-      <ion-input formControlName="password" type="password"></ion-input>
-    </ion-item>
-    <ion-button type="submit">Login</ion-button>
-    <p>Already have an account?</p> - <ion-button (click)="register()">Register</ion-button>
-  </form>
+   
+  
+    
+<div class="container py-4">
+	<!-- <div class="row" style="border-bottom:1px solid gray;">
+		<div class="col-md-6 offset-md-3 mb-2">
+			<div class="lc-block text-center">
+				<h3 editable="inline" class="display-3 mb-3"><b>Chale Workerly</b></h3>
+			</div>
+		</div>
+	</div> -->
+
+	<div class="row">
+		<div class="col-md-6 offset-md-3">
+			<div class="lc-block text-center mb-4">
+       
+      </div>
+
+			<div class="lc-block text-center">
+        <ion-card>
+          <p class="text-center" style="font-size: 20px;">Welcome back, Let's Sign You In</p>
+          	<form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+              <ion-item class="mb-3">
+                <fieldset class="input-item">
+                  <legend style="color: rgb(0, 0, 0);">Email</legend>
+                  <ion-input formControlName="email"  type="email" placeholder="name@domain.com"></ion-input>
+                </fieldset>
+                <!-- <ion-label>Email</ion-label>
+                <ion-input formControlName="email" type="email"></ion-input> -->
+              </ion-item>
+              <ion-item>
+                <fieldset class="input-item">
+                  <legend style="color: rgb(0, 0, 0);">Password</legend>
+                  <ion-input formControlName="password"  type="password" placeholder="xxxxxxxxx"></ion-input>
+                </fieldset>
+                <!-- <ion-label>Password</ion-label>
+                <ion-input formControlName="password" type="password"></ion-input> -->
+              </ion-item>
+              <ion-button type="submit" class="mt-2">Login</ion-button>
+              <p class="mt-3"><span>I don't have an account?</span> <span (click)="register()" style="color:orange;cursor: pointer;"> -  Register</span></p> 
+            </form>
+        </ion-card>
+			
+        
+			</div><!-- /lc-block -->
+		</div><!-- /col -->
+	</div>
+</div>
+ 
+ 
+  
+  
 </ion-content>

@@ -34,10 +34,16 @@ onSubmit() {
     if (this.registerForm.valid) {
       this.authService.register(this.registerForm.value.email, this.registerForm.value.password, this.registerForm.value.firstName, this.registerForm.value.lastName,this.registerForm.value.role)
         .subscribe((user) => {
-          this.router.navigate(['/dashboard']);
+          this.router.navigate(['/dashboard']).then(() => {
+            window.location.reload();
+          });
         }, (error) => {
           console.error(error);
         });
     }
+  }
+
+   login() {
+    this.router.navigate(['/login']);
   }
 }

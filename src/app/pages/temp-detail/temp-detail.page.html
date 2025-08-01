@@ -16,7 +16,7 @@
   <div *ngIf="temp">
     <ion-grid>
       <ion-row>
-        <ion-col size="12">
+        <ion-col size="12" size-md="6">
           <ion-card class="details-card">
             <ion-card-header>
               <ion-card-title>{{ temp.firstName }} {{ temp.lastName }}</ion-card-title>
@@ -25,6 +25,19 @@
               <p><strong><ion-icon name="call-outline"></ion-icon> Phone:</strong> {{ temp.phone }}</p>
               <p><strong><ion-icon name="mail-outline"></ion-icon> Email:</strong> {{ temp.email }}</p>
               <p><strong><ion-icon name="build-outline"></ion-icon> Skills:</strong> {{ temp.skills.join(', ') }}</p>
+            </ion-card-content>
+          </ion-card>
+        </ion-col>
+        
+        <ion-col size="12" size-md="6">
+          <ion-card class="details-card">
+            <ion-card-header>
+              <ion-card-title>Productivity Summary</ion-card-title>
+            </ion-card-header>
+            <ion-card-content>
+              <p><strong><ion-icon name="time-outline"></ion-icon> Total Hours Worked:</strong> {{ totalHoursWorked | number:'1.2-2' }}</p>
+              <p><strong><ion-icon name="cash-outline"></ion-icon> Total Earnings:</strong> {{ totalEarnings | currency }}</p>
+              <p><strong><ion-icon name="document-outline"></ion-icon> Timesheets Submitted:</strong> {{ timesheets.length }}</p>
             </ion-card-content>
           </ion-card>
         </ion-col>

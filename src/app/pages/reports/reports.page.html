@@ -1,0 +1,180 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title style="color:whitesmoke;">Timesheet Reports</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="exportToCSV()">
+        <ion-icon name="download" slot="icon-only"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-grid>
+    <!-- Filters -->
+    <ion-row>
+      <ion-col size="12">
+        <ion-card>
+          <ion-card-header>
+            <ion-card-title>Filters</ion-card-title>
+          </ion-card-header>
+          <ion-card-content>
+            <ion-item>
+              <ion-label position="stacked">Start Date</ion-label>
+              <ion-datetime [(ngModel)]="startDate" presentation="date" (ionChange)="filterTimesheets()"></ion-datetime>
+            </ion-item>
+            
+            <ion-item>
+              <ion-label position="stacked">End Date</ion-label>
+              <ion-datetime [(ngModel)]="endDate" presentation="date" (ionChange)="filterTimesheets()"></ion-datetime>
+            </ion-item>
+            
+            <ion-item>
+              <ion-label position="stacked">Temp</ion-label>
+              <ion-select [(ngModel)]="selectedTempId" (ionChange)="filterTimesheets()">
+                <ion-select-option [value]="null">All Temps</ion-select-option>
+                <ion-select-option *ngFor="let temp of temps" [value]="temp.id">
+                  {{ temp.firstName }} {{ temp.lastName }}
+                </ion-select-option>
+              </ion-select>
+            </ion-item>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+    
+    <!-- Summary -->
+    <ion-row>
+      <ion-col size="12" size-md="6">
+        <ion-card>
+          <ion-card-header>
+            <ion-card-title>Summary - {{ getSelectedTempName() }}</ion-card-title>
+            <ion-card-subtitle>{{ getTimesheetCountText() }}</ion-card-subtitle>
+          </ion-card-header>
+          <ion-card-content>
+            <ion-list>
+              <ion-item>
+                <ion-label>Total Hours</ion-label>
+                <ion-label slot="end">{{ totalHours | number:'1.2-2' }}</ion-label>
+              </ion-item>
+              <ion-item>
+                <ion-label>Total Pay</ion-label>
+                <ion-label slot="end">GHS{{ totalPay }}</ion-label>
+              </ion-item>
+              <ion-item>
+                <ion-label>Average Hours/Timesheet</ion-label>
+                <ion-label slot="end">{{ averageHoursPerTimesheet | number:'1.1-1' }}</ion-label>
+              </ion-item>
+              <ion-item>
+                <ion-label>Average Pay/Timesheet</ion-label>
+                <ion-label slot="end">GHS{{ averagePayPerTimesheet }}</ion-label>
+              </ion-item>
+            </ion-list>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+      
+      <ion-col size="12" size-md="6">
+        <ion-card>
+          <ion-card-header>
+            <ion-card-title>Status Distribution</ion-card-title>
+          </ion-card-header>
+          <ion-card-content>
+            <div *ngIf="statusSummary.length > 0">
+              <ion-list>
+                <ion-item *ngFor="let status of statusSummary">
+                  <ion-label>
+                    <h3>{{ status.status }}</h3>
+                    <p>{{ status.count }} timesheets ({{ status.percentage | number:'1.0-0' }}%)</p>
+                    <p>{{ status.hours | number:'1.1-1' }}h • GHS{{ status.pay  }}</p>
+                  </ion-label>
+                  <ion-badge [color]="getStatusColor(status.status.toLowerCase())" slot="end">
+                    {{ status.count }}
+                  </ion-badge>
+                </ion-item>
+              </ion-list>
+            </div>
+            <div *ngIf="statusSummary.length === 0">
+              <p class="ion-text-center">No data available</p>
+            </div>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+    
+    <!-- Chart -->
+    <ion-row>
+      <ion-col size="12">
+        <ion-card>
+          <ion-card-header>
+            <ion-card-title>Hours Worked by Temp</ion-card-title>
+          </ion-card-header>
+          <ion-card-content>
+            <div class="chart-container">
+              <div *ngIf="chartData.length > 0; else noDataTemplate" class="css-chart">
+                <div *ngFor="let data of chartData" class="chart-bar-container">
+                  <div class="chart-bar-info">
+                    <span class="temp-name">{{ data.name }}</span>
+                    <span class="temp-hours">{{ data.hours | number:'1.1-1' }}h</span>
+                    <span class="temp-timesheets">{{ data.timesheetCount }} timesheet{{ data.timesheetCount !== 1 ? 's' : '' }}</span>
+                  </div>
+                  <div class="chart-bar-wrapper">
+                    <div
+                      class="chart-bar"
+                      [style.width.%]="data.percentage"
+                      [attr.data-hours]="data.hours">
+                    </div>
+                  </div>
+                  <div class="chart-pay">
+                    <span class="pay-amount">GHS{{ data.pay  }}</span>
+                    <span class="pay-avg">GHS{{ (data.pay / data.timesheetCount)  }}/avg</span>
+                  </div>
+                </div>
+              </div>
+              <ng-template #noDataTemplate>
+                <div class="chart-no-data">
+                  <ion-icon name="bar-chart-outline" size="large"></ion-icon>
+                  <p>No data available for the selected filters</p>
+                </div>
+              </ng-template>
+            </div>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+    
+    <!-- Detailed Report -->
+    <ion-row>
+      <ion-col size="12">
+        <ion-card>
+          <ion-card-header>
+            <ion-card-title>Detailed Report</ion-card-title>
+          </ion-card-header>
+          <ion-card-content>
+            <ion-list>
+              <ion-item *ngFor="let timesheet of filteredTimesheets">
+                <ion-label>
+                  <h2>Timesheet #{{ timesheet.id }}</h2>
+                  <p *ngIf="getTempName(timesheet.tempId)">Temp: {{ getTempName(timesheet.tempId) }}</p>
+                  <p>Period: {{ timesheet.period_start_date || (timesheet.period ? timesheet.period.startDate : 'N/A') }} to {{ timesheet.period_end_date || (timesheet.period ? timesheet.period.endDate : 'N/A') }}</p>
+                  <p>Hours: {{ timesheet.totalHours | number:'1.2-2' }}</p>
+                  <p>Pay: GHS{{ timesheet.totalPay  }}</p>
+                  <p>Status: 
+                    <ion-badge [color]="getStatusColor(timesheet.status)">{{ timesheet.status }}</ion-badge>
+                  </p>
+                </ion-label>
+              </ion-item>
+            </ion-list>
+            
+            <ion-text *ngIf="filteredTimesheets.length === 0">
+              <p class="ion-text-center">No timesheets found for the selected filters</p>
+            </ion-text>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>
