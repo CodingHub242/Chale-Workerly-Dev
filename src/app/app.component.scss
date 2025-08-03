@@ -12,5 +12,10 @@ ion-list{
 
     ion-item{
       --background:#ffffff;
+
+      ion-label{
+        color:#000;
+        --color:#000;
+      }
     }
 }
