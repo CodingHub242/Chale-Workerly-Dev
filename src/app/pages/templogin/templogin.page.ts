@@ -38,6 +38,8 @@ export class TemploginPage implements OnInit, OnDestroy {
       email: ['', [Validators.required, Validators.email]],
       password: ['', Validators.required]
     });
+
+    localStorage.removeItem('currentUser');
     
     this.loadAvailableJobs();
     this.startJobSlider();
