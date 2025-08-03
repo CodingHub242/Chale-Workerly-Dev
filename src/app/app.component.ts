@@ -19,7 +19,7 @@ import { NotificationService } from './services/notification.service';
   ]
 })
 export class AppComponent {
-  currentUser: any;
+  public currentUser: any;
   showNotifications = false;
   notificationsOpen = false;
   unreadCount = 0;

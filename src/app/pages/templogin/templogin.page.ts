@@ -8,6 +8,7 @@ import { AuthService } from '../../services/auth.service';
 import { Router } from '@angular/router';
 import { JobService } from 'src/app/services/job.service';
 import { Job } from 'src/app/models/job.model';
+import { AppComponent } from 'src/app/app.component';
 
 @Component({
   standalone: true,
@@ -30,7 +31,8 @@ export class TemploginPage implements OnInit, OnDestroy {
     private fb: FormBuilder,
     private authService: AuthService,
     private router: Router,
-    private jobService: JobService
+    private jobService: JobService,
+    private appComponent: AppComponent
   ) { }
 
   ngOnInit() {
@@ -38,8 +40,8 @@ export class TemploginPage implements OnInit, OnDestroy {
       email: ['', [Validators.required, Validators.email]],
       password: ['', Validators.required]
     });
-
     localStorage.removeItem('currentUser');
+    this.appComponent.currentUser = false;
     
     this.loadAvailableJobs();
     this.startJobSlider();

@@ -7,6 +7,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { AuthService } from '../../services/auth.service';
 import { Router } from '@angular/router';
+import { AppComponent } from 'src/app/app.component';
 
 @Component({
   schemas:[CUSTOM_ELEMENTS_SCHEMA],
@@ -19,13 +20,16 @@ import { Router } from '@angular/router';
 export class LoginPage implements OnInit {
   loginForm!: FormGroup;
 
-  constructor(private authService: AuthService, private router: Router) {}
+  constructor(private authService: AuthService, private router: Router,private appComponent: AppComponent) {}
 
   ngOnInit() {
     this.loginForm = new FormGroup({
       email: new FormControl('', [Validators.required, Validators.email]),
       password: new FormControl('', [Validators.required]),
     });
+
+    localStorage.removeItem('currentUser');
+    this.appComponent.currentUser = false;
   }
 
   onSubmit() {
