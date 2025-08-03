@@ -6,7 +6,9 @@ ion-toolbar {
   --background: #004c4d;
   --color: white;
 }
-
+ ion-content{
+     --background:#ffffff;
+  }
 ion-title {
   font-weight: bold;
 }

@@ -69,6 +69,12 @@ export class DashboardPage implements OnInit {
       this.router.navigate(['/login']);
       return;
     }
+
+    // Redirect temp users to their specific dashboard
+    if (this.authService.isTemp()) {
+      this.router.navigate(['/temp-dashboard']);
+      return;
+    }
   }
 
   createBarChart() {

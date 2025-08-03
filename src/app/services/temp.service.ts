@@ -28,4 +28,12 @@ export class TempService {
   updateTemp(temp: Temp): Observable<any> {
     return this.http.put(`${this.apiUrl}/${temp.id}`, temp);
   }
+
+  approveTemp(tempId: number): Observable<any> {
+    return this.http.get(`${this.apiUrl}/${tempId}/approve`, {});
+  }
+
+  declineTemp(tempId: number): Observable<any> {
+    return this.http.get(`${this.apiUrl}/${tempId}/decline`, {});
+  }
 }

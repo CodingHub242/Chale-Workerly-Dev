@@ -1,6 +1,8 @@
 import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
 import { AuthGuard } from './pages/auth.guard';
+import { TempGuard } from './pages/temp.guard';
+import { AdminGuard } from './pages/admin.guard';
 
 const routes: Routes = [
   // {
@@ -23,12 +25,17 @@ const routes: Routes = [
   {
     path: 'dashboard',
     loadChildren: () => import('./pages/dashboard/dashboard.module').then( m => m.DashboardPageModule),
-    canActivate: [AuthGuard],
+    canActivate: [AdminGuard],
+  },
+  {
+    path: 'temp-dashboard',
+    loadChildren: () => import('./pages/temp-dashboard/temp-dashboard.module').then( m => m.TempDashboardPageModule),
+    canActivate: [TempGuard],
   },
   {
     path: 'jobs',
     loadChildren: () => import('./pages/jobs/jobs.module').then( m => m.JobsPageModule),
-    canActivate: [AuthGuard],
+    canActivate: [AdminGuard],
   },
   {
     path: 'timesheets',
@@ -38,12 +45,12 @@ const routes: Routes = [
   {
     path: 'clients',
     loadChildren: () => import('./pages/clients/clients.module').then( m => m.ClientsPageModule),
-    canActivate: [AuthGuard],
+    canActivate: [AdminGuard],
   },
   {
     path: 'invoices',
     loadChildren: () => import('./pages/invoices/invoices.module').then( m => m.InvoicesPageModule),
-    canActivate: [AuthGuard],
+    canActivate: [AdminGuard],
   },
   {
     path: 'profile',
@@ -61,27 +68,27 @@ const routes: Routes = [
   {
     path: 'temps',
     loadChildren: () => import('./pages/temps/temps.module').then( m => m.TempsPageModule),
-    canActivate: [AuthGuard],
+    canActivate: [AdminGuard],
   },
   {
     path: 'client-form',
     loadChildren: () => import('./pages/client-form/client-form.module').then( m => m.ClientFormPageModule),
-    canActivate: [AuthGuard],
+    canActivate: [AdminGuard],
   },
   {
     path: 'job-form',
     loadChildren: () => import('./pages/job-form/job-form.module').then( m => m.JobFormPageModule),
-    canActivate: [AuthGuard],
+    canActivate: [AdminGuard],
   },
   {
     path: 'temp-form',
     loadChildren: () => import('./pages/temp-form/temp-form.module').then( m => m.TempFormPageModule),
-    canActivate: [AuthGuard],
+    canActivate: [AdminGuard],
   },
   {
     path: 'shift-form',
     loadChildren: () => import('./pages/shift-form/shift-form.module').then( m => m.ShiftFormPageModule),
-    canActivate: [AuthGuard],
+    canActivate: [AdminGuard],
   },
   {
     path: 'timesheet-form',
@@ -91,17 +98,17 @@ const routes: Routes = [
   {
     path: 'client-detail',
     loadChildren: () => import('./pages/client-detail/client-detail.module').then( m => m.ClientDetailPageModule),
-    canActivate: [AuthGuard],
+    canActivate: [AdminGuard],
   },
   {
     path: 'job-detail',
     loadChildren: () => import('./pages/job-detail/job-detail.module').then( m => m.JobDetailPageModule),
-    canActivate: [AuthGuard],
+    canActivate: [AdminGuard],
   },
   {
     path: 'temp-detail',
     loadChildren: () => import('./pages/temp-detail/temp-detail.module').then( m => m.TempDetailPageModule),
-    canActivate: [AuthGuard],
+    canActivate: [AdminGuard],
   },
   {
     path: 'shift-detail/:id',
@@ -120,12 +127,20 @@ const routes: Routes = [
   {
     path: 'invoice-form',
     loadChildren: () => import('./pages/invoice-form/invoice-form.module').then( m => m.InvoiceFormPageModule),
-    canActivate: [AuthGuard],
+    canActivate: [AdminGuard],
   },
   {
     path: 'reports',
     loadChildren: () => import('./pages/reports/reports.module').then( m => m.ReportsPageModule),
-    canActivate: [AuthGuard],
+    canActivate: [AdminGuard],
+  },
+  {
+    path: 'templogin',
+    loadChildren: () => import('./pages/templogin/templogin.module').then( m => m.TemploginPageModule),
+  },
+  {
+    path: 'tempregister',
+    loadChildren: () => import('./pages/tempregister/tempregister.module').then( m => m.TempregisterPageModule),
   },
 ];
 

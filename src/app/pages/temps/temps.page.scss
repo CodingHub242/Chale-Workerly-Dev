@@ -11,7 +11,9 @@
   --card-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   --transition-speed: 0.3s;
 }
-
+ ion-content{
+     --background:#ffffff;
+  }
 .temps-toolbar {
   --background: #004c4d;
   --color: white;
@@ -117,11 +119,34 @@
       }
     }
 
-    .temp-name {
-      margin: 0;
-      font-size: 1.3rem;
-      font-weight: 600;
-      color: #2c3e50;
+    .temp-name-section {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+
+      .temp-name {
+        margin: 0;
+        font-size: 1.3rem;
+        font-weight: 600;
+        color: #2c3e50;
+      }
+
+      .approval-chip {
+        font-size: 0.8rem;
+        height: 24px;
+        --border-radius: 12px;
+        
+        ion-icon {
+          font-size: 14px;
+          margin-right: 4px;
+        }
+        
+        ion-label {
+          font-weight: 500;
+          font-size: 0.75rem;
+        }
+      }
     }
   }
 
@@ -232,7 +257,7 @@
     border-top: 1px solid rgba(0, 76, 77, 0.08);
     background: rgba(0, 76, 77, 0.02);
     display: flex;
-    justify-content: flex-end;
+    flex-direction: column;
     gap: 12px;
 
     .action-button {
@@ -273,6 +298,55 @@
         font-size: 18px;
         margin-right: 8px;
         color:#2c3e50;
+      }
+    }
+
+    .admin-actions {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      margin-top: 8px;
+      padding-top: 12px;
+      border-top: 1px solid rgba(0, 76, 77, 0.08);
+
+      .approval-button {
+        flex: 1;
+        max-width: 120px;
+        height: 36px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        --border-radius: 8px;
+        transition: all 0.3s ease;
+
+        ion-icon {
+          font-size: 16px;
+          margin-right: 4px;
+        }
+
+        &:hover {
+          transform: translateY(-1px);
+          box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        &:disabled {
+          opacity: 0.6;
+          transform: none;
+          box-shadow: none;
+        }
+      }
+    }
+
+    // Responsive layout for larger screens
+    @media (min-width: 768px) {
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+
+      .admin-actions {
+        margin-top: 0;
+        padding-top: 0;
+        border-top: none;
+        flex-shrink: 0;
       }
     }
   }

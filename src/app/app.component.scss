@@ -7,5 +7,10 @@ ion-content{
 }
 
 ion-list{
-    --background:#004c4d;
+    --background:#ffffff;
+    background:#ffffff;
+
+    ion-item{
+      --background:#ffffff;
+    }
 }

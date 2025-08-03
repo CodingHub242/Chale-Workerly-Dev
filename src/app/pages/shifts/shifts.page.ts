@@ -6,6 +6,7 @@ import { ActionSheetController, IonicModule } from '@ionic/angular';
 import { CommonModule } from '@angular/common';
 import { CalendarModule, CalendarEvent, CalendarView } from 'angular-calendar';
 import { startOfDay } from 'date-fns';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   schemas:[ CUSTOM_ELEMENTS_SCHEMA ],
@@ -22,22 +23,37 @@ export class ShiftsPage implements OnInit {
   view: CalendarView = CalendarView.Month;
   events: CalendarEvent[] = [];
   refresh: any;
+  currentUser: any;
 
   constructor(
     private shiftService: ShiftService,
     private router: Router,
-    private actionSheetCtrl: ActionSheetController
+    private actionSheetCtrl: ActionSheetController,
+    public authService: AuthService
   ) { }
 
   ngOnInit() {
+    this.currentUser = this.authService.getCurrentUser();
+    if (!this.currentUser) {
+      this.router.navigate(['/login']);
+      return;
+    }
     this.loadShifts();
     console.log(this.viewDate);
   }
 
   loadShifts() {
     this.shiftService.getShifts().subscribe(shifts => {
-      this.shifts = shifts;
-      this.events = shifts.map(shift => {
+      // Filter shifts for temp users to only show their assigned shifts
+      if (this.authService.isTemp()) {
+        this.shifts = shifts.filter(shift =>
+          shift.temps.some(temp => temp.id === this.currentUser.id)
+        );
+      } else {
+        this.shifts = shifts;
+      }
+      
+      this.events = this.shifts.map(shift => {
         const temps = shift.temps.map(t => t.firstName).join(', ');
         return {
           start: startOfDay(new Date(shift.startTime)),
@@ -90,8 +106,21 @@ export class ShiftsPage implements OnInit {
 
   saveStatus(shift: Shift, status: 'pending' | 'checked-in' | 'started' | 'completed') {
     const updatedShift = { ...shift, status };
-    this.shiftService.updateShiftStat(shift.id, { status: status }).subscribe(() => {
+    
+    // Prepare the data to send to the API
+    const updateData: any = { status: status };
+    
+    // If status is being updated to 'checked-in', include the current datetime
+    if (status === 'checked-in') {
+      updateData.checkedInAt = new Date().toISOString();
+    }
+    
+    this.shiftService.updateShiftStat(shift.id, updateData).subscribe(() => {
       shift.status = status;
+      // Update the local shift object with the check-in time if applicable
+      if (status === 'checked-in') {
+        shift.checkedInAt = new Date();
+      }
     });
   }
 

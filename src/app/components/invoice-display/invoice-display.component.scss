@@ -14,7 +14,9 @@
     margin: 0;
   }
 }
-
+ ion-content{
+     --background:#ffffff;
+  }
 // Header Section
 .invoice-header {
   display: flex;

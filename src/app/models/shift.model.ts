@@ -11,4 +11,5 @@ export interface Shift {
     endTime: Date;
     notes: string;
     status: 'pending' | 'checked-in' | 'started' | 'completed';
+    checkedInAt?: Date;
 }

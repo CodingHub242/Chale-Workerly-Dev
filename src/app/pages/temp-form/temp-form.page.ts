@@ -37,6 +37,8 @@ export class TempFormPage implements OnInit {
       experience: ['', [Validators.required]],
       basePay: ['', [Validators.required]],
       status: ['active'],
+      role: ['temp'],
+      approvalStatus: ['pending'],
       skills: ['', Validators.required],
     });
 

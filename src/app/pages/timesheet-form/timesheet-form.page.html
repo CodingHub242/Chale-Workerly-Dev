@@ -22,13 +22,20 @@
             </ion-card-header>
             <ion-card-content>
               <!-- Temp Selection (only for admins) -->
-              <ion-item *ngIf="temps.length > 0">
+              <ion-item *ngIf="authService.isAdmin() && temps.length > 0">
                 <ion-label position="stacked">Select Temporary Worker</ion-label>
                 <ion-select [value]="selectedTempId" (ionChange)="onTempChange($event)" placeholder="Choose a temp worker">
                   <ion-select-option *ngFor="let temp of temps" [value]="temp.id">
                     {{ temp.firstName }} {{ temp.lastName }}
                   </ion-select-option>
                 </ion-select>
+              </ion-item>
+              
+              <!-- Display current temp name for temp users -->
+              <ion-item *ngIf="authService.isTemp()">
+                <ion-label>
+                  <h3>Worker: {{ currentUser?.firstName }} {{ currentUser?.lastName }}</h3>
+                </ion-label>
               </ion-item>
               
               <div formGroupName="period">

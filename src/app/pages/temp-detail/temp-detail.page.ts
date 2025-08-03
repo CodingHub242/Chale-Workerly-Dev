@@ -4,7 +4,7 @@ import { TempService } from '../../services/temp.service';
 import { Temp } from '../../models/temp.model';
 import { RouterModule } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
-import { CommonModule } from '@angular/common';
+import { CommonModule, DecimalPipe } from '@angular/common';
 import { ShiftService } from '../../services/shift.service';
 import { Shift } from '../../models/shift.model';
 import { TimesheetService } from '../../services/timesheet.service';
@@ -36,6 +36,7 @@ import { Timesheet } from '../../models/timesheet.model';
  
    ngOnInit() {
      const tempId = this.route.snapshot.params['id'];
+     console.log(tempId);
      this.tempService.getTemp(tempId).subscribe(temp => {
        this.temp = temp;
      });
@@ -46,6 +47,7 @@ import { Timesheet } from '../../models/timesheet.model';
      });
      this.timesheetService.getTimesheets({ tempId: tempId }).subscribe(timesheets => {
        this.timesheets = timesheets;
+       alert(`Loading timesheets for temp ID ${tempId}: `+ timesheets);
        this.calculateProductivity();
      });
    }
@@ -59,7 +61,11 @@ import { Timesheet } from '../../models/timesheet.model';
    }
  
    calculateProductivity() {
-     this.totalHoursWorked = this.timesheets.reduce((sum, timesheet) => sum + timesheet.totalHours, 0);
-     this.totalEarnings = this.timesheets.reduce((sum, timesheet) => sum + timesheet.totalPay, 0);
+     this.totalHoursWorked = this.timesheets.reduce((sum, timesheet) => sum + Number(timesheet.totalHours || 0), 0);
+     this.totalEarnings = this.timesheets.reduce((sum, timesheet) => sum + Number(timesheet.totalPay || 0), 0);
+     console.log(`Productivity calculation for temp ${this.temp?.firstName} ${this.temp?.lastName}:`);
+     console.log(`- Total timesheets: ${this.timesheets.length}`);
+     console.log(`- Total hours worked: ${this.totalHoursWorked}`);
+     console.log(`- Total earnings: ${this.totalEarnings}`);
    }
  }

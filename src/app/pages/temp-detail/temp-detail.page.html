@@ -35,9 +35,9 @@
               <ion-card-title>Productivity Summary</ion-card-title>
             </ion-card-header>
             <ion-card-content>
-              <p><strong><ion-icon name="time-outline"></ion-icon> Total Hours Worked:</strong> {{ totalHoursWorked | number:'1.2-2' }}</p>
-              <p><strong><ion-icon name="cash-outline"></ion-icon> Total Earnings:</strong> {{ totalEarnings | currency }}</p>
-              <p><strong><ion-icon name="document-outline"></ion-icon> Timesheets Submitted:</strong> {{ timesheets.length }}</p>
+              <p><strong><ion-icon name="time-outline"></ion-icon> Total Hours Worked :</strong> <span style="margin-left: 3px;">{{ totalHoursWorked | number:'1.2-2' }}</span></p>
+              <p><strong><ion-icon name="cash-outline"></ion-icon> Total Earnings : </strong> <span style="margin-left: 3px;">GHS{{ totalEarnings }}</span></p>
+              <p><strong><ion-icon name="document-outline"></ion-icon> Timesheets Submitted :</strong> <span style="margin-left: 3px;">{{ timesheets.length }}</span></p>
             </ion-card-content>
           </ion-card>
         </ion-col>

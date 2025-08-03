@@ -32,8 +32,8 @@
     </ion-buttons>
   </ion-toolbar>
   
-  <!-- Invoice Generation Toolbar -->
-  <ion-toolbar *ngIf="showInvoiceGeneration" color="success">
+  <!-- Invoice Generation Toolbar (Admin only) -->
+  <ion-toolbar *ngIf="showInvoiceGeneration && authService.isAdmin()" color="success">
     <ion-title size="small">Invoice Generation Mode</ion-title>
     <ion-buttons slot="end">
       <ion-button fill="clear" (click)="selectAllApprovedTimesheets()" size="small">
@@ -57,20 +57,8 @@
 </ion-header>
 
 <ion-content>
-  <!-- Filter for admins -->
-  <ion-item *ngIf="currentUser?.role === 'admin'" class="filter-item">
-    <ion-label>Filter by Status:</ion-label>
-    <ion-select [(ngModel)]="statusFilter" (ionChange)="filterTimesheets()">
-      <ion-select-option value="">All</ion-select-option>
-      <ion-select-option value="draft">Draft</ion-select-option>
-      <ion-select-option value="submitted">Submitted</ion-select-option>
-      <ion-select-option value="approved">Approved</ion-select-option>
-      <ion-select-option value="rejected">Rejected</ion-select-option>
-    </ion-select>
-  </ion-item>
-  
-  <!-- Filter for temps -->
-  <ion-item *ngIf="currentUser?.role === 'temp'" class="filter-item">
+  <!-- Filter for all users -->
+  <ion-item class="filter-item">
     <ion-label>Filter by Status:</ion-label>
     <ion-select [(ngModel)]="statusFilter" (ionChange)="filterTimesheets()">
       <ion-select-option value="">All</ion-select-option>
@@ -85,7 +73,7 @@
     <ion-card *ngFor="let timesheet of filteredTimesheets" class="timesheet-card">
       <!-- Invoice Generation Checkbox (Admin only) -->
       <ion-checkbox
-        *ngIf="showInvoiceGeneration && timesheet.status === 'approved'"
+        *ngIf="showInvoiceGeneration && timesheet.status === 'approved' && authService.isAdmin()"
         class="timesheet-checkbox"
         [checked]="isTimesheetSelected(timesheet.id)"
         (ionChange)="toggleTimesheetSelection(timesheet.id)">

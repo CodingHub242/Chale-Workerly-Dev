@@ -4,7 +4,7 @@
       <ion-menu-button></ion-menu-button>
     </ion-buttons>
     <ion-title>Shift Management</ion-title>
-    <ion-buttons slot="end">
+    <ion-buttons slot="end" *ngIf="!authService.isTemp()">
       <ion-button (click)="addShift()" class="add-shift-main">
         <ion-icon name="add-circle-outline"></ion-icon>
         <span class="button-text">New Shift</span>
@@ -14,7 +14,7 @@
 </ion-header>
 
 <ion-content class="shifts-content">
-  <div class="calendar-container">
+  <div class="calendar-container" *ngIf="!authService.isTemp()">
     <div class="calendar-header">
       <div class="header-content">
         <ion-button fill="clear" (click)="prev()" class="nav-button">
@@ -58,6 +58,7 @@
         [activeDayIsOpen]="true">
       </mwl-calendar-month-view>
     </div>
+  </div>
 
     <div class="shifts-container">
       <div class="shifts-grid">
@@ -125,18 +126,17 @@
             </ion-card-content>
 
             <div class="card-actions">
-              <ion-button fill="clear" (click)="updateStatus(shift)" class="action-button">
+              <ion-button *ngIf="!authService.isTemp()" fill="clear" (click)="updateStatus(shift)" class="action-button">
                 <ion-icon slot="start" name="sync-outline"></ion-icon>
                 Update Status
               </ion-button>
-              <ion-button fill="clear" (click)="viewShift(shift.id)" class="action-button primary">
+              <!-- <ion-button fill="clear" (click)="viewShift(shift.id)" class="action-button primary">
                 <ion-icon slot="start" name="eye-outline"></ion-icon>
                 View Details
-              </ion-button>
+              </ion-button> -->
             </div>
           </ion-card>
         </div>
       </div>
     </div>
-  </div>
 </ion-content>

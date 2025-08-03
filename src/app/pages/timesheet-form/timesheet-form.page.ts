@@ -34,7 +34,7 @@ export class TimesheetFormPage implements OnInit {
     private shiftService: ShiftService,
     private route: ActivatedRoute,
     private router: Router,
-    private authService: AuthService,
+    public authService: AuthService,
     private tempService: TempService
   ) {
     this.timesheetForm = this.fb.group({

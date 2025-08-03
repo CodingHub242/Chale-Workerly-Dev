@@ -11,6 +11,9 @@ ion-toolbar{
 ion-item {
   --padding-start: 0;
 }
+ ion-content{
+     --background:#ffffff;
+  }
 
 .summary-grid {
   display: grid;

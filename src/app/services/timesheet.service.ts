@@ -33,6 +33,17 @@ export class TimesheetService {
     return this.http.get<Timesheet>(`${this.apiUrl}/${id}`);
   }
 
+   getTempsheet(filters?: { tempId?: number; status?: TimesheetStatus }): Observable<Timesheet[]> {
+   let url = this.apiUrl;
+    if (filters) {
+      const params = new URLSearchParams();
+      if (filters.tempId) params.append('tempId', filters.tempId.toString());
+      if (filters.status) params.append('status', filters.status);
+      url += `?${params.toString()}`;
+    }
+    return this.http.get<Timesheet[]>(`${this.apiUrl}/temp/${filters!.tempId}`);
+  }
+
   addTimesheet(timesheet: Timesheet): Observable<Timesheet> {
     return this.http.post<Timesheet>(this.apiUrl, timesheet);
   }

@@ -9,6 +9,9 @@
   text-align: center;
   color: var(--ion-color-medium);
 }
+ ion-content{
+     --background:#ffffff;
+  }
 
 ion-item {
   --inner-padding-end: 0;

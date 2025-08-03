@@ -155,12 +155,13 @@
           Cancel
         </ion-button>
 
-        <ion-button 
-          type="submit" 
-          class="submit-button" 
-          [disabled]="form.invalid">
-          <ion-icon name="{{ isEditMode ? 'save' : 'add-circle' }}-outline" slot="start"></ion-icon>
-          {{ isEditMode ? 'Save Changes' : 'Create Shift' }}
+        <ion-button
+          type="submit"
+          class="submit-button"
+          [disabled]="form.invalid || isLoading">
+          <ion-spinner *ngIf="isLoading" name="crescent" slot="start"></ion-spinner>
+          <ion-icon *ngIf="!isLoading" name="{{ isEditMode ? 'save' : 'add-circle' }}-outline" slot="start"></ion-icon>
+          {{ isLoading ? 'Processing...' : (isEditMode ? 'Save Changes' : 'Create Shift') }}
         </ion-button>
       </div>
     </form>

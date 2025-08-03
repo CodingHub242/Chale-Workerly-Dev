@@ -29,6 +29,7 @@ export class ShiftFormPage implements OnInit {
   temps: Temp[] = [];
   clients: Client[] = [];
   filteredTemps: Temp[] = [];
+  isLoading = false;
 
   constructor(
     private fb: FormBuilder,
@@ -92,7 +93,7 @@ export class ShiftFormPage implements OnInit {
 
     this.form.get('jobId')?.valueChanges.subscribe(jobId => {
       const selectedJob = this.jobs.find(j => j.id === jobId);
-      console.log('Selected Job:', selectedJob);
+      //console.log('Selected Job:', selectedJob);
       if (selectedJob) {
         this.form.patchValue({ clientId: selectedJob.client.id });
         this.filterTempsByJob(selectedJob);
@@ -104,8 +105,10 @@ export class ShiftFormPage implements OnInit {
 
     this.jobService.getJobs().subscribe(jobs => this.jobs = jobs);
     this.tempService.getTemps().subscribe(temps => {
-      this.temps = temps;
-      this.filteredTemps = temps;
+      // Filter to only show approved temps
+      this.temps = temps.filter(temp => temp.approvalStatus === 'approved');
+      this.filteredTemps = this.temps;
+     // console.log('Loaded approved temps for shift creation:', this.temps);
     });
     this.clientService.getClients().subscribe(clients => this.clients = clients);
 
@@ -156,8 +159,9 @@ export class ShiftFormPage implements OnInit {
     const jobExperienceRange = job.experience;
 
     if (!jobExperienceRange || jobExperienceRange.length !== 2) {
-      this.filteredTemps = this.temps;
-      console.warn('Job does not have a valid experience range:', job);
+      // Only show approved temps even when no experience filtering
+      this.filteredTemps = this.temps.filter(temp => temp.approvalStatus === 'approved');
+      alert('Job does not have a valid experience range: '+ job);
       return;
     }
 
@@ -165,10 +169,13 @@ export class ShiftFormPage implements OnInit {
 
     this.filteredTemps = this.temps.filter(temp => {
       if (typeof temp.experience !== 'number') {
-        console.warn(`Temp with ID ${temp.id} has an invalid experience value.`);
+       alert(`Temp with ID ${temp.id} has an invalid experience value.`);
         return false;
       }
-      return temp.experience >= minExp && temp.experience <= maxExp;
+      // Only include approved temps that meet experience requirements
+      return temp.approvalStatus === 'approved' &&
+             temp.experience >= minExp &&
+             temp.experience <= maxExp;
     });
   }
 
@@ -177,11 +184,15 @@ export class ShiftFormPage implements OnInit {
       return;
     }
 
+    // Set loading state to true when API call starts
+    this.isLoading = true;
+
     const { tempIds, startTime, endTime, notes } = this.form.value;
 
     const selectedJob = this.jobs.find(j => j.id === this.form.value.jobId);
     if (!selectedJob) {
-      console.error('No job selected');
+      alert('No job selected');
+      this.isLoading = false;
       return;
     }
 
@@ -198,23 +209,27 @@ export class ShiftFormPage implements OnInit {
     if (this.isEditMode) {
       this.shiftService.updateShift(this.shiftId, shiftData).subscribe({
         next: () => {
+          this.isLoading = false;
           this.router.navigate(['/shifts']).then(() => {
             window.location.reload();
           });
         },
         error: (err) => {
-          console.error('Error updating shift:', err);
+          this.isLoading = false;
+          alert('Error updating shift: '+ err);
         }
       });
     } else {
       this.shiftService.addShift(shiftData).subscribe({
         next: () => {
+          this.isLoading = false;
           this.router.navigate(['/shifts']).then(() => {
             window.location.reload();
           });
         },
         error: (err) => {
-          console.error('Error creating shift:', err);
+          this.isLoading = false;
+          alert('Error creating shift: ' + err);
         }
       });
     }

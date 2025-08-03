@@ -15,9 +15,9 @@
 ion-toolbar{
     --background:rgb(0 76 78 / 85%);
 }
-ion-content {
-  --background: var(--background-color);
-}
+ ion-content{
+     --background:#ffffff;
+  }
 // Toolbar Styles
 .shifts-toolbar {
   --background:#004c4d;;
@@ -235,7 +235,7 @@ ion-content.shifts-content {
   transition: opacity var(--transition-speed);
   
   .add-shift-button {
-    --color: var(--primary-color);
+    --color: #000;
     --background: white;
     --box-shadow: var(--card-shadow);
     --border-radius: 8px;
@@ -490,9 +490,9 @@ ion-content.shifts-content {
 
     
     &.pending { background-color: #ffc107; }
-    &.started { background-color: #28a745; }
+    &.started { background-color: #28a745;color:#fff; }
     &.completed { background-color: #6c757d; }
-    &.checked-in { background-color: #6c757d; }
+    &.checked-in { background-color: #6c757d;color:#ced4da;  }
 
     ion-icon {
       color: white;
@@ -501,9 +501,9 @@ ion-content.shifts-content {
   }
 
    .pending { background-color: #ffc107; }
-    .started { background-color: #28a745; }
+    .started { background-color: #28a745;color:#fff; }
     .completed { background-color: #6c757d; }
-    .checked-in { background-color: #6c757d; }
+    .checked-in { background-color: #6c757d;color: #ced4da; }
 
   ion-card-header {
     padding: 16px;

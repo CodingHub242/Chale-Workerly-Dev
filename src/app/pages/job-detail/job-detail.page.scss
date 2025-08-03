@@ -1,7 +1,9 @@
 :host {
   --ion-background-color: #f4f5f8;
 }
-
+ ion-content{
+     --background:#ffffff;
+  }
 ion-toolbar {
   --background: #004c4d;
   --color: white;

@@ -24,6 +24,9 @@
 ion-toolbar{
     --background:#004c4d;
 }
+ ion-content{
+     --background:#ffffff;
+  }
 .disabled {
   opacity: 0.6;
   pointer-events: none;

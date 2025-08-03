@@ -51,15 +51,30 @@ export class TimesheetsPage implements OnInit {
     
     // For temps, only show their own timesheets
     if (this.authService.isTemp()) {
-      filters.tempId = this.currentUser.id;
-    }
-    
-    this.timesheetService.getTimesheets(filters).subscribe(timesheets => {
+      // Use the temp user's ID or tempId property
+      const tempUser = this.currentUser;
+      //filters.tempId = tempUser.tempId || tempUser.id;
+      filters.tempId = tempUser.id;
+      console.log('Filtering timesheets for temp user:', filters.tempId);
+
+       this.timesheetService.getTempsheet(filters).subscribe(timesheets => {
       this.timesheets = timesheets;
       this.filteredTimesheets = timesheets;
 
-      //console.log('Timesheets:', this.timesheets);
+      console.log('Loaded timesheets for temp user:', this.timesheets);
     });
+    }
+    else
+      {
+         this.timesheetService.getTimesheets(filters).subscribe(timesheets => {
+          this.timesheets = timesheets;
+          this.filteredTimesheets = timesheets;
+
+          console.log('Loaded timesheets for temp user:', this.timesheets);
+        });
+      }
+    
+   
   }
 
   loadClients() {
