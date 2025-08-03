@@ -263,8 +263,8 @@ ion-popover {
     ion-segment-button {
       min-height: 40px;
       font-size: 14px;
-      --color: var(--text-color-light);
-      --color-checked: var(--primary-color);
+      --color: #000;
+      --color-checked: #fff;
       --indicator-color: var(--primary-color);
       
       ion-label {
