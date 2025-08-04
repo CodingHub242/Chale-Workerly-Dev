@@ -161,7 +161,7 @@ export class ShiftFormPage implements OnInit {
     if (!jobExperienceRange || jobExperienceRange.length !== 2) {
       // Only show approved temps even when no experience filtering
       this.filteredTemps = this.temps.filter(temp => temp.approvalStatus === 'approved');
-      alert('Job does not have a valid experience range: '+ job);
+     // alert('Job does not have a valid experience range: '+ job);
       return;
     }
 
@@ -169,7 +169,7 @@ export class ShiftFormPage implements OnInit {
 
     this.filteredTemps = this.temps.filter(temp => {
       if (typeof temp.experience !== 'number') {
-       alert(`Temp with ID ${temp.id} has an invalid experience value.`);
+      // alert(`Temp with ID ${temp.id} has an invalid experience value.`);
         return false;
       }
       // Only include approved temps that meet experience requirements
@@ -191,7 +191,7 @@ export class ShiftFormPage implements OnInit {
 
     const selectedJob = this.jobs.find(j => j.id === this.form.value.jobId);
     if (!selectedJob) {
-      alert('No job selected');
+      //alert('No job selected');
       this.isLoading = false;
       return;
     }
@@ -216,7 +216,7 @@ export class ShiftFormPage implements OnInit {
         },
         error: (err) => {
           this.isLoading = false;
-          alert('Error updating shift: '+ err);
+          //alert('Error updating shift: '+ err);
         }
       });
     } else {
@@ -229,7 +229,7 @@ export class ShiftFormPage implements OnInit {
         },
         error: (err) => {
           this.isLoading = false;
-          alert('Error creating shift: ' + err);
+          //alert('Error creating shift: ' + err);
         }
       });
     }
