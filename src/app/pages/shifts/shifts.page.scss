@@ -58,7 +58,7 @@ h2 {
 
 // Content Styles
 ion-content.shifts-content {
-  --background: var(--secondary-color);
+  --background: #f0f2f5;
   --padding: 16px;
   
   @media (max-width: 480px) {
@@ -132,7 +132,7 @@ ion-content.shifts-content {
   }
   
   &::-webkit-scrollbar-track {
-    background: var(--secondary-color);
+    background: #f0f2f5;
   }
   
   &::-webkit-scrollbar-thumb {
@@ -540,7 +540,7 @@ ion-content.shifts-content {
 
   .shift-details {
     .time-section {
-      background: var(--secondary-color);
+      background: #f0f2f5;
       border-radius: var(--border-radius);
       padding: 20px;
       margin-bottom: 24px;
@@ -602,7 +602,7 @@ ion-content.shifts-content {
   }
 
     .temps-section {
-      background: var(--secondary-color);
+      background: #f0f2f5;
       border-radius: var(--border-radius);
       padding: 20px;
       box-shadow: 0 2px 4px rgba(0, 0, 0, 0.03);
