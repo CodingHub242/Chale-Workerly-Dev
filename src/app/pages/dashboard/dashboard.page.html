@@ -51,12 +51,18 @@
                     Pending
                   </ion-label>
                 </ion-segment-button>
+                <ion-segment-button value="past">
+                  <ion-label>
+                    <ion-icon name="calendar-outline"></ion-icon>
+                    Past
+                  </ion-label>
+                </ion-segment-button>
               </ion-segment>
 
               <div class="tab-content" [ngClass]="selectedTab">
                 <!-- Working Tab Content -->
                 <ion-list *ngIf="selectedTab === 'working'" class="status-section">
-                  <ion-item *ngFor="let temp of tempsWithShifts | filterByStatus:'started'">
+                  <ion-item *ngFor="let temp of workingTemps">
                     <ion-label>
                       <h2>
                         <ion-icon name="person"></ion-icon>
@@ -80,7 +86,7 @@
 
                 <!-- Pending Tab Content -->
                 <ion-list *ngIf="selectedTab === 'pending'" class="status-section">
-                  <ion-item *ngFor="let temp of tempsWithShifts | filterByStatus:'pending'">
+                  <ion-item *ngFor="let temp of pendingTemps">
                     <ion-label>
                       <h2>
                         <ion-icon name="person"></ion-icon>
@@ -92,6 +98,26 @@
                         <span class="status-pending">
                           <ion-icon name="hourglass-outline"></ion-icon>
                           Pending
+                        </span>
+                      </p>
+                    </ion-label>
+                  </ion-item>
+                </ion-list>
+
+                <!-- Past Tab Content -->
+                <ion-list *ngIf="selectedTab === 'past'" class="status-section">
+                  <ion-item *ngFor="let temp of pastTemps">
+                    <ion-label>
+                      <h2>
+                        <ion-icon name="person"></ion-icon>
+                        {{ temp.firstName }} {{ temp.lastName }}
+                      </h2>
+                      <p *ngFor="let shift of temp.shifts">
+                        <ion-icon name="briefcase-outline"></ion-icon>
+                        {{ shift.job.title }}
+                        <span class="status-completed">
+                          <ion-icon name="checkmark-done-outline"></ion-icon>
+                          Completed
                         </span>
                       </p>
                     </ion-label>

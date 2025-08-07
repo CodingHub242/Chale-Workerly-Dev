@@ -59,13 +59,19 @@
                     Pending
                   </ion-label>
                 </ion-segment-button>
+                <ion-segment-button value="past">
+                  <ion-label>
+                    <ion-icon name="calendar-outline"></ion-icon>
+                    Past
+                  </ion-label>
+                </ion-segment-button>
               </ion-segment>
 
               <div class="tab-content" [ngClass]="selectedTab">
                 <!-- Working Tab Content -->
                 <ion-list *ngIf="selectedTab === 'working'" class="status-section">
-                  <ion-item *ngFor="let shift of getShiftsByStatus('started')">
-                    <ion-label *ngIf="shift.endTime <= new Date()">
+                  <ion-item *ngFor="let shift of getWorkingShifts()">
+                    <ion-label>
                       <h2>
                         <ion-icon name="briefcase-outline"></ion-icon>
                         {{ shift.job.title }}
@@ -88,7 +94,7 @@
 
                 <!-- Pending Tab Content -->
                 <ion-list *ngIf="selectedTab === 'pending'" class="status-section">
-                  <ion-item *ngFor="let shift of getShiftsByStatus('pending')">
+                  <ion-item *ngFor="let shift of getPendingShifts()">
                     <ion-label>
                       <h2>
                         <ion-icon name="briefcase-outline"></ion-icon>
@@ -100,6 +106,26 @@
                         <span class="status-pending">
                           <ion-icon name="hourglass-outline"></ion-icon>
                           Pending
+                        </span>
+                      </p>
+                    </ion-label>
+                  </ion-item>
+                </ion-list>
+
+                <!-- Past Tab Content -->
+                <ion-list *ngIf="selectedTab === 'past'" class="status-section">
+                  <ion-item *ngFor="let shift of getPastShifts()">
+                    <ion-label>
+                      <h2>
+                        <ion-icon name="briefcase-outline"></ion-icon>
+                        {{ shift.job.title }}
+                      </h2>
+                      <p>
+                        <ion-icon name="business-outline"></ion-icon>
+                        {{ shift.client.name }}
+                        <span class="status-completed">
+                          <ion-icon name="checkmark-done-outline"></ion-icon>
+                          Completed
                         </span>
                       </p>
                     </ion-label>

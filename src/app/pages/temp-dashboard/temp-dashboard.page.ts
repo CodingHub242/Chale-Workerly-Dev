@@ -61,6 +61,29 @@ export class TempDashboardPage implements OnInit {
     this.loadMyShifts();
     this.loadMyTimesheets();
   }
+// Helper function to check if a date is today
+  isToday(date: Date): boolean {
+    const today = new Date();
+    return new Date(date).toDateString() === today.toDateString();
+  }
+
+  // Helper function to check if a date is in the future
+  isFuture(date: Date): boolean {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const dateToCheck = new Date(date);
+    dateToCheck.setHours(0, 0, 0, 0);
+    return dateToCheck > today;
+  }
+
+  // Helper function to check if a date is in the past
+  isPast(date: Date): boolean {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const dateToCheck = new Date(date);
+    dateToCheck.setHours(0, 0, 0, 0);
+    return dateToCheck < today;
+  }
 
   loadMyShifts() {
     this.shiftService.getShifts().subscribe(shifts => {
@@ -139,6 +162,28 @@ export class TempDashboardPage implements OnInit {
     });
   }
 
+  // Get working shifts (today and started status)
+  getWorkingShifts(): Shift[] {
+    return this.myShifts.filter(shift =>
+      this.isToday(shift.startTime) && (shift.status === 'started' || shift.status === 'checked-in')
+    );
+  }
+
+  // Get pending shifts (future or pending status)
+  getPendingShifts(): Shift[] {
+    return this.myShifts.filter(shift =>
+      (this.isFuture(shift.startTime) || shift.status === 'pending')
+    );
+  }
+
+  // Get past shifts (before today)
+  getPastShifts(): Shift[] {
+    return this.myShifts.filter(shift =>
+      this.isPast(shift.startTime)
+    );
+  }
+
+  // Get shifts by status (kept for backward compatibility)
   getShiftsByStatus(status: string): Shift[] {
     return this.myShifts.filter(shift => shift.status === status);
   }

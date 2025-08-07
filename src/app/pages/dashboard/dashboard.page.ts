@@ -13,6 +13,7 @@ import { Chart, registerables } from 'chart.js';
 import { Router, RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { FilterByStatusPipe } from '../../pipes/filter-by-status.pipe';
+import { FilterByTimePipe } from '../../pipes/filter-by-start.pipe';
 Chart.register(...registerables);
 
 import { IonicModule } from '@ionic/angular';
@@ -24,7 +25,7 @@ import { AuthService } from 'src/app/services/auth.service';
   templateUrl: './dashboard.page.html',
   styleUrls: ['./dashboard.page.scss'],
   standalone: true,
-  imports: [IonicModule, CommonModule, RouterModule, FilterByStatusPipe, FormsModule]
+  imports: [IonicModule, CommonModule, RouterModule, FilterByStatusPipe,FilterByTimePipe, FormsModule]
 })
 export class DashboardPage implements OnInit {
 
@@ -38,9 +39,16 @@ export class DashboardPage implements OnInit {
   temps: Temp[] = [];
   shifts: Shift[] = [];
   timesheets: Timesheet[] = [];
+  date = new Date().toISOString().split('T')[0];
   chart: any;
   tempsWithShifts: (Temp & { shifts: Shift[] })[] = [];
+  tempsShifts: (Temp & { shifts: Shift[] })[] = [];
   clientsWithShifts: (Client & { shifts: Shift[] })[] = [];
+  
+  // Filtered temps for each tab
+  workingTemps: (Temp & { shifts: Shift[] })[] = [];
+  pendingTemps: (Temp & { shifts: Shift[] })[] = [];
+  pastTemps: (Temp & { shifts: Shift[] })[] = [];
 
   constructor(
     private jobService: JobService,
@@ -75,6 +83,31 @@ export class DashboardPage implements OnInit {
       this.router.navigate(['/temp-dashboard']);
       return;
     }
+  }
+// Helper function to check if a date is today
+  isToday(date: Date): boolean {
+    const today = new Date();
+    return new Date(date).toDateString() === today.toDateString();
+  }
+
+  
+
+  // Helper function to check if a date is in the future
+  isFuture(date: Date): boolean {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const dateToCheck = new Date(date);
+    dateToCheck.setHours(0, 0, 0, 0);
+    return dateToCheck > today;
+  }
+
+  // Helper function to check if a date is in the past
+  isPast(date: Date): boolean {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const dateToCheck = new Date(date);
+    dateToCheck.setHours(0, 0, 0, 0);
+    return dateToCheck < today;
   }
 
   createBarChart() {
@@ -124,25 +157,66 @@ export class DashboardPage implements OnInit {
   }
 
 processShifts() {
-  // Get only active shifts (not completed)
-  const activeShifts = this.shifts.filter(shift => 
-    ['pending', 'checked-in', 'started'].includes(shift.status)
-  );
-
-  // Get temps with their active shifts, limited to 10
+  // Get temps with their shifts
   this.tempsWithShifts = this.temps
     .map(temp => ({
       ...temp,
-      shifts: activeShifts.filter(shift =>
+      shifts: this.shifts.filter(shift =>
         shift.temps.some(t => t.id === temp.id)
       )
     }))
-    .filter(temp => temp.shifts.length > 0)
-    .slice(0, 10);    this.clientsWithShifts = this.clients.map(client => ({
-      ...client,
-      shifts: this.shifts.filter(shift => shift.client.id === client.id)
-    }));
-  }
+    .filter(temp => temp.shifts.length > 0);
+    
+  // Filter temps for each tab
+  this.workingTemps = this.tempsWithShifts
+    .map(temp => ({
+      ...temp,
+      shifts: this.getWorkingShifts(temp.shifts)
+    }))
+    .filter(temp => temp.shifts.length > 0);
+    
+  this.pendingTemps = this.tempsWithShifts
+    .map(temp => ({
+      ...temp,
+      shifts: this.getPendingShifts(temp.shifts)
+    }))
+    .filter(temp => temp.shifts.length > 0);
+    
+  this.pastTemps = this.tempsWithShifts
+    .map(temp => ({
+      ...temp,
+      shifts: this.getPastShifts(temp.shifts)
+    }))
+    .filter(temp => temp.shifts.length > 0);
+
+  this.clientsWithShifts = this.clients.map(client => ({
+    ...client,
+    shifts: this.shifts.filter(shift => shift.client.id === client.id)
+  }));
+
+   
+}
+
+// Get working shifts (today and started status)
+getWorkingShifts(shifts: Shift[]): Shift[] {
+  return shifts.filter(shift =>
+    this.isToday(shift.startTime) && (shift.status === 'started' || shift.status === 'checked-in')
+  );
+}
+
+// Get pending shifts (future or pending status)
+getPendingShifts(shifts: Shift[]): Shift[] {
+  return shifts.filter(shift =>
+    (this.isFuture(shift.startTime) || shift.status === 'pending')
+  );
+}
+
+// Get past shifts (before today)
+getPastShifts(shifts: Shift[]): Shift[] {
+  return shifts.filter(shift =>
+    this.isPast(shift.startTime)
+  );
+}
 
   logout() {
     this.authService.logout();
