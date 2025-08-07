@@ -64,8 +64,8 @@
               <div class="tab-content" [ngClass]="selectedTab">
                 <!-- Working Tab Content -->
                 <ion-list *ngIf="selectedTab === 'working'" class="status-section">
-                  <ion-item *ngFor="let shift of getShiftsByStatus('started') && shift.endTime <= new Date()">
-                    <ion-label>
+                  <ion-item *ngFor="let shift of getShiftsByStatus('started')">
+                    <ion-label *ngIf="shift.endTime <= new Date()">
                       <h2>
                         <ion-icon name="briefcase-outline"></ion-icon>
                         {{ shift.job.title }}
