@@ -69,8 +69,8 @@
                         {{ temp.firstName }} {{ temp.lastName }}
                       </h2>
                       <p *ngFor="let shift of temp.shifts">
-                        <ion-icon name="briefcase-outline"></ion-icon>
-                        {{ shift.job.title }}
+                        <ion-icon style="color:#000;" name="briefcase-outline"></ion-icon>
+                        <span style="color:#000;">{{ shift.job.title }}</span>
                         <span class="status-started">
                           <ion-icon name="pulse-outline"></ion-icon>
                           Work Is Today
@@ -93,8 +93,8 @@
                         {{ temp.firstName }} {{ temp.lastName }}
                       </h2>
                       <p *ngFor="let shift of temp.shifts">
-                        <ion-icon name="briefcase-outline"></ion-icon>
-                        {{ shift.job.title }}
+                        <ion-icon style="color:#000;" name="briefcase-outline"></ion-icon>
+                        <span style="color:#000;">{{ shift.job.title }}</span>
                         <span class="status-pending">
                           <ion-icon name="hourglass-outline"></ion-icon>
                           Pending
@@ -113,11 +113,11 @@
                         {{ temp.firstName }} {{ temp.lastName }}
                       </h2>
                       <p *ngFor="let shift of temp.shifts">
-                        <ion-icon name="briefcase-outline"></ion-icon>
-                        {{ shift.job.title }}
+                        <ion-icon style="color:#000;" name="briefcase-outline"></ion-icon>
+                        <span style="color:#000;">{{ shift.job.title }}</span>
                         <span class="status-completed">
-                          <ion-icon name="checkmark-done-outline"></ion-icon>
-                          Completed
+                          <ion-icon style="color:#000;" name="checkmark-done-outline"></ion-icon>
+                          <span style="color:#000;">Completed</span>
                         </span>
                       </p>
                     </ion-label>

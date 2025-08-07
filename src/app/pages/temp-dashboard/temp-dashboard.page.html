@@ -97,8 +97,8 @@
                   <ion-item *ngFor="let shift of getPendingShifts()">
                     <ion-label>
                       <h2>
-                        <ion-icon name="briefcase-outline"></ion-icon>
-                        {{ shift.job.title }}
+                        <ion-icon style="color:#000;" name="briefcase-outline"></ion-icon>
+                        <span style="color:#000;">{{ shift.job.title }}</span>
                       </h2>
                       <p>
                         <ion-icon name="business-outline"></ion-icon>
@@ -117,15 +117,15 @@
                   <ion-item *ngFor="let shift of getPastShifts()">
                     <ion-label>
                       <h2>
-                        <ion-icon name="briefcase-outline"></ion-icon>
-                        {{ shift.job.title }}
+                        <ion-icon style="color:#000;" name="briefcase-outline"></ion-icon>
+                         <span style="color:#000;">{{ shift.job.title }}</span>
                       </h2>
                       <p>
-                        <ion-icon name="business-outline"></ion-icon>
-                        {{ shift.client.name }}
+                        <ion-icon style="color:#000;" name="business-outline"></ion-icon>
+                         <span style="color:#000;">{{ shift.client.name }}</span>
                         <span class="status-completed">
-                          <ion-icon name="checkmark-done-outline"></ion-icon>
-                          Completed
+                          <ion-icon style="color:#000;" name="checkmark-done-outline"></ion-icon>
+                           <span style="color:#000;">Completed</span>
                         </span>
                       </p>
                     </ion-label>
