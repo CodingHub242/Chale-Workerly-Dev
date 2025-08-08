@@ -23,12 +23,12 @@
   </ion-split-pane>
   
   <!-- Notification Button -->
-  <ion-fab vertical="bottom" horizontal="end" slot="fixed" *ngIf="showNotifications">
+  <!-- <ion-fab vertical="bottom" horizontal="end" slot="fixed" *ngIf="showNotifications">
     <ion-fab-button (click)="toggleNotifications()">
       <ion-icon name="chatbox"></ion-icon>
       <ion-badge color="danger" *ngIf="unreadCount > 0">{{ unreadCount }}</ion-badge>
     </ion-fab-button>
-  </ion-fab>
+  </ion-fab> -->
   
   <!-- Notification Panel -->
   <ion-modal [isOpen]="notificationsOpen" (didDismiss)="notificationsOpen = false">

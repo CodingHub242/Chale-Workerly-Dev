@@ -39,7 +39,7 @@ private cardWidth = 305; // Card width (280px) + margin (25px)
       phone: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
       experience: ['', [Validators.required]],
-      basePay: ['', [Validators.required]],
+      basePay: ['0'],
       status: ['active'],
       password: ['', Validators.required],
       role: ['temp'],

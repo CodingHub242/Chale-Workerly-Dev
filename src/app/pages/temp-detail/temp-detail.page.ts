@@ -47,7 +47,7 @@ import { Timesheet } from '../../models/timesheet.model';
      });
      this.timesheetService.getTimesheets({ tempId: tempId }).subscribe(timesheets => {
        this.timesheets = timesheets;
-       alert(`Loading timesheets for temp ID ${tempId}: `+ timesheets);
+       console.log(`Loading timesheets for temp ID ${tempId}: `+ timesheets);
        this.calculateProductivity();
      });
    }

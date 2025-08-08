@@ -1,0 +1,114 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Duty Check</ion-title>
+    <ion-buttons slot="end">
+      <ion-button>
+        <ion-icon name="person"></ion-icon>
+        <span style="margin-top:4px;margin-left: 10px;">{{ currentUser?.firstName }}</span>
+      </ion-button>
+      <ion-button (click)="logout()">
+        <ion-icon name="log-out"></ion-icon>
+        <span style="margin-top:2px;margin-left: 3px;">Logout</span>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-grid class="check-in-grid">
+    <ion-row>
+      <ion-col size="12">
+        <div class="search-container">
+          <ion-searchbar 
+            [(ngModel)]="searchTerm" 
+            (ionInput)="onSearchTermChange()"
+            placeholder="Search temps or jobs...">
+          </ion-searchbar>
+        </div>
+      </ion-col>
+    </ion-row>
+
+    <ion-row>
+      <ion-col size="12">
+        <div class="today-header">
+          <h2>Temps Working Today</h2>
+          <p>{{ filteredShifts.length }} workers scheduled for today</p>
+        </div>
+      </ion-col>
+    </ion-row>
+
+    <ion-row>
+      <ion-col size="12" *ngFor="let shift of filteredShifts">
+        <ion-card class="temp-card">
+          <ion-card-content>
+            <div class="temp-info">
+              <div class="temp-avatar">
+                <ion-icon style="color:rgba(0, 75, 78, 0.993);" name="person-circle-outline"></ion-icon>
+              </div>
+              <div class="temp-details">
+                <h3>{{ shift.temp.firstName }} {{ shift.temp.lastName }}</h3>
+                <p class="job-title">
+                  <ion-icon name="briefcase-outline"></ion-icon>
+                  {{ shift.job.title }}
+                </p>
+                <p class="client-name">
+                  <ion-icon name="business-outline"></ion-icon>
+                  {{ shift.client.name }}
+                </p>
+              </div>
+              <!-- <div class="temp-status">
+                <ion-chip [color]="getStatusColor(shift.status)" class="status-chip">
+                  <ion-icon [name]="getStatusIcon(shift.status)"></ion-icon>
+                  <ion-label>{{ getStatusText(shift.status) }}</ion-label>
+                </ion-chip>
+              </div> -->
+            </div>
+            
+            <div class="check-in-out-section">
+              <div class="time-info" *ngIf="shift.checkedInAt">
+                <p>
+                  <ion-icon name="time-outline"></ion-icon>
+                  Checked In: {{ shift.checkedInAt | date:'shortTime' }}
+                </p>
+              </div>
+              <div class="time-info" *ngIf="shift.checkedOutAt">
+                <p>
+                  <ion-icon name="time-outline"></ion-icon>
+                  Checked Out: {{ shift.checkedOutAt | date:'shortTime' }}
+                </p>
+              </div>
+              
+              <div class="action-buttons">
+                <ion-button 
+                  *ngIf="shift.status !== 'checked-in' && shift.status !== 'completed'" 
+                  (click)="checkIn(shift)" 
+                  fill="solid" >
+                  Check In
+                </ion-button>
+                
+                <ion-button 
+                  *ngIf="shift.status === 'checked-in'" 
+                  (click)="checkOut(shift)" 
+                  fill="solid" 
+                  color="success">
+                  Check Out
+                </ion-button>
+                
+                <ion-button 
+                  *ngIf="shift.status === 'completed'" 
+                  fill="solid" 
+                  color="medium" 
+                  disabled>
+                  Completed
+                </ion-button>
+              </div>
+            </div>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>

@@ -35,7 +35,7 @@ export class TempFormPage implements OnInit {
       phone: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
       experience: ['', [Validators.required]],
-      basePay: ['', [Validators.required]],
+      basePay: ['0'],
       status: ['active'],
       role: ['temp'],
       approvalStatus: ['pending'],

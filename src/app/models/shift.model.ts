@@ -12,4 +12,5 @@ export interface Shift {
     notes: string;
     status: 'pending' | 'checked-in' | 'started' | 'completed';
     checkedInAt?: Date;
+    checkedOutAt?: Date;
 }

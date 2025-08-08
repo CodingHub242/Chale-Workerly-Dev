@@ -28,6 +28,11 @@ const routes: Routes = [
     canActivate: [AdminGuard],
   },
   {
+    path: 'temp-check-in',
+    loadChildren: () => import('./pages/temp-check-in/temp-check-in.module').then( m => m.TempCheckInPageModule),
+    canActivate: [AdminGuard],
+  },
+  {
     path: 'temp-dashboard',
     loadChildren: () => import('./pages/temp-dashboard/temp-dashboard.module').then( m => m.TempDashboardPageModule),
     canActivate: [TempGuard],
