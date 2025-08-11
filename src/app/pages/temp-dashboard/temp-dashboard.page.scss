@@ -46,7 +46,7 @@ ion-popover {
 }
 
 .stat-card {
-  border-radius: var(--border-radius);
+  border-radius: 50px;
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
   transition: all 0.3s ease;
   padding: 24px;
@@ -145,7 +145,7 @@ ion-popover {
   }
   
   &.shifts-gradient {
-    background: linear-gradient(135deg, #d0021b, #b30217);
+    background: linear-gradient(135deg, #4a90e2, #b30217);
     .stat-icon { color: #d0021b; }
   }
   
