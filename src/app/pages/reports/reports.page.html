@@ -51,7 +51,7 @@
       <ion-col size="12" size-md="6">
         <ion-card>
           <ion-card-header>
-            <ion-card-title>Summary - {{ getSelectedTempName() }}</ion-card-title>
+            <ion-card-title style="color:#000;">Summary - {{ getSelectedTempName() }}</ion-card-title>
             <ion-card-subtitle>{{ getTimesheetCountText() }}</ion-card-subtitle>
           </ion-card-header>
           <ion-card-content>
@@ -80,14 +80,14 @@
       <ion-col size="12" size-md="6">
         <ion-card>
           <ion-card-header>
-            <ion-card-title>Status Distribution</ion-card-title>
+            <ion-card-title style="color:#000;">Status Distribution</ion-card-title>
           </ion-card-header>
           <ion-card-content>
             <div *ngIf="statusSummary.length > 0">
               <ion-list>
                 <ion-item *ngFor="let status of statusSummary">
                   <ion-label>
-                    <h3>{{ status.status }}</h3>
+                    <h3 style="color:#000;">{{ status.status }}</h3>
                     <p>{{ status.count }} timesheets ({{ status.percentage | number:'1.0-0' }}%)</p>
                     <p>{{ status.hours | number:'1.1-1' }}h • GHS{{ status.pay  }}</p>
                   </ion-label>
@@ -110,7 +110,7 @@
       <ion-col size="12">
         <ion-card>
           <ion-card-header>
-            <ion-card-title>Hours Worked by Temp</ion-card-title>
+            <ion-card-title style="color:#000;">Hours Worked by Temp</ion-card-title>
           </ion-card-header>
           <ion-card-content>
             <div class="chart-container">
@@ -157,7 +157,7 @@
             <ion-list>
               <ion-item *ngFor="let timesheet of filteredTimesheets">
                 <ion-label>
-                  <h2>Timesheet #{{ timesheet.id }}</h2>
+                  <h2 style="color:#000;">Timesheet #{{ timesheet.id }}</h2>
                   <p *ngIf="getTempName(timesheet.tempId)">Temp: {{ getTempName(timesheet.tempId) }}</p>
                   <p>Period: {{ timesheet.period_start_date || (timesheet.period ? timesheet.period.startDate : 'N/A') }} to {{ timesheet.period_end_date || (timesheet.period ? timesheet.period.endDate : 'N/A') }}</p>
                   <p>Hours: {{ timesheet.totalHours | number:'1.2-2' }}</p>

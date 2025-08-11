@@ -45,7 +45,7 @@
 }
 
 .temps-content {
-  --background: var(--secondary-color);
+  --background: #ffffff;
   --padding: 16px;
   
   @media (max-width: 480px) {
@@ -58,6 +58,7 @@
   grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
   gap: 20px;
   padding: var(--padding);
+  background: #f4f7fc;
   
   @media (max-width: 768px) {
     grid-template-columns: 1fr;
