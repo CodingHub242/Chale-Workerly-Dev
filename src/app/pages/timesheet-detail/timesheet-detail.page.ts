@@ -7,6 +7,10 @@ import { IonicModule } from '@ionic/angular';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../services/auth.service';
 import { AlertController } from '@ionic/angular';
+import { Job } from 'src/app/models/job.model';
+import { JobService } from 'src/app/services/job.service';
+import { Temp } from 'src/app/models/temp.model';
+import { TempService } from 'src/app/services/temp.service';
 
 @Component({
   selector: 'app-timesheet-detail',
@@ -19,21 +23,34 @@ export class TimesheetDetailPage implements OnInit {
 
   timesheet!: Timesheet;
   currentUser: any;
+  job: Job[] = [];
+  temps: Temp[] = [];
 
   constructor(
     private route: ActivatedRoute,
     private timesheetService: TimesheetService,
     private router: Router,
+    private jobService: JobService,
+    private tempService: TempService,
     private authService: AuthService,
     private alertController: AlertController
   ) { }
 
   ngOnInit() {
     this.currentUser = this.authService.getCurrentUser();
-    const timesheetId = this.route.snapshot.params['id'];
-    this.timesheetService.getTimesheet(timesheetId).subscribe(timesheet => {
+      const timesheetId = this.route.snapshot.params['id'];
+      this.timesheetService.getTimesheet(timesheetId).subscribe(timesheet => {
       this.timesheet = timesheet;
+      //console.log('Timesheet details:', this.timesheet);
     });
+
+    this.loadTemps();
+    this.loadJobs();
+  }
+
+  ionViewWillEnter()
+  {
+      
   }
 
   editTimesheet() {
@@ -92,5 +109,44 @@ export class TimesheetDetailPage implements OnInit {
     });
 
     await alert.present();
+  }
+
+  getStatusColor(status: string): string {
+    switch (status) {
+      case 'draft':
+        return 'warning';
+      case 'submitted':
+        return 'primary';
+      case 'approved':
+        return 'success';
+      case 'rejected':
+        return 'danger';
+      default:
+        return 'medium';
+    }
+  }
+
+  loadTemps() {
+    this.tempService.getTemps().subscribe(temps => {
+      this.temps = temps;
+    });
+  }
+
+  loadJobs() {
+    this.jobService.getJobs().subscribe(jobs => {
+      this.job = jobs;
+
+    });
+  }
+
+    getTempJobById(jobId: string): string {
+    const job = this.job.find(t => (t.id).toString() === (jobId).toString());
+    //console.log(job);
+    return job ? `Job : ${job.title}` : `job ID: ${jobId}`;
+  }
+
+    getTempNameById(tempId: number): string {
+    const temp = this.temps.find(t => t.id === tempId);
+    return temp ? `${temp.firstName} ${temp.lastName}` : `Worker ID: ${tempId}`;
   }
 }

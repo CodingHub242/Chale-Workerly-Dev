@@ -1,5 +1,7 @@
 ion-card {
   margin-bottom: 16px;
+  --background:#ffffff;
+  background: #ffffff;
 }
 ion-toolbar{
     --background:#004c4d;
@@ -15,6 +17,14 @@ ion-item {
      --background:#ffffff;
   }
 
+  ion-list{
+    background:whitesmoke;
+    --background:whitesmoke;
+
+    ion-item{
+        --background:whitesmoke;
+    }
+  }
 .summary-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));

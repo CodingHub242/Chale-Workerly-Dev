@@ -5,6 +5,7 @@ import { TimesheetService } from '../../services/timesheet.service';
 import { ShiftService } from '../../services/shift.service';
 import { Timesheet, TimesheetEntry } from '../../models/timesheet.model';
 import { Shift } from '../../models/shift.model';
+import * as $ from 'jquery';
 import { RouterModule } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
 import { CommonModule } from '@angular/common';
@@ -119,10 +120,18 @@ export class TimesheetFormPage implements OnInit {
 
   loadTimesheet(id: number) {
     this.timesheetService.getTimesheet(id).subscribe(timesheet => {
+    //   console.log('Timesheet details:', timesheet);
+     this.selectedTempId = timesheet.tempId;
+    // console.log(timesheet.period_start_date, timesheet.period_end_date);
+      // const startDate = timesheet.period_start_date;
+      // const endDate = timesheet.period_end_date;
+     
       this.timesheetForm.get('period')?.setValue({
-        startDate: timesheet.period.startDate,
-        endDate: timesheet.period.endDate
+        startDate: timesheet.period_start_date,
+        endDate: timesheet.period_end_date
       });
+
+      //console.log(startDate, endDate);
 
       // Clear existing entries
       const entries = this.timesheetForm.get('entries') as FormArray;
@@ -137,6 +146,11 @@ export class TimesheetFormPage implements OnInit {
 
       this.timesheetForm.get('totalHours')?.setValue(timesheet.totalHours);
       this.timesheetForm.get('totalPay')?.setValue(timesheet.totalPay);
+
+      // Update the form with the timesheet details
+    
+
+
     });
   }
 

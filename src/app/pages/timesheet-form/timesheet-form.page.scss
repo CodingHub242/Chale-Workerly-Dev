@@ -19,6 +19,15 @@ ion-toolbar{
      --background:#ffffff;
   }
 
+  ion-list{
+    background:whitesmoke;
+    --background:whitesmoke;
+
+    ion-item{
+        --background:whitesmoke;
+    }
+  }
+
 .form-toolbar {
   --background: #004c4d;
   --color: white;

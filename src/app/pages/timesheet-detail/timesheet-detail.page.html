@@ -13,37 +13,58 @@
 </ion-header>
 
 <ion-content>
-  <ion-card *ngIf="timesheet">
+  <ion-card class="details-card" *ngIf="timesheet">
     <ion-card-header>
+      <h2 style="font-weight: 600;">TimeSheet Details</h2>
+      <hr style="height: 1px;width: 100%;background: rgba(128, 128, 128, 0.548);">
       <ion-card-title>Timesheet #{{ timesheet.id }}</ion-card-title>
       <ion-card-subtitle>Submitted: {{ timesheet.submittedDate | date:'short' }}</ion-card-subtitle>
     </ion-card-header>
     <ion-card-content>
-      <p><strong>Period:</strong> {{ timesheet.period.startDate | date:'short' }} - {{ timesheet.period.endDate | date:'short' }}</p>
-      <p><strong>Total Hours:</strong> {{ timesheet.totalHours }}</p>
-      <p><strong>Total Pay:</strong> {{ timesheet.totalPay | currency }}</p>
-      <p><strong>Status:</strong> {{ timesheet.status }}</p>
-      <p *ngIf="timesheet.rejectionReason"><strong>Rejection Reason:</strong> {{ timesheet.rejectionReason }}</p>
+      <p style="font-weight: 500;"><strong>Period:</strong> {{ timesheet.period_start_date | date:'short' }} - {{ timesheet.period_end_date | date:'short' }}</p>
+      <p style="font-weight: 500;"><strong>Total Hours:</strong> {{ timesheet.totalHours }}</p>
+      <p style="font-weight: 500;"><strong>Total Pay:</strong> GHS{{ timesheet.totalPay }}</p>
+      <p style="font-weight: 500;"><strong>Status:</strong>  <ion-badge [color]="getStatusColor(timesheet.status)">{{ timesheet.status | titlecase }}</ion-badge></p>
       
+      
+      <ion-list *ngIf="timesheet.rejectionReason">
+        <ion-list-header style="font-size: 25px;font-weight: 300;">
+          Rejection Reason
+        </ion-list-header>
+       
+        <ion-item *ngFor="let shift of timesheet.shifts">
+          <p><strong>{{ timesheet.rejectionReason }}</strong></p>
+        </ion-item>
+      </ion-list>
+
+
+
       <!-- Approval buttons for admins -->
       <div *ngIf="currentUser?.role === 'admin' && timesheet.status === 'submitted'" class="approval-buttons">
-        <ion-button expand="block" color="success" (click)="approveTimesheet()">
+        <ion-button expand="" style="color: whitesmoke;--color: whitesmoke;--ion-color-contrast: whitesmoke !important;" color="success" (click)="approveTimesheet()">
           Approve Timesheet
         </ion-button>
-        <ion-button expand="block" color="danger" (click)="rejectTimesheet()">
+        <ion-button expand="" style="color: whitesmoke;--color: whitesmoke;--ion-color-contrast: whitesmoke !important;" color="danger" (click)="rejectTimesheet()">
           Reject Timesheet
         </ion-button>
       </div>
+      </ion-card-content>
+    </ion-card>
       
-      <ion-list>
-        <ion-list-header>
-          Shifts
+    <ion-card class="details-card" *ngIf="timesheet">
+      <ion-card-content>
+        <ion-list>
+        <ion-list-header style="font-size: 25px;font-weight: 300;">
+          Shifts Details
         </ion-list-header>
+       
         <ion-item *ngFor="let shift of timesheet.shifts">
           <ion-label>
-            <h2>{{ shift.job.title }}</h2>
-            <p *ngIf="shift.temps && shift.temps.length > 0">
-              {{ shift.temps[0].firstName }} {{ shift.temps[0].lastName }}
+            <!-- <h2>{{ shift.job.title }}</h2> -->
+            <p>{{ getTempJobById(shift.job_id!) }}</p>
+             
+            <p *ngIf="shift.temp_ids && shift.temp_ids.length > 0">
+              {{ getTempNameById(timesheet.tempId) }}
             </p>
             <!-- <p *ngIf="shift.temp">Temp: {{ shift.temp?.firstName }} {{ shift.temp?.lastName }}</p> -->
             <p *ngIf="shift.client">Client: {{ shift.client?.name }}</p>
@@ -52,20 +73,27 @@
           </ion-label>
         </ion-item>
       </ion-list>
-      
-      <ion-list *ngIf="timesheet.entries && timesheet.entries.length > 0">
-        <ion-list-header>
-          Work Entries
-        </ion-list-header>
-        <ion-item *ngFor="let entry of timesheet.entries">
-          <ion-label>
-            <h2>{{ entry.date | date:'short' }}</h2>
-            <p>Time: {{ entry.startTime }} - {{ entry.endTime }}</p>
-            <p *ngIf="entry.breakDuration > 0">Break: {{ entry.breakDuration }} minutes</p>
-            <p *ngIf="entry.notes">Notes: {{ entry.notes }}</p>
-          </ion-label>
-        </ion-item>
-      </ion-list>
-    </ion-card-content>
-  </ion-card>
+      </ion-card-content>      
+
+      </ion-card>
+
+
+      <ion-card class="details-card" *ngIf="timesheet">
+        <ion-card-content>    
+          <ion-list *ngIf="timesheet.entries && timesheet.entries.length > 0">
+          <ion-list-header style="font-size: 25px;font-weight: 300;">
+            Work Entry Details
+          </ion-list-header>
+        
+          <ion-item *ngFor="let entry of timesheet.entries">
+            <ion-label>
+              <p>{{ entry.date | date:'short' }}</p>
+              <p>Time: {{ entry.startTime }} - {{ entry.endTime }}</p>
+              <p *ngIf="entry.breakDuration > 0">Break: {{ entry.breakDuration }} minutes</p>
+              <p *ngIf="entry.notes">Notes: {{ entry.notes }}</p>
+            </ion-label>
+          </ion-item>
+          </ion-list>
+        </ion-card-content>
+      </ion-card>
 </ion-content>

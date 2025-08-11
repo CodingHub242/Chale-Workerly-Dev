@@ -4,3 +4,16 @@ ion-toolbar{
  ion-content{
      --background:#ffffff;
   }
+
+    ion-list{
+    background:whitesmoke;
+    --background:whitesmoke;
+
+    ion-item{
+        --background:whitesmoke;
+    }
+  }
+
+  form{
+    background: #ffffff;
+  }

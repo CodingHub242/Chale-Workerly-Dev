@@ -207,7 +207,8 @@ getWorkingShifts(shifts: Shift[]): Shift[] {
 // Get pending shifts (future or pending status)
 getPendingShifts(shifts: Shift[]): Shift[] {
   return shifts.filter(shift =>
-    (this.isFuture(shift.startTime) || shift.status === 'pending')
+    //(this.isFuture(shift.startTime) || shift.status === 'pending')
+     (this.isFuture(shift.startTime))
   );
 }
 

@@ -13,4 +13,7 @@ export interface Shift {
     status: 'pending' | 'checked-in' | 'started' | 'completed';
     checkedInAt?: Date;
     checkedOutAt?: Date;
+
+    temp_ids?: Temp[];
+    job_id?: string;
 }

@@ -65,3 +65,21 @@ ion-button{
     font-family: "Proza Display W03 Bold";
     --background:#004c4d;
 }
+
+.password-input-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.password-toggle {
+    position: absolute;
+    right: 0px;
+    top: 0%;
+    transform: translateY(-50%);
+    --padding-start: 0;
+    --padding-end: 0;
+    height: 30px;
+    width: 62px;
+    z-index: 20;
+}

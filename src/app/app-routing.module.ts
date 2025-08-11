@@ -125,6 +125,11 @@ const routes: Routes = [
   //   loadChildren: () => import('./pages/shift-detail/shift-detail.module').then( m => m.ShiftDetailPageModule)
   // },
   {
+    path: 'timesheet-detail',
+    loadChildren: () => import('./pages/timesheet-detail/timesheet-detail.module').then( m => m.TimesheetDetailPageModule),
+    canActivate: [AuthGuard],
+  },
+  {
     path: 'timesheet-detail/:id',
     loadChildren: () => import('./pages/timesheet-detail/timesheet-detail.module').then( m => m.TimesheetDetailPageModule),
     canActivate: [AuthGuard],

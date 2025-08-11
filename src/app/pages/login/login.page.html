@@ -40,10 +40,13 @@
               <ion-item lines="none">
                 <fieldset class="input-item">
                   <legend style="color: rgb(0, 0, 0);">Password</legend>
-                  <ion-input formControlName="password"  type="password" placeholder="xxxxxxxxx"></ion-input>
+                  <div class="password-input-container">
+                    <ion-input formControlName="password" [type]="passwordType" placeholder="xxxxxxxxx"></ion-input>
+                    <ion-button fill="clear" size="small" class="password-toggle" (click)="togglePasswordVisibility()">
+                      <ion-icon [name]="passwordIcon" slot="icon-only"></ion-icon>
+                    </ion-button>
+                  </div>
                 </fieldset>
-                <!-- <ion-label>Password</ion-label>
-                <ion-input formControlName="password" type="password"></ion-input> -->
               </ion-item>
               <ion-button type="submit" class="mt-2">Login</ion-button>
               <p class="mt-3"><span>I don't have an account?</span> <span (click)="register()" style="color:orange;cursor: pointer;"> -  Register</span></p> 

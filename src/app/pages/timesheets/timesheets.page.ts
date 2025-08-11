@@ -2,8 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { TimesheetService } from '../../services/timesheet.service';
 import { InvoiceService, InvoicePreview } from '../../services/invoice.service';
 import { ClientService } from '../../services/client.service';
+import { TempService } from '../../services/temp.service';
 import { Timesheet } from '../../models/timesheet.model';
 import { Client } from '../../models/client.model';
+import { Temp } from '../../models/temp.model';
 import { Router } from '@angular/router';
 import { RouterModule } from '@angular/router';
 import { IonicModule, AlertController, ModalController, ToastController } from '@ionic/angular';
@@ -27,12 +29,14 @@ export class TimesheetsPage implements OnInit {
   currentUser: any;
   selectedTimesheets: number[] = [];
   clients: Client[] = [];
+  temps: Temp[] = [];
   showInvoiceGeneration = false;
 
   constructor(
     private timesheetService: TimesheetService,
     private invoiceService: InvoiceService,
     private clientService: ClientService,
+    private tempService: TempService,
     private router: Router,
     public authService: AuthService,
     private alertController: AlertController,
@@ -42,6 +46,7 @@ export class TimesheetsPage implements OnInit {
 
   ngOnInit() {
     this.currentUser = this.authService.getCurrentUser();
+    this.loadTemps();
     this.loadTimesheets();
     this.loadClients();
   }
@@ -61,7 +66,7 @@ export class TimesheetsPage implements OnInit {
       this.timesheets = timesheets;
       this.filteredTimesheets = timesheets;
 
-      console.log('Loaded timesheets for temp user:', this.timesheets);
+      //console.log('Loaded timesheets for temp user:', this.timesheets);
     });
     }
     else
@@ -70,7 +75,7 @@ export class TimesheetsPage implements OnInit {
           this.timesheets = timesheets;
           this.filteredTimesheets = timesheets;
 
-          console.log('Loaded timesheets for temp user:', this.timesheets);
+          //console.log('Loaded timesheets for temp user:', this.timesheets);
         });
       }
     
@@ -81,6 +86,17 @@ export class TimesheetsPage implements OnInit {
     this.clientService.getClients().subscribe(clients => {
       this.clients = clients;
     });
+  }
+
+  loadTemps() {
+    this.tempService.getTemps().subscribe(temps => {
+      this.temps = temps;
+    });
+  }
+
+  getTempNameById(tempId: number): string {
+    const temp = this.temps.find(t => t.id === tempId);
+    return temp ? `${temp.firstName} ${temp.lastName}` : `Worker ID: ${tempId}`;
   }
 
   addTimesheet() {

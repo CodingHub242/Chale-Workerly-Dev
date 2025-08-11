@@ -19,6 +19,8 @@ import { AppComponent } from 'src/app/app.component';
 })
 export class LoginPage implements OnInit {
   loginForm!: FormGroup;
+  passwordType: string = 'password';
+  passwordIcon: string = 'eye-outline';
 
   constructor(private authService: AuthService, private router: Router,private appComponent: AppComponent) {}
 
@@ -47,5 +49,10 @@ export class LoginPage implements OnInit {
 
   register() {
     this.router.navigate(['/register']);
+  }
+
+  togglePasswordVisibility() {
+    this.passwordType = this.passwordType === 'password' ? 'text' : 'password';
+    this.passwordIcon = this.passwordIcon === 'eye-outline' ? 'eye-off-outline' : 'eye-outline';
   }
 }

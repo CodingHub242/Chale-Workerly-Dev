@@ -22,6 +22,8 @@ export class TempregisterPage implements OnInit, OnDestroy {
 registerForm!: FormGroup;
 isLoading = false;
 errorMessage = '';
+passwordType: string = 'password';
+passwordIcon: string = 'eye-outline';
 availableJobs: Job[] = [];
 displayJobs: Job[] = []; // Jobs for display including duplicates
 sliderOffset = 0;
@@ -146,6 +148,11 @@ onSubmit() {
 
    login() {
     this.router.navigate(['/templogin']);
+  }
+
+  togglePasswordVisibility() {
+    this.passwordType = this.passwordType === 'password' ? 'text' : 'password';
+    this.passwordIcon = this.passwordIcon === 'eye-outline' ? 'eye-off-outline' : 'eye-outline';
   }
 
 }

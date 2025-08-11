@@ -84,7 +84,7 @@
           <div class="timesheet-info">
             <h3>Timesheet #{{ timesheet.id }}</h3>
             <p>Period: {{ timesheet.period_start_date | date:'short' }} - {{ timesheet.period_end_date | date:'short' }}</p>
-            <p *ngIf="timesheet.tempId">Worker ID: {{ timesheet.tempId }}</p>
+            <p *ngIf="timesheet.tempId">Worker: {{ getTempNameById(timesheet.tempId) }}</p>
             <p>Submitted: {{ timesheet.submittedDate | date:'short' }}</p>
           </div>
           <div class="timesheet-status">

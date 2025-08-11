@@ -2,6 +2,16 @@
   margin: 10px 0;
   border-radius: 12px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+   background:whitesmoke;
+  --background:whitesmoke;
+  ion-list{
+    background:whitesmoke;
+    --background:whitesmoke;
+
+    ion-item{
+        --background:whitesmoke;
+    }
+  }
   
   .card-header {
     display: flex;
@@ -25,6 +35,15 @@
   }
   ion-content{
      --background:#ffffff;
+  }
+
+  ion-list{
+    background:whitesmoke;
+    --background:whitesmoke;
+
+    ion-item{
+        --background:whitesmoke;
+    }
   }
   .card-content {
     padding: 0 16px 16px 16px;
@@ -67,6 +86,7 @@
     --padding-end: 12px;
     --padding-top: 6px;
     --padding-bottom: 6px;
+  
     font-size: 13px;
     flex: 1;
     min-width: 80px;
