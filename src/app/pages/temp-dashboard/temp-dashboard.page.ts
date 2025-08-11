@@ -172,7 +172,8 @@ export class TempDashboardPage implements OnInit {
   // Get pending shifts (future or pending status)
   getPendingShifts(): Shift[] {
     return this.myShifts.filter(shift =>
-      (this.isFuture(shift.startTime) || shift.status === 'pending')
+     // (this.isFuture(shift.startTime) || shift.status === 'pending')
+       (this.isFuture(shift.startTime))
     );
   }
 
