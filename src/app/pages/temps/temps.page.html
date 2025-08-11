@@ -14,8 +14,21 @@
 </ion-header>
 
 <ion-content class="temps-content">
-  <div class="temps-grid">
-    <div class="temp-card" *ngFor="let temp of temps" (click)="viewTemp(temp.id)">
+   <ion-row>
+      <ion-col size="12">
+        <div class="search-container">
+          <ion-searchbar 
+            [(ngModel)]="searchTerm" 
+            (ionInput)="onSearchTermChange($event)"
+            placeholder="Search temps...">
+          </ion-searchbar>
+        </div>
+      </ion-col>
+    </ion-row>
+
+
+  <div class="temps-grid" id="temps-grid">
+    <div class="temp-card" id="temp-card" *ngFor="let temp of temps" (click)="viewTemp(temp.id)">
       <div class="temp-header">
         <div class="temp-avatar">
           <!-- <ion-avatar>

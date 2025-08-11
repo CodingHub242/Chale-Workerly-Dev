@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, CUSTOM_ELEMENTS_SCHEMA, OnInit } from '@angular/core';
 import { TempService } from '../../services/temp.service';
 import { Temp } from '../../models/temp.model';
 import { Router } from '@angular/router';
@@ -8,6 +8,7 @@ import { CommonModule } from '@angular/common';
 import { AuthService } from '../../services/auth.service';
 
 @Component({
+  schemas:[CUSTOM_ELEMENTS_SCHEMA],
   selector: 'app-temps',
   templateUrl: './temps.page.html',
   styleUrls: ['./temps.page.scss'],
@@ -18,6 +19,8 @@ export class TempsPage implements OnInit {
 
   temps: Temp[] = [];
   currentUserRole: string = '';
+  searchTerm: string = '';
+
   isLoading = false;
 
   constructor(
@@ -179,4 +182,22 @@ export class TempsPage implements OnInit {
       default: return 'Pending Review';
     }
   }
+
+  onSearchTermChange(event:any) {
+    const searchbarr = document.querySelector<HTMLElement>('ion-searchbar');
+    const itemss = Array.from(document.querySelector<HTMLElement>('#temps-grid')!.children);
+
+   //searchbarr?.addEventListener('ionInput', handleSInput);
+
+  // function handleSInput(ev:any) {
+     const query = event.target.value.toLowerCase();
+     requestAnimationFrame(() => {
+       itemss.forEach((item:any) => {
+         const shouldShow = item.textContent.toLowerCase().indexOf(query) > -1;
+         item["style"].display = shouldShow ? 'block' : 'none';
+       });
+     });
+  }
+
+
 }

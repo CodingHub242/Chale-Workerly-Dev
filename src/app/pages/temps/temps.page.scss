@@ -352,3 +352,16 @@
     }
   }
 }
+
+.search-container {
+  margin-bottom: 20px;
+  
+  ion-searchbar {
+    padding: 0;
+    --background: #f4f4f4;
+    color:gray;
+    --color:gray;
+    --border-radius: var(--border-radius);
+    box-shadow: 0 2px 8px var(--shadow-color);
+  }
+}
