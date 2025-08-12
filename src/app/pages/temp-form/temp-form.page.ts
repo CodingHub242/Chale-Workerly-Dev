@@ -33,13 +33,13 @@ export class TempFormPage implements OnInit {
       firstName: ['', Validators.required],
       lastName: ['', Validators.required],
       phone: ['', Validators.required],
-      email: ['', [Validators.required, Validators.email]],
+      email: [''],
       experience: ['', [Validators.required]],
       basePay: ['0'],
       status: ['active'],
       role: ['temp'],
       approvalStatus: ['pending'],
-      skills: ['', Validators.required],
+      skills: [''],
     });
 
     this.tempId = this.route.snapshot.params['id'];

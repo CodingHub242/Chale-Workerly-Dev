@@ -5,6 +5,8 @@ import { Router } from '@angular/router';
 import { RouterModule } from '@angular/router';
 import { IonicModule, AlertController, ToastController } from '@ionic/angular';
 import { CommonModule } from '@angular/common';
+import { File } from '@ionic-native/file/ngx';
+import * as XLSX from 'xlsx';
 import { AuthService } from '../../services/auth.service';
 
 @Component({
@@ -21,6 +23,8 @@ export class TempsPage implements OnInit {
   currentUserRole: string = '';
   searchTerm: string = '';
 
+  exportArray: any[] = [];
+
   isLoading = false;
 
   constructor(
@@ -28,12 +32,14 @@ export class TempsPage implements OnInit {
     private router: Router,
     private authService: AuthService,
     private alertController: AlertController,
+    private file:File,
     private toastController: ToastController
   ) { }
 
   ngOnInit() {
     this.loadCurrentUser();
     this.loadTemps();
+    
   }
 
   loadCurrentUser() {
@@ -44,6 +50,21 @@ export class TempsPage implements OnInit {
   loadTemps() {
     this.tempService.getTemps().subscribe(temps => {
       this.temps = temps;
+
+      this.exportArray = [];
+
+      temps.forEach((t:any) => {
+        this.exportArray.push({
+          'Title' : t.title,
+          'First Name': t.firstName,
+          'Last Name': t.lastName,
+          'Email': t.email,
+          'Phone Number': t.phone,
+          'Experience In Years': t.experience,
+          'Status': t.status,
+          });
+      });
+      console.log('Loaded temps:', this.exportArray);
     });
   }
 
@@ -199,5 +220,34 @@ export class TempsPage implements OnInit {
      });
   }
 
+  ExportTemps()
+  {
+    var ws = XLSX.utils.json_to_sheet(this.exportArray);
+    var wb = {Sheets:{'Temps Data':ws},SheetNames:['Temps Data']};
+    var buffer = XLSX.write(wb,{bookType:'xlsx',type:'array'});
+    XLSX.writeFile(wb,"Temps Data"+".xlsx");
+  //console.log (buffer);
+    this.SaveReport(buffer);
+
+   // this.ReportReady = false;
+  }
+
+  async SaveReport(buffer:any)
+{
+    var fileExtension = ".xlsx";
+    var fileName = 'Temps Data_'+ Date.now().toString();
+    var data:Blob = new Blob([buffer],{type:''});
+
+    this.file.writeFile(this.file.externalRootDirectory,fileName+fileExtension,data,{replace:true})
+    .then(()=>{
+        void  alert("Report Exported, Check Storage");
+
+    },(err:any)=>{
+        //this.checkPermissionz();
+    });
+  
+  
+  
+}
 
 }
