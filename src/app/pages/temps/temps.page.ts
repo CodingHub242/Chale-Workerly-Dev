@@ -240,7 +240,7 @@ export class TempsPage implements OnInit {
 
     this.file.writeFile(this.file.externalRootDirectory,fileName+fileExtension,data,{replace:true})
     .then(()=>{
-        void  alert("Report Exported, Check Storage");
+        void  alert("Exported Successfully");
 
     },(err:any)=>{
         //this.checkPermissionz();
