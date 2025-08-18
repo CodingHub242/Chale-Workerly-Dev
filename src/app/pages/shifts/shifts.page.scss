@@ -501,10 +501,13 @@ ion-content.shifts-content {
     }
   }
 
-   .pending { background-color: #ffc107; }
-    .started { background-color: #28a745;color:#fff; }
-    .completed { background-color: #6c757d; }
-    .checked-in { background-color: #6c757d;color: #ced4da; }
+   .pending { background-color: #ffc107; padding:8px;border-radius: 6px; }
+    .started { background-color: #28a745;color:#fff; padding:8px;border-radius: 6px; }
+    .completed { background-color: #6c757d;color:white;text-align: center; padding:8px;border-radius: 6px;}
+    .checked-in {    background-color: #449d42;
+    color: #ced4da;
+    margin-top: 20px;padding:8px;border-radius: 6px;
+    text-align: center; }
 
   ion-card-header {
     padding: 16px;

@@ -118,6 +118,10 @@
                           [class.started]="shift.status === 'started'"
                           [class.completed]="shift.status === 'completed'"
                           [class.checked-in]="shift.status === 'checked-in'">{{ shift.status }}</span>
+
+                          <span [class.pending]="shift.tempStatus === 'pending'"
+                          [class.pending]="shift.tempStatus === 'declined'"
+                          [class.checked-in]="shift.tempStatus === 'accepted'">My Shift Response : {{ shift.tempStatus }}</span>
                       </div>
                     </div>
                   </div>
@@ -129,6 +133,17 @@
               <ion-button *ngIf="!authService.isTemp()" fill="clear" (click)="updateStatus(shift)" class="action-button">
                 <ion-icon slot="start" name="sync-outline"></ion-icon>
                 Update Status
+              </ion-button>
+              <!-- <ion-button fill="clear" (click)="viewShift(shift.id)" class="action-button primary">
+                <ion-icon slot="start" name="eye-outline"></ion-icon>
+                View Details
+              </ion-button> -->
+            </div>
+
+             <div class="card-actions">
+              <ion-button *ngIf="authService.isTemp()" fill="clear" (click)="updateTStatus(shift)" class="action-button">
+                <ion-icon slot="start" name="sync-outline"></ion-icon>
+                Shift Response 
               </ion-button>
               <!-- <ion-button fill="clear" (click)="viewShift(shift.id)" class="action-button primary">
                 <ion-icon slot="start" name="eye-outline"></ion-icon>

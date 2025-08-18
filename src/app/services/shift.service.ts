@@ -34,6 +34,10 @@ export class ShiftService {
     return this.http.put(`${this.postapiUrl}/${id}`, shiftData);
   }
 
+   updateShiftTStat(id: number, shiftData: any): Observable<any> {
+    return this.http.put(`${this.postapiUrl}/tstat/${id}`, shiftData);
+  }
+
   getShiftsByTemp(tempId: number): Observable<Shift[]> {
     return this.http.get<Shift[]>(`${this.apiUrl}/temp/${tempId}`);
   }
