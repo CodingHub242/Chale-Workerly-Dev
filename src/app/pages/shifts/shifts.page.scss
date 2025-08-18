@@ -501,9 +501,9 @@ ion-content.shifts-content {
     }
   }
 
-   .pending { background-color: #ffc107; padding:8px;border-radius: 6px; }
-    .started { background-color: #28a745;color:#fff; padding:8px;border-radius: 6px; }
-    .completed { background-color: #6c757d;color:white;text-align: center; padding:8px;border-radius: 6px;}
+   .pending { background-color: #ffc107; padding:8px;border-radius: 6px;margin-top:20px; }
+    .started { background-color: #28a745;color:#fff; padding:8px;border-radius: 6px;margin-top:20px; }
+    .completed { background-color: #6c757d;color:white;text-align: center; padding:8px;border-radius: 6px;margin-top:10px;}
     .checked-in {    background-color: #449d42;
     color: #ced4da;
     margin-top: 20px;padding:8px;border-radius: 6px;

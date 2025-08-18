@@ -153,7 +153,7 @@ export class ShiftsPage implements OnInit {
     const updatedShift = { ...shift, status };
     
     // Prepare the data to send to the API
-    const updateData: any = { status: status };
+    const updateData: any = { status: status, temp: shift.temps.map(t => t.id) };
     
     // If status is being updated to 'checked-in', include the current datetime
     // if (status === 'accepted') {
