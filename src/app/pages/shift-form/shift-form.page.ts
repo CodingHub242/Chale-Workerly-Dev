@@ -150,6 +150,7 @@ export class ShiftFormPage implements OnInit {
   }
 
   async openAssignDrawer() {
+    window.scrollTo(0, 0);
     const modal = await this.modalCtrl.create({
       component: AssignDrawerComponent,
       componentProps: {

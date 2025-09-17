@@ -15,10 +15,14 @@ export class AssignDrawerComponent implements OnInit {
 
   @Input() temps: Temp[] = [];
   @Input() selectedTemps: number[] = [];
+  searchTerm: string = '';
+  filteredTemps: Temp[] = [];
 
   constructor(private modalCtrl: ModalController) { }
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.filteredTemps = this.temps;
+  }
 
   dismiss() {
     this.modalCtrl.dismiss();
@@ -41,6 +45,19 @@ export class AssignDrawerComponent implements OnInit {
       this.selectedTemps.splice(index, 1);
     } else {
       this.selectedTemps.push(tempId);
+    }
+  }
+
+  onSearchTermChange(event: any) {
+    const query = event.target.value.toLowerCase();
+    if (query) {
+      this.filteredTemps = this.temps.filter(temp =>
+        temp.firstName.toLowerCase().includes(query) ||
+        temp.lastName.toLowerCase().includes(query) ||
+        temp.email.toLowerCase().includes(query)
+      );
+    } else {
+      this.filteredTemps = this.temps;
     }
   }
 

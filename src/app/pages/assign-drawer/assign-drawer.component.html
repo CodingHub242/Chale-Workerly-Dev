@@ -11,12 +11,22 @@
 </ion-header>
 
 <ion-content>
+  <div class="search-container">
+    <ion-searchbar
+      [(ngModel)]="searchTerm"
+      (ionInput)="onSearchTermChange($event)"
+      placeholder="Search temps...">
+    </ion-searchbar>
+  </div>
   <ion-list>
     <ion-list-header>Temps</ion-list-header>
+    <div *ngIf="filteredTemps.length === 0 && temps.length > 0" class="empty-message">
+      <p>No temps match your search.</p>
+    </div>
     <div *ngIf="temps.length === 0" class="empty-message">
       <p>No temps available that match the job's experience requirements.</p>
     </div>
-    <ion-item *ngFor="let temp of temps">
+    <ion-item *ngFor="let temp of filteredTemps">
       <ion-label>{{ temp.firstName }} {{ temp.lastName }}</ion-label>
       <ion-checkbox
         slot="end"
