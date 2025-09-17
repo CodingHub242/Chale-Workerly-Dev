@@ -26,6 +26,7 @@ export class ShiftFormPage implements OnInit {
   isEditMode = false;
   shiftId: number = 0;
   jobs: Job[] = [];
+  filteredJobs: Job[] = [];
   temps: Temp[] = [];
   clients: Client[] = [];
   filteredTemps: Temp[] = [];
@@ -103,7 +104,10 @@ export class ShiftFormPage implements OnInit {
       this.form.get('tempIds')?.setValue([]);
     });
 
-    this.jobService.getJobs().subscribe(jobs => this.jobs = jobs);
+    this.jobService.getJobs().subscribe(jobs => {
+      this.jobs = jobs;
+      this.filteredJobs = jobs;
+    });
     this.tempService.getTemps().subscribe(temps => {
       // Filter to only show approved temps
       this.temps = temps.filter(temp => temp.approvalStatus === 'approved');
@@ -111,6 +115,15 @@ export class ShiftFormPage implements OnInit {
      // console.log('Loaded approved temps for shift creation:', this.temps);
     });
     this.clientService.getClients().subscribe(clients => this.clients = clients);
+
+    this.form.get('clientId')?.valueChanges.subscribe(clientId => {
+      if (clientId) {
+        this.filteredJobs = this.jobs.filter(job => job.client.id === clientId);
+      } else {
+        this.filteredJobs = this.jobs;
+      }
+      this.form.patchValue({ jobId: '' });
+    });
 
     const date = this.route.snapshot.queryParams['date'];
     if (date) {
@@ -131,6 +144,7 @@ export class ShiftFormPage implements OnInit {
           endTime: new Date(shift[0].endTime).toISOString().slice(0, 16),
           notes: shift[0].notes
         });
+        this.filteredJobs = this.jobs.filter(job => job.client.id === shift[0].client.id);
       });
     }
   }

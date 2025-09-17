@@ -35,10 +35,19 @@
         
         <div class="card-content">
           <div class="form-group">
+            <label class="form-label">Select Client</label>
+            <div class="select-wrapper">
+              <ion-select formControlName="clientId" interface="popover" placeholder="Choose a client" class="modern-select">
+                <ion-select-option *ngFor="let client of clients" [value]="client.id">{{ client.name }}</ion-select-option>
+              </ion-select>
+            </div>
+          </div>
+
+          <div class="form-group">
             <label class="form-label">Select Job</label>
             <div class="select-wrapper">
               <ion-select formControlName="jobId" interface="popover" placeholder="Choose a job" class="modern-select">
-                <ion-select-option *ngFor="let job of jobs" [value]="job.id">{{ job.title }}</ion-select-option>
+                <ion-select-option *ngFor="let job of filteredJobs" [value]="job.id">{{ job.title }}</ion-select-option>
               </ion-select>
             </div>
           </div>

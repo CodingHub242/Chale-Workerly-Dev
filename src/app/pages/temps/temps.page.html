@@ -92,14 +92,15 @@
         </ion-button>
         
         <!-- Admin-only approval buttons -->
-        <div class="admin-actions" *ngIf="isAdmin() && (temp.approvalStatus === 'pending' || !temp.approvalStatus)">
+        <div class="admin-actions" *ngIf="isAdmin()">
           <ion-button
             fill="solid"
             color="success"
             size="small"
             class="approval-button"
             (click)="approveTemp(temp, $event)"
-            [disabled]="isLoading">
+            [disabled]="isLoading"
+            *ngIf="temp.approvalStatus !== 'approved'">
             <ion-icon slot="start" name="checkmark-outline"></ion-icon>
             Approve
           </ion-button>
@@ -109,7 +110,8 @@
             size="small"
             class="approval-button"
             (click)="declineTemp(temp, $event)"
-            [disabled]="isLoading">
+            [disabled]="isLoading"
+            *ngIf="temp.approvalStatus !== 'declined'">
             <ion-icon slot="start" name="close-outline"></ion-icon>
             Decline
           </ion-button>
