@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\api\v1\TimesheetController;
 use App\Http\Controllers\api\v1\ReportController;
+use App\Http\Controllers\api\v1\WorkerController;
 
 /*
 |--------------------------------------------------------------------------
@@ -24,9 +25,18 @@ Route::prefix('v1')->group(function () {
     Route::post('/timesheets/{id}/submit', [TimesheetController::class, 'submit']);
     Route::post('/timesheets/{id}/approve', [TimesheetController::class, 'approve']);
     Route::post('/timesheets/{id}/reject', [TimesheetController::class, 'reject']);
-    
+
     // Report routes
     Route::get('/reports/timesheets', [ReportController::class, 'getTimesheetReport']);
     Route::get('/reports/status-distribution', [ReportController::class, 'getStatusDistribution']);
     Route::get('/reports/export', [ReportController::class, 'exportTimesheetData']);
+
+    // Shift routes
+    Route::get('/shifts', [WorkerController::class, 'getShifts']);
+    Route::post('/shifts', [WorkerController::class, 'AddShift']);
+    Route::get('/shifts/{shift}', [WorkerController::class, 'getShift']);
+    Route::put('/shifts/{shift}', [WorkerController::class, 'UpdateShift']);
+    Route::put('/updateStat/{shift}', [WorkerController::class, 'UpdateShiftStat']);
+    Route::put('/updateStat/tstat/{shift}', [WorkerController::class, 'UpdateShiftTStat']);
+    Route::get('/shifts/temp/{tempId}', [WorkerController::class, 'getTempShifts']);
 });
