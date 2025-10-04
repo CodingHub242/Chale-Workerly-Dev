@@ -56,6 +56,7 @@ export class ShiftsPage implements OnInit {
       // Ensure tempStatus is set to 'pending' for each temp if not provided
       this.shifts.forEach(shift => {
         shift.temps.forEach(temp => {
+          console.log(temp)
           if (!temp.tempStatus) {
             temp.tempStatus = 'pending';
           }
