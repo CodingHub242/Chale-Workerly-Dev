@@ -174,7 +174,7 @@ export class ShiftsPage implements OnInit {
     this.shiftService.updateShiftTStat(shift.id, updateData).subscribe(() => {
       temp.tempStatus = status;
       // Refresh shifts list to update admin view
-      this.loadShifts();
+     // this.loadShifts();
       // Update the local shift object with the check-in time if applicable
       // if (status === 'checked-in') {
       //   shift.checkedInAt = new Date();
