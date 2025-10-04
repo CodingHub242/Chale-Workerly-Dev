@@ -123,7 +123,7 @@
                           [class.pending]="temp.tempStatus === 'declined'"
                           [class.checked-in]="temp.tempStatus === 'accepted'"><span *ngIf="!authService.isTemp()">✔️ Temp's Response To The Shift </span> <span *ngIf="authService.isTemp()">✔️ My Response To The Shift </span> : {{ temp.tempStatus }}</span>
 
-                          <ion-button *ngIf="authService.isTemp() && temp.id === currentUser.id && (temp.tempStatus === 'pending' || !temp.tempStatus)" fill="clear" (click)="updateTStatus(shift, temp)" class="action-button">
+                          <ion-button style="color:orange;--color:orange;" *ngIf="authService.isTemp() && temp.id === currentUser.id && (temp.tempStatus === 'pending' || !temp.tempStatus)" fill="clear" (click)="updateTStatus(shift, temp)" class="action-button">
                             <ion-icon slot="start" name="sync-outline"></ion-icon>
                             Shift Response
                           </ion-button>
