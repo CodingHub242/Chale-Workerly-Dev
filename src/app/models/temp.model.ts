@@ -10,6 +10,7 @@ export interface Temp {
     skills: string[];
     status: 'active' | 'inactive' | 'on-leave';
     approvalStatus?: 'pending' | 'approved' | 'declined';
+    tempStatus?: 'pending' | 'accepted' | 'declined';
 
     tempId?:any;
 }

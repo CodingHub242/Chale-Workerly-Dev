@@ -53,11 +53,13 @@ export class ShiftsPage implements OnInit {
         this.shifts = shifts;
       }
 
-      // Ensure tempStatus is set to 'pending' if not provided
+      // Ensure tempStatus is set to 'pending' for each temp if not provided
       this.shifts.forEach(shift => {
-        if (!shift.tempStatus) {
-          shift.tempStatus = 'pending';
-        }
+        shift.temps.forEach(temp => {
+          if (!temp.tempStatus) {
+            temp.tempStatus = 'pending';
+          }
+        });
       });
 
       this.events = this.shifts.map(shift => {
@@ -111,21 +113,21 @@ export class ShiftsPage implements OnInit {
     await actionSheet.present();
   }
 
-  async updateTStatus(shift: Shift) {
+  async updateTStatus(shift: Shift, temp: any) {
     const actionSheet = await this.actionSheetCtrl.create({
       header: 'Update Status',
       buttons: [
         {
           text: 'Pending',
-          handler: () => this.saveTStatus(shift, 'pending')
+          handler: () => this.saveTStatus(shift, temp, 'pending')
         },
         {
           text: 'Accepted',
-          handler: () => this.saveTStatus(shift, 'accepted')
+          handler: () => this.saveTStatus(shift, temp, 'accepted')
         },
         {
           text: 'Declined',
-          handler: () => this.saveTStatus(shift, 'declined')
+          handler: () => this.saveTStatus(shift, temp, 'declined')
         },
         {
           text: 'Cancel',
@@ -156,19 +158,19 @@ export class ShiftsPage implements OnInit {
     });
   }
 
-   saveTStatus(shift: Shift, status: 'pending' | 'accepted' | 'declined') {
+   saveTStatus(shift: Shift, temp: any, status: 'pending' | 'accepted' | 'declined') {
     const updatedShift = { ...shift, status };
-    
+
     // Prepare the data to send to the API
-    const updateData: any = { status: status, temp: shift.temps.map(t => t.id) };
-    
+    const updateData: any = { status: status, temp: [temp.id] };
+
     // If status is being updated to 'checked-in', include the current datetime
     // if (status === 'accepted') {
     //   updateData.checkedInAt = new Date().toISOString();
     // }
-    
+
     this.shiftService.updateShiftTStat(shift.id, updateData).subscribe(() => {
-      shift.tempStatus = status;
+      temp.tempStatus = status;
       // Update the local shift object with the check-in time if applicable
       // if (status === 'checked-in') {
       //   shift.checkedInAt = new Date();
