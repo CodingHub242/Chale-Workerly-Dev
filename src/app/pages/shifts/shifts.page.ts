@@ -53,11 +53,12 @@ export class ShiftsPage implements OnInit {
         this.shifts = shifts;
       }
 
-      // Ensure tempStatus is set to 'pending' for each temp if not provided
+      // Map tempStatus from pivot table to each temp
       this.shifts.forEach(shift => {
         shift.temps.forEach(temp => {
-          console.log(temp)
-          if (!temp.tempStatus) {
+          if (temp.pivot && temp.pivot.tempStatus) {
+            temp.tempStatus = temp.pivot.tempStatus;
+          } else {
             temp.tempStatus = 'pending';
           }
         });

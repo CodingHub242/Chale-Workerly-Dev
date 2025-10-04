@@ -11,6 +11,7 @@ export interface Temp {
     status: 'active' | 'inactive' | 'on-leave';
     approvalStatus?: 'pending' | 'approved' | 'declined';
     tempStatus?: 'pending' | 'accepted' | 'declined';
+    pivot?: any;
 
     tempId?:any;
 }
