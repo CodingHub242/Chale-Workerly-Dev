@@ -122,11 +122,11 @@ export class ShiftsPage implements OnInit {
           handler: () => this.saveTStatus(shift, temp, 'pending')
         },
         {
-          text: 'Accepted',
+          text: 'Accept',
           handler: () => this.saveTStatus(shift, temp, 'accepted')
         },
         {
-          text: 'Declined',
+          text: 'Decline',
           handler: () => this.saveTStatus(shift, temp, 'declined')
         },
         {
