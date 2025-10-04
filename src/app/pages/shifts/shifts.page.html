@@ -141,9 +141,9 @@
             </div>
 
              <div class="card-actions">
-              <ion-button *ngIf="authService.isTemp() && shift.tempStatus === 'pending'" fill="clear" (click)="updateTStatus(shift)" class="action-button">
+              <ion-button *ngIf="authService.isTemp() && (shift.tempStatus === 'pending' || !shift.tempStatus)" fill="clear" (click)="updateTStatus(shift)" class="action-button">
                 <ion-icon slot="start" name="sync-outline"></ion-icon>
-                Shift Response 
+                Shift Response
               </ion-button>
               <!-- <ion-button fill="clear" (click)="viewShift(shift.id)" class="action-button primary">
                 <ion-icon slot="start" name="eye-outline"></ion-icon>

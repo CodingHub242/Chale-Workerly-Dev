@@ -52,7 +52,14 @@ export class ShiftsPage implements OnInit {
       } else {
         this.shifts = shifts;
       }
-      
+
+      // Ensure tempStatus is set to 'pending' if not provided
+      this.shifts.forEach(shift => {
+        if (!shift.tempStatus) {
+          shift.tempStatus = 'pending';
+        }
+      });
+
       this.events = this.shifts.map(shift => {
         const temps = shift.temps.map(t => t.firstName).join(', ');
         return {
