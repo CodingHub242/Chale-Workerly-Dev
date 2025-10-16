@@ -141,8 +141,11 @@ onSubmit() {
       },
       error: (error) => {
         this.isLoading = false;
-        if(error.error === 'Temp already exists'){alert('This account already exists. Please try again.');}else{
-        this.errorMessage = 'Registration failed. Please check your connection and try again.';}
+      //   if(error.error === 'Temp already exists'){
+      //   alert('This account already exists. Please try again.');
+      // }else{
+        this.errorMessage = 'This account already exists. Please try again.';
+      //}
         //alert('Registration error: ' + error);
         //console.error('Registration error:', error);
       }
