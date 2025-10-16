@@ -135,13 +135,15 @@ onSubmit() {
             window.location.reload();
           });
         } else {
-          this.errorMessage = data.error || 'Registration failed. Please try again.';
+          if(data.error === 'Temp already exists'){alert('This account already exists. Please try again.');}else{
+          this.errorMessage = data.error || 'Registration failed. Please try again.';}
         }
       },
       error: (error) => {
         this.isLoading = false;
         this.errorMessage = 'Registration failed. Please check your connection and try again.';
-        console.error('Registration error:', error);
+        alert('Registration error: ' + error);
+        //console.error('Registration error:', error);
       }
     });
   }
