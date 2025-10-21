@@ -53,6 +53,8 @@ export class TempDashboardPage implements OnInit {
       return;
     }
 
+    this.currentUser.profilePictureUrl = this.currentUser.profile_picture_url || this.currentUser.profilePictureUrl;
+
     // Only allow temp users to access this dashboard
     if (!this.authService.isTemp()) {
        this.router.navigate(['/dashboard']);
