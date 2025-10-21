@@ -44,7 +44,7 @@ export interface Temp {
   providedIn: 'root'
 })
 export class AuthService {
-  private currentUserSubject = new BehaviorSubject<WorkerlyUser | null>(null);
+  public currentUserSubject = new BehaviorSubject<WorkerlyUser | null>(null);
   currentUser$ = this.currentUserSubject.asObservable();
 
   currentUser:any;

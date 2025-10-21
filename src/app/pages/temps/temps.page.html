@@ -31,9 +31,9 @@
     <div class="temp-card" id="temp-card" *ngFor="let temp of temps" (click)="viewTemp(temp.id)">
       <div class="temp-header">
         <div class="temp-avatar">
-          <!-- <ion-avatar>
-            <img [src]="'https://i.pravatar.cc/300?u=' + temp.id" alt="Worker avatar"/>
-          </ion-avatar> -->
+          <ion-avatar>
+            <img [src]="'https://app.chaleapp.org/' + temp.profilePictureUrl || 'https://i.pravatar.cc/300?u=' + temp.id" alt="Worker avatar"/>
+          </ion-avatar>
           <div class="status-indicator" [class.online]="temp.status"></div>
         </div>
         <div class="temp-name-section">

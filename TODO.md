@@ -2,3 +2,13 @@
 - [x] Change temps-grid to flex row wrap layout
 - [x] Adjust temp-item styles for smaller size
 - [ ] Test the display with multiple temps
+- [ ] Update Temp model to include profilePictureUrl: string (optional)
+- [ ] Add profile picture upload in temp-dashboard.page.html/ts (only for approved temps)
+- [ ] Display profile picture in temp-dashboard toolbar top right
+- [ ] Update temps.page.html/ts to display profile picture on temp cards (uncomment avatar, use profilePictureUrl or fallback)
+- [ ] Add profile picture upload/edit in temp-form.page.html/ts (convert to base64)
+- [ ] Update temp.service.ts to include profilePictureUrl in addTemp and updateTemp
+- [ ] Test upload functionality on temp dashboard (only for approved temps)
+- [ ] Verify display on temp dashboard header and temps page cards
+- [ ] Ensure fallback to placeholder if no picture
+- [ ] Suggest Laravel backend changes for profilePictureUrl field

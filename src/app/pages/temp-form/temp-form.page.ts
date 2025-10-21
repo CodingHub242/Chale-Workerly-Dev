@@ -19,6 +19,7 @@ export class TempFormPage implements OnInit {
   form!: FormGroup;
   isEditMode = false;
   tempId: number = 0;
+  selectedFile: string | null = null;
 
   constructor(
     private fb: FormBuilder,
@@ -54,6 +55,17 @@ export class TempFormPage implements OnInit {
     }
   }
 
+  onFileSelected(event: any) {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        this.selectedFile = reader.result as string;
+      };
+      reader.readAsDataURL(file);
+    }
+  }
+
   saveTemp() {
     if (this.form.invalid) {
       return;
@@ -61,7 +73,8 @@ export class TempFormPage implements OnInit {
 
     const tempDate: Temp = {
       ...this.form.value,
-      skills: this.form.value.skills.split(',').map((skill: string) => skill.trim())
+      skills: this.form.value.skills.split(',').map((skill: string) => skill.trim()),
+      profilePictureUrl: this.selectedFile || undefined
     };
 
 

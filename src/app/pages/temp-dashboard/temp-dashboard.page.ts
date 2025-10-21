@@ -1,6 +1,7 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { ShiftService } from '../../services/shift.service';
 import { TimesheetService } from '../../services/timesheet.service';
+import { TempService } from '../../services/temp.service';
 import { Shift } from '../../models/shift.model';
 import { Timesheet } from '../../models/timesheet.model';
 import { Chart, registerables } from 'chart.js';
@@ -40,7 +41,8 @@ export class TempDashboardPage implements OnInit {
     private shiftService: ShiftService,
     private authService: AuthService,
     private router: Router,
-    private timesheetService: TimesheetService
+    private timesheetService: TimesheetService,
+    private tempService: TempService
   ) { }
 
   ngOnInit() {
@@ -205,6 +207,35 @@ export class TempDashboardPage implements OnInit {
       default: return 'Pending Review';
     }
   }
+  uploadProfilePicture() {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'image/*';
+    input.onchange = (event: any) => {
+      const file = event.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = () => {
+          const base64 = reader.result as string;
+          this.currentUser!.profilePictureUrl = base64;
+          // Update the temp via service
+          this.tempService.uploadProfilePicture(this.currentUser!.id, file).subscribe((response: any) => {
+            // Update currentUser with the backend response
+            this.currentUser!.profilePictureUrl = response.temp.profile_picture_url;
+            // Update localStorage
+            localStorage.setItem('currentUser', JSON.stringify(this.currentUser));
+            // Update authService subject
+            this.authService.currentUserSubject.next(this.currentUser);
+            // Optionally show success message
+            //console.log('Profile picture uploaded successfully');
+          });
+        };
+        reader.readAsDataURL(file);
+      }
+    };
+    input.click();
+  }
+
   logout() {
     this.authService.logout();
   }

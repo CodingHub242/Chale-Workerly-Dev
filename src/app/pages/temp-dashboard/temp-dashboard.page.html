@@ -5,21 +5,34 @@
     </ion-buttons>
     <ion-title style="color:whitesmoke;">My Dashboard</ion-title>
      <ion-buttons slot="end">
-      <ion-button>
-        <ion-icon name="person"></ion-icon>
-        <span style="margin-top:4px;margin-left: 10px;">{{ currentUser?.firstName }}</span>
-      </ion-button>
+      <!-- <ion-button *ngIf="currentUser?.approvalStatus === 'approved'" (click)="uploadProfilePicture()">
+        <ion-icon name="camera"></ion-icon>
+        <span style="margin-top:2px;margin-left: 3px;">Upload Profile Picture</span>
+      </ion-button> -->
       <ion-button (click)="logout()">
         <ion-icon name="log-out"></ion-icon>
         <span style="margin-top:2px;margin-left: 3px;">Logout</span>
       </ion-button>
-
-      
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
+  <!-- Profile Section -->
+  <div class="profile-section">
+    <div class="profile-card">
+      <div class="profile-avatar">
+        <img *ngIf="currentUser?.profilePictureUrl" [src]="'https://app.chaleapp.org/' + currentUser?.profilePictureUrl" alt="Profile Picture" class="profile-image">
+        <ion-icon *ngIf="!currentUser?.profilePictureUrl" name="person-circle" class="profile-icon"></ion-icon>
+        <ion-icon *ngIf="currentUser?.approvalStatus === 'approved'" name="camera" class="camera-icon" (click)="uploadProfilePicture()"></ion-icon>
+      </div>
+      <div class="profile-info">
+        <h2 class="profile-name">{{ currentUser?.firstName }} {{ currentUser?.lastName }}</h2>
+        <p class="profile-title">{{ currentUser?.title }}</p>
+      </div>
+    </div>
+  </div>
+
   <ion-chip [color]="getApprovalStatusColor(currentUser?.approvalStatus)" class="approval-chip">
     <ion-icon name="checkmark-circle" *ngIf="currentUser?.approvalStatus === 'approved'"></ion-icon>
     <ion-icon name="close-circle" *ngIf="currentUser?.approvalStatus === 'declined'"></ion-icon>
