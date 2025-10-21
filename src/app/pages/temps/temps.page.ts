@@ -20,8 +20,14 @@ import { AuthService } from '../../services/auth.service';
 export class TempsPage implements OnInit {
 
   temps: Temp[] = [];
+  filteredTemps: Temp[] = [];
   currentUserRole: string = '';
   searchTerm: string = '';
+
+  // Pagination properties
+  currentPage: number = 1;
+  pageSize: number = 10;
+  totalPages: number = 0;
 
   exportArray: any[] = [];
 
@@ -50,6 +56,8 @@ export class TempsPage implements OnInit {
   loadTemps() {
     this.tempService.getTemps().subscribe(temps => {
       this.temps = temps;
+      this.filteredTemps = temps;
+      this.updatePagination();
 
       this.exportArray = [];
 
@@ -204,20 +212,44 @@ export class TempsPage implements OnInit {
     }
   }
 
-  onSearchTermChange(event:any) {
-    const searchbarr = document.querySelector<HTMLElement>('ion-searchbar');
-    const itemss = Array.from(document.querySelector<HTMLElement>('#temps-grid')!.children);
+  onSearchTermChange(event: any) {
+    const query = event.target.value.toLowerCase();
+    this.filteredTemps = this.temps.filter(temp =>
+      temp.firstName.toLowerCase().includes(query) ||
+      temp.lastName.toLowerCase().includes(query) ||
+      temp.email.toLowerCase().includes(query) ||
+      temp.phone.includes(query)
+    );
+    this.currentPage = 1;
+    this.updatePagination();
+  }
 
-   //searchbarr?.addEventListener('ionInput', handleSInput);
+  updatePagination() {
+    this.totalPages = Math.ceil(this.filteredTemps.length / this.pageSize);
+  }
 
-  // function handleSInput(ev:any) {
-     const query = event.target.value.toLowerCase();
-     requestAnimationFrame(() => {
-       itemss.forEach((item:any) => {
-         const shouldShow = item.textContent.toLowerCase().indexOf(query) > -1;
-         item["style"].display = shouldShow ? 'block' : 'none';
-       });
-     });
+  getPagedTemps(): Temp[] {
+    const startIndex = (this.currentPage - 1) * this.pageSize;
+    const endIndex = startIndex + this.pageSize;
+    return this.filteredTemps.slice(startIndex, endIndex);
+  }
+
+  nextPage() {
+    if (this.currentPage < this.totalPages) {
+      this.currentPage++;
+    }
+  }
+
+  prevPage() {
+    if (this.currentPage > 1) {
+      this.currentPage--;
+    }
+  }
+
+  goToPage(page: number) {
+    if (page >= 1 && page <= this.totalPages) {
+      this.currentPage = page;
+    }
   }
 
   ExportTemps()

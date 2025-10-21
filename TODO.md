@@ -1,14 +1,17 @@
-- [x] Update shifts.page.scss to make temps section scrollable and compact
-- [x] Change temps-grid to flex row wrap layout
-- [x] Adjust temp-item styles for smaller size
-- [ ] Test the display with multiple temps
-- [ ] Update Temp model to include profilePictureUrl: string (optional)
-- [ ] Add profile picture upload in temp-dashboard.page.html/ts (only for approved temps)
-- [ ] Display profile picture in temp-dashboard toolbar top right
-- [ ] Update temps.page.html/ts to display profile picture on temp cards (uncomment avatar, use profilePictureUrl or fallback)
-- [ ] Add profile picture upload/edit in temp-form.page.html/ts (convert to base64)
-- [ ] Update temp.service.ts to include profilePictureUrl in addTemp and updateTemp
-- [ ] Test upload functionality on temp dashboard (only for approved temps)
-- [ ] Verify display on temp dashboard header and temps page cards
-- [ ] Ensure fallback to placeholder if no picture
-- [ ] Suggest Laravel backend changes for profilePictureUrl field
+# TODO: Add Pagination to Temps Page
+
+## Tasks
+- [x] Update temps.page.ts to implement client-side pagination with 10 items per page
+- [x] Modify loadTemps() to initialize filteredTemps
+- [x] Add pagination variables: currentPage, pageSize, totalPages
+- [x] Implement getPagedTemps() method to return sliced array
+- [x] Add nextPage(), prevPage(), goToPage() methods
+- [x] Update onSearchTermChange() to filter temps and reset page
+- [x] Update temps.page.html to use getPagedTemps() in *ngFor
+- [x] Add pagination controls below search bar, aligned to the right
+- [x] Ensure export functionality uses full temps list
+
+## Notes
+- Pagination is client-side to avoid backend changes
+- Search filters the full list, then paginates the filtered results
+- Export uses the complete temps array

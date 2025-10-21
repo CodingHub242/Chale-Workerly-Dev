@@ -355,7 +355,7 @@
 
 .search-container {
   margin-bottom: 20px;
-  
+
   ion-searchbar {
     padding: 0;
     --background: #f4f4f4;
@@ -363,5 +363,47 @@
     --color:gray;
     --border-radius: var(--border-radius);
     box-shadow: 0 2px 8px var(--shadow-color);
+  }
+}
+
+.pagination-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding: 12px 16px;
+  background: white;
+  border-radius: var(--border-radius);
+  box-shadow: var(--card-shadow);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+
+  ion-button {
+    --color: var(--primary-color);
+    font-weight: 500;
+
+    &[disabled] {
+      --color: var(--text-secondary);
+      opacity: 0.5;
+    }
+
+    ion-icon {
+      font-size: 16px;
+    }
+  }
+
+  .page-info {
+    font-size: 0.9rem;
+    color: var(--text-primary);
+    font-weight: 500;
+    white-space: nowrap;
+  }
+
+  @media (max-width: 480px) {
+    flex-direction: column;
+    gap: 12px;
+
+    .page-info {
+      order: -1;
+    }
   }
 }
