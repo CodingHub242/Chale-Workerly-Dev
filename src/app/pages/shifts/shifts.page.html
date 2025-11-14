@@ -61,7 +61,7 @@
   </div>
 
     <div class="shifts-container">
-      <div class="shifts-grid">
+      <div class="shifts-grid" *ngIf="shifts.length > 0; else noShifts">
         <div class="shift-card-wrapper" *ngFor="let shift of shifts">
           <ion-card class="shift-card" [class.active]="shift.status === 'started'">
             <div class="status-indicator" [class.pending]="shift.status === 'pending'"
@@ -147,5 +147,13 @@
           </ion-card>
         </div>
       </div>
+      <ng-template #noShifts>
+        <div class="no-shifts-message">
+          <ion-icon name="calendar-outline" size="large"></ion-icon>
+          <h3>No shifts assigned yet</h3>
+          <p *ngIf="authService.isTemp()">Please contact your administrator for shift assignments.</p>
+          <p *ngIf="!authService.isTemp()">Create your first shift to get started.</p>
+        </div>
+      </ng-template>
     </div>
 </ion-content>

@@ -44,11 +44,22 @@ export class ShiftsPage implements OnInit {
 
   loadShifts() {
     this.shiftService.getShifts().subscribe(shifts => {
+      console.log('All shifts from backend:', shifts);
+      console.log('Current user:', this.currentUser);
+      console.log('Is temp user:', this.authService.isTemp());
+
       // Filter shifts for temp users to only show their assigned shifts
       if (this.authService.isTemp()) {
-        this.shifts = shifts.filter(shift =>
-          shift.temps.some(temp => temp.id === this.currentUser.id)
-        );
+        console.log('Filtering for temp user with id:', this.currentUser.id);
+        this.shifts = shifts.filter(shift => {
+          const hasTemp = shift.temps.some(temp => {
+            console.log('Checking temp:', temp.id, 'against user id:', this.currentUser.id, 'match:', temp.id === this.currentUser.id);
+            return temp.id === this.currentUser.id;
+          });
+          console.log('Shift', shift.id, 'has temp:', hasTemp);
+          return hasTemp;
+        });
+        console.log('Filtered shifts for temp:', this.shifts);
       } else {
         this.shifts = shifts;
       }
