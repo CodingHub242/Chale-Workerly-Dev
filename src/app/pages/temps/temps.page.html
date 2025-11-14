@@ -30,7 +30,8 @@
     <ion-row *ngIf="totalPages > 1">
       <ion-col size="12">
         <div class="pagination-container">
-          <ion-button style="color:#000;--color:#000;"
+          <ion-button style="color:#000;--color:#000;background: transparent;
+    --background: transparent;"
            
             size="small"
             [disabled]="currentPage === 1"
@@ -44,7 +45,8 @@
           </span>
 
           <ion-button
-           style="color:#000;--color:#000;"
+           style="color:#000;--color:#000;background: transparent;
+    --background: transparent;"
             size="small"
             [disabled]="currentPage === totalPages"
             (click)="nextPage()">
