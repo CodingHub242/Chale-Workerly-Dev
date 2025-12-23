@@ -379,41 +379,47 @@ class WorkerController extends Controller
     }
     public function UpdateShiftStat(Request $request,Shift $shift) {
         try {
-            
-                $shift = Shift::where('id', $request->id)->first();
-                // Update the shift's main attributes
-                if($request->status=='checked-in')
-                {
-                    $data = [
-                        'status' => $request->status, // Default status
-                        'checkedInAt'=> $request->checkedInAt
-                    ];
+            $shift = Shift::where('id', $request->id)->first();
+
+            if ($request->has('temp_id')) {
+                // Update the pivot table shift_temps
+                $pivotData = [];
+
+                if ($request->status == 'checked-in') {
+                    $pivotData['tempStatus'] = $request->status;
+                    $pivotData['checkedInAt'] = $request->checkedInAt;
+                    if ($request->has('deduction')) {
+                        $pivotData['deduction'] = $request->deduction;
+                    }
+                } elseif ($request->status == 'completed') {
+                    $pivotData['tempStatus'] = $request->status;
+                    $pivotData['checkedOutAt'] = $request->checkedOutAt;
+                } else {
+                    $pivotData['tempStatus'] = $request->status;
                 }
-                else if($request->status=='completed')
-                {
-                     $data = [
-                        'status' => $request->status, // Default status
-                        'checkedOutAt'=>$request->checkedOutAt,
-                    ];
+
+                $shift->temps()->updateExistingPivot($request->temp_id, $pivotData);
+            } else {
+                // Update the shift table directly (legacy behavior)
+                $data = ['status' => $request->status];
+
+                if ($request->status == 'checked-in') {
+                    $data['checkedInAt'] = $request->checkedInAt;
+                    if ($request->has('deduction')) {
+                        $data['deduction'] = $request->deduction;
+                    }
+                } elseif ($request->status == 'completed') {
+                    $data['checkedOutAt'] = $request->checkedOutAt;
                 }
-                else
-                {
-                     $data = [
-                        'status' => $request->status, // Default status
-                        //'checkedOutAt'=>$request->checkedInAt,
-                        //'checkedOutAt'=>$request->checkedInAt,
-                    ];
-                }
-                 
-              
-                //$shift->update($request->except('temp_ids'));
+
                 $shift->update($data);
-            
-                // Return the updated shift with its relations loaded
-                return response()->json($shift);
+            }
+
+            // Return the updated shift with its relations loaded
+            return response()->json($shift->load('temps'));
 
         } catch (Exception $e) {
-            Log::error('Error fetching clients: ' . $e->getMessage());
+            Log::error('Error updating shift status: ' . $e->getMessage());
             return response()->json(['error' => $e->getMessage()], 500);
         }
     }

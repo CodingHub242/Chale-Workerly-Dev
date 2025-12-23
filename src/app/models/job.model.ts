@@ -7,6 +7,7 @@ export interface Job {
     client: Client;
     startDate: Date;
     endDate: Date;
+    checkinTime: string;
     workhours: string;
     experience: number[];
     status: 'Assigning In Progress' | 'Assigned' | 'Completed' | 'Cancelled' | 'InActive' | 'Declined';

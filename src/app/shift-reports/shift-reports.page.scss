@@ -1,0 +1,85 @@
+.temp-shift-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px;
+
+  .temp-info {
+    display: flex;
+    align-items: center;
+    flex: 1;
+
+    .temp-avatar {
+      margin-right: 16px;
+
+      ion-icon {
+        color: #136956;
+      }
+    }
+
+    .temp-details {
+      h3 {
+        margin: 0 0 4px 0;
+        font-size: 30px;
+        font-weight: 600;
+      }
+
+      p {
+        margin: 2px 0;
+        font-size: 14px;
+        color: var(--ion-color-medium);
+
+        &.job-title {
+          color: #136956;
+          font-weight: 500;
+        }
+
+        &.client-name {
+          color: #136956;
+        }
+      }
+    }
+  }
+
+  .shift-details {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    min-width: 200px;
+
+    .status-info {
+      margin-bottom: 12px;
+    }
+
+    .time-info {
+      .time-item {
+        display: flex;
+        align-items: center;
+        margin-bottom: 4px;
+        font-size: 14px;
+
+        ion-icon {
+          margin-right: 8px;
+          font-size: 16px;
+        }
+
+        span {
+          color: var(--ion-color-dark);
+        }
+      }
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .temp-shift-card {
+    flex-direction: column;
+    align-items: flex-start;
+
+    .shift-details {
+      align-items: flex-start;
+      margin-top: 12px;
+      min-width: auto;
+    }
+  }
+}

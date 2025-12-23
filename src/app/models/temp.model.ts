@@ -15,4 +15,5 @@ export interface Temp {
     pivot?: any;
 
     tempId?:any;
+    tempresponse?: 'pending' | 'accepted' | 'declined';
 }

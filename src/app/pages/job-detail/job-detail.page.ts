@@ -88,4 +88,12 @@ export class JobDetailPage implements OnInit {
         return 'document-outline';
     }
   }
+
+  formatCheckinTime(time: string): string {
+    if (!time) return '';
+    const [hours, minutes] = time.split(':').map(Number);
+    const period = hours >= 12 ? 'pm' : 'am';
+    const displayHours = hours % 12 || 12;
+    return `${displayHours}${period}`;
+  }
 }

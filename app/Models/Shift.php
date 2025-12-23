@@ -24,6 +24,9 @@ class Shift extends Model
         'startTime',
         'endTime',
         'notes',
+        'deduction',
+        'checkedInAt',
+        'checkedOutAt',
     ];
 
      protected $casts = [

@@ -33,6 +33,8 @@ export class AppComponent {
     { title: 'Jobs', url: '/jobs', icon: 'briefcase' },
     { title: 'Clients', url: '/clients', icon: 'people' },
     { title: 'Temps', url: '/temps', icon: 'person' },
+    {title: 'Temp Check-In', url: '/temp-check-in', icon: 'checkmark-circle' },
+    { title: 'Shift Reports', url: '/shift-reports', icon: 'time' },
     { title: 'Timesheets', url: '/timesheets', icon: 'document' },
     { title: 'Reports', url: '/reports', icon: 'analytics' },
     { title: 'Invoices', url: '/invoices', icon: 'cash' },

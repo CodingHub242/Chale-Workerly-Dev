@@ -41,4 +41,8 @@ export class ShiftService {
   getShiftsByTemp(tempId: number): Observable<Shift[]> {
     return this.http.get<Shift[]>(`${this.apiUrl}/temp/${tempId}`);
   }
+
+  getShiftsByJobAndDate(jobId: number, date: string): Observable<Shift[]> {
+    return this.http.get<Shift[]>(`${this.apiUrl}/job/${jobId}/date/${date}`);
+  }
 }

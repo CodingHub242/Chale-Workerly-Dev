@@ -39,4 +39,6 @@ Route::prefix('v1')->group(function () {
     Route::put('/updateStat/{shift}', [WorkerController::class, 'UpdateShiftStat']);
     Route::put('/updateStat/tstat/{shift}', [WorkerController::class, 'UpdateShiftTStat']);
     Route::get('/shifts/temp/{tempId}', [WorkerController::class, 'getTempShifts']);
+   
+    Route::get('/shifts/job/{jobId}/date/{date}', [WorkerController::class, 'getShiftsByJobAndDate']);
 });

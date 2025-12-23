@@ -38,6 +38,7 @@ export class JobFormPage implements OnInit {
       client_id: ['', Validators.required],
       startDate: ['', Validators.required],
       endDate: ['', Validators.required],
+      checkinTime: [''],
       payRate: ['', Validators.required],
       workhours: [''],
       experience: [{ lower: 0, upper: 5 }],
@@ -64,15 +65,30 @@ export class JobFormPage implements OnInit {
 
         //console.log(jobData.experience);
        // console.log('Existing Attachments:', this.existingAttachments);
-        this.form.patchValue({
-          ...jobData,
-          client_id: jobData.client.id,
-          experience: {
-            lower: jobData.experience[0] || 0,
-            upper: jobData.experience[1] || 5
-          },
-          attachments: this.existingAttachments,
-        });
+        if (jobData.checkinTime) {
+          const date = new Date(jobData.checkinTime);
+          const time = date.toTimeString().slice(0,5); // HH:MM format
+          this.form.patchValue({
+            ...jobData,
+            client_id: jobData.client.id,
+            experience: {
+              lower: jobData.experience[0] || 0,
+              upper: jobData.experience[1] || 5
+            },
+            attachments: this.existingAttachments,
+            checkinTime: time
+          });
+        } else {
+          this.form.patchValue({
+            ...jobData,
+            client_id: jobData.client.id,
+            experience: {
+              lower: jobData.experience[0] || 0,
+              upper: jobData.experience[1] || 5
+            },
+            attachments: this.existingAttachments,
+          });
+        }
       });
     }
   }
@@ -112,7 +128,7 @@ export class JobFormPage implements OnInit {
       formData.append('_method', 'PUT'); // Spoof the PUT method for Laravel
       this.jobService.updateJob(formData).subscribe(() => {
         this.router.navigate(['/jobs']).then(() => {
-          window.location.reload();
+         // window.location.reload();
         });
       });
     } else {

@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { ShiftService } from '../../services/shift.service';
 import { TempService } from '../../services/temp.service';
 import { Shift } from '../../models/shift.model';
+import { Client } from '../../models/client.model';
+import { Job } from '../../models/job.model';
 import { Temp } from '../../models/temp.model';
 import { Router, RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -22,6 +24,7 @@ export class TempCheckInPage implements OnInit {
   temps: Temp[] = [];
   searchTerm: string = '';
   filteredShifts: (Shift & { temp: Temp })[] = [];
+  groupedShifts: { client: Client; jobs: { job: Job; shifts: (Shift & { temp: Temp })[] }[] }[] = [];
 
   constructor(
     private shiftService: ShiftService,
@@ -80,12 +83,46 @@ export class TempCheckInPage implements OnInit {
       });
     });
 
+    // Group by client and job
+    this.groupShiftsByClientAndJob();
+
     // Sort by temp name
     this.filteredShifts.sort((a, b) => {
       const nameA = `${a.temp.firstName} ${a.temp.lastName}`.toLowerCase();
       const nameB = `${b.temp.firstName} ${b.temp.lastName}`.toLowerCase();
       return nameA.localeCompare(nameB);
     });
+  }
+
+  groupShiftsByClientAndJob() {
+    const grouped = new Map<string, { client: Client; jobs: Map<string, { job: Job; shifts: (Shift & { temp: Temp })[] }> }>();
+
+    this.filteredShifts.forEach(shift => {
+      const clientKey = shift.client.id.toString();
+      const jobKey = shift.job.id.toString();
+
+      if (!grouped.has(clientKey)) {
+        grouped.set(clientKey, {
+          client: shift.client,
+          jobs: new Map()
+        });
+      }
+
+      const clientGroup = grouped.get(clientKey)!;
+      if (!clientGroup.jobs.has(jobKey)) {
+        clientGroup.jobs.set(jobKey, {
+          job: shift.job,
+          shifts: []
+        });
+      }
+
+      clientGroup.jobs.get(jobKey)!.shifts.push(shift);
+    });
+
+    this.groupedShifts = Array.from(grouped.values()).map(clientGroup => ({
+      client: clientGroup.client,
+      jobs: Array.from(clientGroup.jobs.values())
+    }));
   }
 
   // Helper function to check if a date is today
@@ -109,25 +146,42 @@ export class TempCheckInPage implements OnInit {
   }
 
   checkIn(shift: Shift & { temp: Temp }) {
-    const updateData: any = { 
+    const now = new Date();
+    const [hours, minutes] = shift.job.checkinTime.split(':').map(Number);
+    const checkinTime = new Date();
+    checkinTime.setHours(hours, minutes, 0, 0);
+
+    const updateData: any = {
       status: 'checked-in',
-      checkedInAt: new Date().toISOString()
+      checkedInAt: now.toISOString(),
+      temp_id: shift.temp.id
     };
-    
+
+    // Calculate deduction if late
+    if (now > checkinTime) {
+      const lateMinutes = Math.floor((now.getTime() - checkinTime.getTime()) / (1000 * 60));
+      const deduction = Math.min(lateMinutes * 0.5, 50); // 0.5% per minute, max 50%
+      updateData.deduction = deduction;
+      shift.deduction = deduction;
+    }
+
     this.shiftService.updateShiftStat(shift.id, updateData).subscribe(() => {
       shift.status = 'checked-in';
-      shift.checkedInAt = new Date();
+      shift.temp.pivot.tempresponse = 'checked-in';
+      shift.checkedInAt = now;
     });
   }
 
   checkOut(shift: Shift & { temp: Temp }) {
     const updateData: any = {
       status: 'completed',
-      checkedOutAt: new Date().toISOString()
+      checkedOutAt: new Date().toISOString(),
+      temp_id: shift.temp.id
     };
-    
+
     this.shiftService.updateShiftStat(shift.id, updateData).subscribe(() => {
       shift.status = 'completed';
+      shift.temp.pivot.tempresponse = 'completed';
       shift.checkedOutAt = new Date();
     });
   }

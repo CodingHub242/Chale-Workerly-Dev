@@ -33,6 +33,10 @@
         <ion-input formControlName="endDate" type="date"></ion-input>
       </ion-item>
       <ion-item>
+        <ion-label position="floating">Check-in Time</ion-label>
+        <ion-input formControlName="checkinTime" type="time"></ion-input>
+      </ion-item>
+      <ion-item>
         <ion-label position="floating">Pay Rate</ion-label>
         <ion-input formControlName="payRate" type="number"></ion-input>
       </ion-item>
@@ -69,7 +73,7 @@
           <ion-label>Existing Attachments</ion-label>
         </ion-item-divider>
         <ion-item *ngFor="let attachment of existingAttachments">
-          <a style="color: chocolate;font-weight: 600;" href="https://app.chaleapp.org/public/storage/{{attachment.file_path}}" target="_blank">{{ attachment.file_name }}</a>
+          <a style="color: chocolate;font-weight: 600;" href="https://app.chaleapp.org/public/storage/{{attachment.filePath}}" target="_blank">{{ attachment.fileName }}</a>
         </ion-item>
       </ion-list>
     </ion-list>

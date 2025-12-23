@@ -47,6 +47,7 @@
             <ion-card-content>
               <p><strong><ion-icon name="calendar-outline"></ion-icon> Start Date:</strong> {{ job.startDate | date:'short' }}</p>
               <p><strong><ion-icon name="calendar-outline"></ion-icon> End Date:</strong> {{ job.endDate | date:'short' }}</p>
+              <p *ngIf="job.checkinTime"><strong><ion-icon name="time-outline"></ion-icon> Check-in Time:</strong> {{ formatCheckinTime(job.checkinTime) }}</p>
             </ion-card-content>
           </ion-card>
         </ion-col>

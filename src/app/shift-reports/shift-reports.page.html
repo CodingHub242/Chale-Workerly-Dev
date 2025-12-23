@@ -1,0 +1,89 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>Shift Reports</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-header collapse="condense">
+    <ion-toolbar>
+      <ion-title size="large">Shift Reports</ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+  <ion-list>
+    <ion-item>
+      <ion-label>Client</ion-label>
+      <ion-select [(ngModel)]="selectedClientId" (ionChange)="onClientChange()" interface="popover">
+        <ion-select-option *ngFor="let client of clients" [value]="client.id">{{ client.name }}</ion-select-option>
+      </ion-select>
+    </ion-item>
+    <ion-item>
+      <ion-label>Job</ion-label>
+      <ion-select [(ngModel)]="selectedJobId" (ionChange)="onJobChange()" interface="popover">
+        <ion-select-option *ngFor="let job of jobs" [value]="job.id">{{ job.title }}</ion-select-option>
+      </ion-select>
+    </ion-item>
+    <ion-item>
+      <ion-label position="floating">Date</ion-label>
+      <ion-input [(ngModel)]="selectedDate" (ionChange)="onDateChange()" type="date"></ion-input>
+    </ion-item>
+  </ion-list>
+
+  <div *ngIf="filteredTempShifts.length > 0">
+    <ion-searchbar
+      [(ngModel)]="searchTerm"
+      (ionInput)="filterTempShifts()"
+      placeholder="Search temps...">
+    </ion-searchbar>
+
+    <ion-card *ngFor="let tempShift of filteredTempShifts">
+      <ion-card-content>
+        <div class="temp-shift-card">
+          <div class="temp-info">
+            <div class="temp-avatar">
+              <ion-icon name="person-circle-outline" size="large"></ion-icon>
+            </div>
+            <div class="temp-details">
+              <h3>{{ tempShift.temp.firstName }} {{ tempShift.temp.lastName }}</h3>
+              <p class="job-title">{{ tempShift.shift.job.title }}</p>
+              <p class="client-name">{{ tempShift.shift.job.client.name }}</p>
+            </div>
+          </div>
+
+          <div class="shift-details">
+            <div class="status-info">
+              <ion-chip [color]="getStatusColor(tempShift.pivot.tempresponse)">
+                <ion-icon [name]="getStatusIcon(tempShift.pivot.tempresponse)"></ion-icon>
+                <ion-label>{{ getStatusText(tempShift.pivot.tempresponse) }}</ion-label>
+              </ion-chip>
+            </div>
+
+            <div class="time-info">
+              <div class="time-item" *ngIf="tempShift.pivot.checkedInAt">
+                <ion-icon name="log-in-outline"></ion-icon>
+                <span style="font-size: 18px;">Checked In: {{ tempShift.pivot.checkedInAt | date:'shortTime' }}</span>
+              </div>
+              <div class="time-item" *ngIf="tempShift.pivot.checkedOutAt">
+                <ion-icon name="log-out-outline"></ion-icon>
+                <span style="font-size: 18px;">Checked Out: {{ tempShift.pivot.checkedOutAt | date:'shortTime' }}</span>
+              </div>
+              <div class="time-item" *ngIf="tempShift.pivot.deduction">
+                <ion-icon name="cash-outline"></ion-icon>
+                <span style="font-size: 18px;">Deduction (%): {{ tempShift.pivot.deduction }}%</span>
+              </div>
+               <div class="time-item" *ngIf="tempShift.pivot.deduction">
+                <ion-icon name="cash-outline"></ion-icon>
+                <span style="color:brown;font-weight: 800;font-size: 18px;">Deduction Amount: -GHS{{ (tempShift.pivot.deduction/100) * tempShift.shift.job.payRate }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </ion-card-content>
+    </ion-card>
+  </div>
+
+  <ion-text *ngIf="shifts.length === 0 && selectedJobId && selectedDate" color="medium">
+    <p>No shifts found for the selected job and date.</p>
+  </ion-text>
+</ion-content>

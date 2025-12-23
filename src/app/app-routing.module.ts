@@ -145,12 +145,21 @@ const routes: Routes = [
     canActivate: [AdminGuard],
   },
   {
+    path: 'shift-reports',
+    loadChildren: () => import('./shift-reports/shift-reports.module').then( m => m.ShiftReportsPageModule),
+    canActivate: [AdminGuard],
+  },
+  {
     path: 'templogin',
     loadChildren: () => import('./pages/templogin/templogin.module').then( m => m.TemploginPageModule),
   },
   {
     path: 'tempregister',
     loadChildren: () => import('./pages/tempregister/tempregister.module').then( m => m.TempregisterPageModule),
+  },
+  {
+    path: 'shift-reports',
+    loadChildren: () => import('./shift-reports/shift-reports.module').then( m => m.ShiftReportsPageModule)
   },
 ];
 

@@ -14,6 +14,7 @@ export interface Shift {
     checkedInAt?: Date;
     checkedOutAt?: Date;
     tempStatus: 'accepted' | 'declined' | 'pending'
+    deduction?: number; // Deduction percentage for late check-in
 
     temp_ids?: Temp[];
     job_id?: string;
