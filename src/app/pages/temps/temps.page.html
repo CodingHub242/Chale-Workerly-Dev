@@ -68,6 +68,7 @@
         </div>
         <div class="temp-name-section">
           <h2 class="temp-name">{{ temp.firstName }} {{ temp.lastName }}</h2>
+          <h2 class="temp-name">AKA : {{ temp.nickName }}</h2>
           <ion-chip [color]="getApprovalStatusColor(temp.approvalStatus)" class="approval-chip">
             <ion-icon name="checkmark-circle" *ngIf="temp.approvalStatus === 'approved'"></ion-icon>
             <ion-icon name="close-circle" *ngIf="temp.approvalStatus === 'declined'"></ion-icon>

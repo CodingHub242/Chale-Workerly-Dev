@@ -3,6 +3,7 @@ export interface Temp {
     title: string;
     firstName: string;
     lastName: string;
+    nickName: string,
     phone: string;
     email: string;
     experience: number; // in years

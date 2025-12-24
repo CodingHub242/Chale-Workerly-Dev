@@ -12,6 +12,7 @@ export interface WorkerlyUser {
   role: 'admin' | 'temp' | 'client';
   firstName: string;
   lastName: string;
+  nickName: string;
   // Additional temp properties when role is 'temp'
   title?: string;
   phone?: string;
@@ -27,6 +28,7 @@ export interface Temp {
     title: string;
     firstName: string;
     lastName: string;
+    nickName: string;
     phone: string;
     email: string;
     password:string;
@@ -91,8 +93,8 @@ export class AuthService {
       );
   }
 
-   addTemp(title: string, password: string, firstName: string, lastName: string,role:'temp',status:string,phone:string,email:string,experience:number,basePay:number,skills:string[],approvalStatus:'pending'): Observable<Temp> {
-    return this.http.post<Temp>(`${this.apiUrl}/signTemp`, { email, password, firstName, lastName,role,title,status,phone,experience,basePay,skills,approvalStatus })
+   addTemp(title: string, password: string, firstName: string, lastName: string,nickName:string,role:'temp',status:string,phone:string,email:string,experience:number,basePay:number,skills:string[],approvalStatus:'pending'): Observable<Temp> {
+    return this.http.post<Temp>(`${this.apiUrl}/signTemp`, { email, password, firstName, lastName,nickName,role,title,status,phone,experience,basePay,skills,approvalStatus })
       .pipe(
         tap((user:any) => {
           localStorage.setItem('currentUser', JSON.stringify(user.temp));
