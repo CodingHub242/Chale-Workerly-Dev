@@ -33,6 +33,7 @@ export class TempFormPage implements OnInit {
       title: ['', Validators.required],
       firstName: ['', Validators.required],
       lastName: ['', Validators.required],
+      nickName: [''],
       phone: ['', Validators.required],
       email: [''],
       experience: ['', [Validators.required]],
