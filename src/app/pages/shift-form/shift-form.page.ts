@@ -259,9 +259,9 @@ export class ShiftFormPage implements OnInit {
       this.shiftService.updateShift(this.shiftId, updateData).subscribe({
         next: () => {
           this.isLoading = false;
-          // this.router.navigate(['/shifts']).then(() => {
-          //   window.location.reload();
-          // });
+          this.router.navigate(['/shifts']).then(() => {
+            window.location.reload();
+          });
         },
         error: (err) => {
           this.isLoading = false;
