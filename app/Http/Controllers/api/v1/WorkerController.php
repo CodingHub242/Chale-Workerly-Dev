@@ -330,12 +330,12 @@ class WorkerController extends Controller
     }
     public function UpdateShift(Request $request,Shift $shift) {
         try {
-            
+
                 $validator = Validator::make($request->all(), [
                     'job_id' => 'sometimes|required|exists:jobs,id',
                     'client_id' => 'sometimes|required|exists:clients,id',
-                    'start_time' => 'sometimes|required|date',
-                    'end_time' => 'sometimes|required|date|after_or_equal:start_time',
+                    'startTime' => 'sometimes|required|date',
+                    'endTime' => 'sometimes|required|date|after_or_equal:startTime',
                     'notes' => 'nullable|string',
                     'temp_ids' => 'nullable|array',
                     'temp_ids.*' => 'exists:temps,id',
@@ -346,10 +346,19 @@ class WorkerController extends Controller
                     return response()->json($validator->errors(), 422);
                 }
 
-                $shift->update($request->all());
+                // Check if shift is in a timesheet
+                if ($shift->isInTimesheet()) {
+                    return response()->json(['error' => 'Cannot update shift that is already in a timesheet'], 400);
+                }
+
+                // Update shift fields, including temp_ids
+                $updateData = $request->all();
+                DB::table('shifts')->where('id', $request->id)->update($updateData);
+                // Reload the shift model to ensure it's fresh
+                $shift = Shift::find($request->id);
                 $shift->temps()->sync($request->temp_ids);
 
-                return response()->json($shift->load('job', 'client', 'temps'));
+                return response()->json($shift->fresh(['job', 'client', 'temps']));
 
                 // $shift = Shift::where('id', $request->id)->first();
                 // // Update the shift's main attributes

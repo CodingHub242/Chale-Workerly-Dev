@@ -135,6 +135,10 @@
             </ion-card-content>
 
             <div class="card-actions">
+              <ion-button *ngIf="!authService.isTemp()" fill="clear" (click)="editShift(shift)" class="action-button">
+                <ion-icon slot="start" name="create-outline"></ion-icon>
+                Edit Shift
+              </ion-button>
               <ion-button *ngIf="!authService.isTemp()" fill="clear" (click)="updateStatus(shift)" class="action-button">
                 <ion-icon slot="start" name="sync-outline"></ion-icon>
                 Update Status

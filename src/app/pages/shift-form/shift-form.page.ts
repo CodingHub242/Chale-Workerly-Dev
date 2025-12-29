@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ShiftService } from '../../services/shift.service';
@@ -40,7 +40,8 @@ export class ShiftFormPage implements OnInit {
     private clientService: ClientService,
     private route: ActivatedRoute,
     private router: Router,
-    private modalCtrl: ModalController
+    private modalCtrl: ModalController,
+    private cdr: ChangeDetectorRef
   ) { }
 
   ngOnInit() {
@@ -125,27 +126,59 @@ export class ShiftFormPage implements OnInit {
       this.form.patchValue({ jobId: '' });
     });
 
+    // Load data first
+    this.jobService.getJobs().subscribe(jobs => {
+      this.jobs = jobs;
+      this.filteredJobs = jobs;
+      this.checkForEditMode();
+    });
+    this.tempService.getTemps().subscribe(temps => {
+      // Filter to only show approved temps
+      this.temps = temps.filter(temp => temp.approvalStatus === 'approved');
+      this.filteredTemps = this.temps;
+     // console.log('Loaded approved temps for shift creation:', this.temps);
+      this.checkForEditMode();
+    });
+    this.clientService.getClients().subscribe(clients => {
+      this.clients = clients;
+      this.checkForEditMode();
+    });
+
     const date = this.route.snapshot.queryParams['date'];
     if (date) {
       this.form.patchValue({
         startTime: new Date(date).toISOString().slice(0, 16)
       });
     }
+  }
 
-    this.shiftId = this.route.snapshot.params['id'];
-    if (this.shiftId) {
-      this.isEditMode = true;
-      this.shiftService.getShift(this.shiftId).subscribe((shift:any) => {
-        this.form.patchValue({
-          jobId: shift[0].job.id,
-          clientId: shift[0].client.id,
-          tempIds: shift[0].temps.map((t:any) => t.id),
-          startTime: new Date(shift[0].startTime).toISOString().slice(0, 16),
-          endTime: new Date(shift[0].endTime).toISOString().slice(0, 16),
-          notes: shift[0].notes
+  private loadedServices = 0;
+  private totalServices = 3;
+
+  private checkForEditMode() {
+    this.loadedServices++;
+    if (this.loadedServices === this.totalServices) {
+      this.shiftId = this.route.snapshot.params['id'];
+      if (this.shiftId) {
+        this.isEditMode = true;
+        this.shiftService.getShift(this.shiftId).subscribe((shift:any) => {
+          this.filteredJobs = this.jobs.filter(job => job.client.id === shift[0].client.id);
+          this.form.patchValue({
+            jobId: shift[0].job.id,
+            clientId: shift[0].client.id,
+            tempIds: shift[0].temps.map((t:any) => t.id),
+            startTime: new Date(shift[0].startTime).toISOString().slice(0, 16),
+            endTime: new Date(shift[0].endTime).toISOString().slice(0, 16),
+            notes: shift[0].notes
+          });
+          // Filter temps based on the selected job
+          const selectedJob = this.jobs.find(j => j.id === shift[0].job.id);
+          if (selectedJob) {
+            this.filterTempsByJob(selectedJob);
+          }
+          this.cdr.detectChanges();
         });
-        this.filteredJobs = this.jobs.filter(job => job.client.id === shift[0].client.id);
-      });
+      }
     }
   }
 
@@ -222,12 +255,13 @@ export class ShiftFormPage implements OnInit {
     };
 
     if (this.isEditMode) {
-      this.shiftService.updateShift(this.shiftId, shiftData).subscribe({
+      const updateData = { ...shiftData, shift_id: this.shiftId };
+      this.shiftService.updateShift(this.shiftId, updateData).subscribe({
         next: () => {
           this.isLoading = false;
-          this.router.navigate(['/shifts']).then(() => {
-            window.location.reload();
-          });
+          // this.router.navigate(['/shifts']).then(() => {
+          //   window.location.reload();
+          // });
         },
         error: (err) => {
           this.isLoading = false;

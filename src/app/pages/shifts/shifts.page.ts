@@ -97,6 +97,10 @@ export class ShiftsPage implements OnInit {
     this.router.navigate(['/shift-detail', id]);
   }
 
+  editShift(shift: Shift) {
+    this.router.navigate(['/shift-form', shift.id]);
+  }
+
   async updateStatus(shift: Shift) {
     const actionSheet = await this.actionSheetCtrl.create({
       header: 'Update Status',
