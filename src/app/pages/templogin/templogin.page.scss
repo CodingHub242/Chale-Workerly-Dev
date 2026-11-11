@@ -9,7 +9,17 @@
 }
 
 ion-content {
-  --background: #004c4d;
+  --background:
+    linear-gradient(
+        135deg,
+        rgba(7, 51, 54, 0.92),
+        rgba(7, 51, 54, 0.72)
+    ),
+    url('../../../assets/images/tick.png');
+
+  --background-size: cover;
+  --background-position: center;
+  --background-repeat: no-repeat;
 }
 
 .auth-shell {
