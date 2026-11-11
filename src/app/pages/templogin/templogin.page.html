@@ -1,66 +1,93 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <!-- Job Slider -->
-    <div class="job-slider-container">
-      <div class="job-slider" [style.transform]="'translateX(' + sliderOffset + 'px)'">
-        <div class="job-card" *ngFor="let job of displayJobs">
-          <div class="job-card-content">
-            <div class="job-icon">
+<ion-content [fullscreen]="true">
+  <div class="auth-shell">
+    <div class="auth-grid">
+      <section class="auth-features">
+        <div class="features-inner">
+          <div class="brand-mark">Workerly</div>
+          <h1>Find shifts and manage your work</h1>
+          <p class="features-intro">Sign in to view assignments, track your schedule, and stay connected with opportunities.</p>
+          <ul class="feature-list">
+            <li>
               <ion-icon name="briefcase-outline"></ion-icon>
-            </div>
-            <div class="job-details">
-              <h4 class="job-title">{{ job.title }}</h4>
-              <div class="job-pay">
-                <ion-icon name="cash-outline"></ion-icon>
-                <span>GHS{{ job.payRate }}/day</span>
+              <div>
+                <h3>Available Opportunities</h3>
+                <p>Discover roles matched to your skills and availability.</p>
               </div>
-              <div class="job-pay">
-                <ion-icon name="document-outline"></ion-icon>
-                <span>{{ job.client.name }}</span>
+            </li>
+            <li>
+              <ion-icon name="calendar-outline"></ion-icon>
+              <div>
+                <h3>Shift Visibility</h3>
+                <p>Keep track of upcoming shifts and assignments in one place.</p>
               </div>
-              <div class="job-status">
-                <ion-icon name="time-outline"></ion-icon>
-                <span>Available Now</span>
+            </li>
+            <li>
+              <ion-icon name="checkmark-done-outline"></ion-icon>
+              <div>
+                <h3>Easy Check-ins</h3>
+                <p>Stay on top of attendance and work updates quickly.</p>
               </div>
-            </div>
-            <div class="job-action">
-              <ion-icon name="arrow-forward-circle"></ion-icon>
+            </li>
+          </ul>
+
+          <div class="job-slider-container" *ngIf="displayJobs.length">
+            <div class="job-slider-header">Open roles</div>
+            <div class="job-slider">
+              <div class="job-slider-track" [style.transform]="'translateX(' + sliderOffset + 'px)'">
+                <div class="job-card" *ngFor="let job of displayJobs">
+                  <div class="job-card-content">
+                    <div class="job-icon">
+                      <ion-icon name="briefcase-outline"></ion-icon>
+                    </div>
+                    <div class="job-details">
+                      <h4 class="job-title">{{ job.title }}</h4>
+                      <div class="job-pay">
+                        <ion-icon name="cash-outline"></ion-icon>
+                        <span>GHS{{ job.payRate }}/day</span>
+                      </div>
+                      <div class="job-pay" *ngIf="job.client?.name">
+                        <ion-icon name="document-outline"></ion-icon>
+                        <span>{{ job.client?.name }}</span>
+                      </div>
+                      <div class="job-status">
+                        <ion-icon name="time-outline"></ion-icon>
+                        <span>Available Now</span>
+                      </div>
+                    </div>
+                    <div class="job-action">
+                      <ion-icon name="arrow-forward-circle"></ion-icon>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-    </div>
-  </ion-toolbar>
-</ion-header>
+      </section>
 
-<ion-content [fullscreen]="true">
-  <div class="container py-4">
-    <div class="row">
-      <div class="col-md-6 offset-md-3">
-        <div class="lc-block text-center mb-4"></div>
-        <div class="lc-block text-center">
-          <ion-card>
+      <section class="auth-form-panel">
+        <div class="form-wrap">
+          <ion-card class="login-card">
             <div class="lc-block text-center">
-              <h3 editable="inline" class="display-4 mb-3"><b>Workerly</b></h3>
+              <h2 class="form-title"><b>Workerly</b></h2>
             </div>
-            <p class="text-center" style="font-size: 20px;">Welcome Back</p>
-            
-            <!-- Error Message -->
-            <ion-item *ngIf="errorMessage" lines="none" color="danger">
+            <p class="form-subtitle text-center">Welcome back</p>
+
+            <ion-item *ngIf="errorMessage" lines="none" color="danger" class="error-item">
               <ion-label>{{ errorMessage }}</ion-label>
             </ion-item>
-            
+
             <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
               <ion-item lines="none" class="mb-3">
                 <fieldset class="input-item">
-                  <legend style="color: rgb(0, 0, 0);">Email</legend>
+                  <legend>Email</legend>
                   <ion-input formControlName="email" type="email" placeholder="name@example.com"></ion-input>
                 </fieldset>
               </ion-item>
 
               <ion-item lines="none" class="mb-3">
                 <fieldset class="input-item">
-                  <legend style="color: rgb(0, 0, 0);">Password</legend>
+                  <legend>Password</legend>
                   <div class="password-input-container">
                     <ion-input formControlName="password" [type]="passwordType" placeholder="xxxxxxxxx"></ion-input>
                     <ion-button fill="clear" size="small" class="password-toggle" (click)="togglePasswordVisibility()">
@@ -70,15 +97,16 @@
                 </fieldset>
               </ion-item>
 
-              <ion-button type="submit" class="mt-2" [disabled]="isLoading || loginForm.invalid">
+              <ion-button type="submit" class="mt-2 submit-btn" expand="block" [disabled]="isLoading || loginForm.invalid">
                 <ion-spinner *ngIf="isLoading" name="crescent"></ion-spinner>
-                {{ isLoading ? 'Logging in...' : 'Login' }}
+                <span *ngIf="!isLoading">Login</span>
+                <span *ngIf="isLoading">Logging in...</span>
               </ion-button>
-              <p class="mt-1"><span>Don't have an account?</span> <span (click)="register()" style="color:orange;cursor: pointer;"> - Register</span></p>
+              <p class="mt-3 switch-auth"><span>Don't have an account?</span> <span (click)="register()" class="link-accent">Register</span></p>
             </form>
           </ion-card>
         </div>
-      </div>
+      </section>
     </div>
   </div>
 </ion-content>

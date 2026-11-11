@@ -1,45 +1,61 @@
-<ion-header>
-  <ion-toolbar>
-    
-  </ion-toolbar>
-</ion-header>
 <ion-content>
-   
-  
-    
-<div class="container py-4">
-	<!-- <div class="row" style="border-bottom:1px solid gray;">
-		<div class="col-md-6 offset-md-3 mb-2">
-			<div class="lc-block text-center">
-				<h3 editable="inline" class="display-3 mb-3"><b>Chale Workerly</b></h3>
-			</div>
-		</div>
-	</div> -->
+  <div class="auth-shell">
+    <div class="auth-grid">
+      <section class="auth-features">
+        <div class="features-inner">
+          <div class="brand-mark">Workerly</div>
+          <h1>Manage your workforce with confidence</h1>
+          <p class="features-intro">Everything you need to coordinate temporary workers, clients, and operations in one place.</p>
+          <ul class="feature-list">
+            <li>
+              <ion-icon name="people-outline"></ion-icon>
+              <div>
+                <h3>Worker Management</h3>
+                <p>Onboard, approve, and track temporary workers and their skills.</p>
+              </div>
+            </li>
+            <li>
+              <ion-icon name="calendar-outline"></ion-icon>
+              <div>
+                <h3>Shifts &amp; Scheduling</h3>
+                <p>Plan shifts, assign staff, and keep schedules organized.</p>
+              </div>
+            </li>
+            <li>
+              <ion-icon name="time-outline"></ion-icon>
+              <div>
+                <h3>Timesheets &amp; Check-ins</h3>
+                <p>Capture attendance and monitor work hours accurately.</p>
+              </div>
+            </li>
+            <li>
+              <ion-icon name="stats-chart-outline"></ion-icon>
+              <div>
+                <h3>Reports &amp; Invoicing</h3>
+                <p>Stay on top of performance, billing, and client reporting.</p>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </section>
 
-	<div class="row">
-		<div class="col-md-6 offset-md-3">
-			<div class="lc-block text-center mb-4">
-       
-      </div>
-
-			<div class="lc-block text-center">
-        <ion-card>
-           <div class="lc-block text-center">
-            <h3 editable="inline" class="display-4 mb-3"><b>Workerly</b></h3>
-          </div>
-          <p class="text-center" style="font-size: 20px;">Welcome back, Let's Sign You In</p>
-          	<form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+      <section class="auth-form-panel">
+        <div class="form-wrap">
+          <ion-card class="login-card">
+            <div class="lc-block text-center">
+              <h2 class="form-title"><b>Workerly</b></h2>
+            </div>
+            <p class="form-subtitle text-center">Welcome back, let's sign you in</p>
+            <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
               <ion-item lines="none" class="mb-3">
                 <fieldset class="input-item">
-                  <legend style="color: rgb(0, 0, 0);">Email</legend>
-                  <ion-input formControlName="email"  type="email" placeholder="name@domain.com"></ion-input>
+                  <legend>Email</legend>
+                  <ion-input formControlName="email" type="email" placeholder="name@domain.com"></ion-input>
                 </fieldset>
-                <!-- <ion-label>Email</ion-label>
-                <ion-input formControlName="email" type="email"></ion-input> -->
               </ion-item>
               <ion-item lines="none">
                 <fieldset class="input-item">
-                  <legend style="color: rgb(0, 0, 0);">Password</legend>
+                  <legend>Password</legend>
                   <div class="password-input-container">
                     <ion-input formControlName="password" [type]="passwordType" placeholder="xxxxxxxxx"></ion-input>
                     <ion-button fill="clear" size="small" class="password-toggle" (click)="togglePasswordVisibility()">
@@ -48,18 +64,12 @@
                   </div>
                 </fieldset>
               </ion-item>
-              <ion-button type="submit" class="mt-2">Login</ion-button>
-              <p class="mt-3"><span>I don't have an account?</span> <span (click)="register()" style="color:orange;cursor: pointer;"> -  Register</span></p> 
+              <ion-button type="submit" class="mt-2 submit-btn" expand="block">Login</ion-button>
+              <p class="mt-3 switch-auth"><span>I don't have an account?</span> <span (click)="register()" class="link-accent">Register</span></p>
             </form>
-        </ion-card>
-			
-        
-			</div><!-- /lc-block -->
-		</div><!-- /col -->
-	</div>
-</div>
- 
- 
-  
-  
+          </ion-card>
+        </div>
+      </section>
+    </div>
+  </div>
 </ion-content>
