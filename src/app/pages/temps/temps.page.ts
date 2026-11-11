@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { RouterModule } from '@angular/router';
 import { IonicModule, AlertController, ToastController } from '@ionic/angular';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { File } from '@ionic-native/file/ngx';
 import * as XLSX from 'xlsx';
 import { AuthService } from '../../services/auth.service';
@@ -15,7 +16,7 @@ import { AuthService } from '../../services/auth.service';
   templateUrl: './temps.page.html',
   styleUrls: ['./temps.page.scss'],
   standalone: true,
-  imports: [IonicModule, CommonModule, RouterModule]
+  imports: [IonicModule, CommonModule, FormsModule, RouterModule]
 })
 export class TempsPage implements OnInit {
 
@@ -23,6 +24,8 @@ export class TempsPage implements OnInit {
   filteredTemps: Temp[] = [];
   currentUserRole: string = '';
   searchTerm: string = '';
+  fromDate: string = '';
+  toDate: string = '';
 
   // Pagination properties
   currentPage: number = 1;
@@ -56,8 +59,7 @@ export class TempsPage implements OnInit {
   loadTemps() {
     this.tempService.getTemps().subscribe(temps => {
       this.temps = temps;
-      this.filteredTemps = temps;
-      this.updatePagination();
+      this.applyFilters();
 
       this.exportArray = [];
 
@@ -70,6 +72,7 @@ export class TempsPage implements OnInit {
           'Phone Number': t.phone,
           'Experience In Years': t.experience,
           'Status': t.status,
+          'Created At': t.createdAt || t.created_at || ''
           });
       });
       console.log('Loaded temps:', this.exportArray);
@@ -213,13 +216,55 @@ export class TempsPage implements OnInit {
   }
 
   onSearchTermChange(event: any) {
-    const query = event.target.value.toLowerCase();
-    this.filteredTemps = this.temps.filter(temp =>
-      temp.firstName.toLowerCase().includes(query) ||
-      temp.lastName.toLowerCase().includes(query) ||
-      temp.email.toLowerCase().includes(query) ||
-      temp.phone.includes(query)
-    );
+    this.searchTerm = (event?.target?.value || '').toLowerCase();
+    this.applyFilters();
+  }
+
+  onDateFilterChange() {
+    this.applyFilters();
+  }
+
+  clearDateFilter() {
+    this.fromDate = '';
+    this.toDate = '';
+    this.applyFilters();
+  }
+
+  private getTempDateValue(temp: Temp): Date | null {
+    const raw = temp.createdAt || (temp as any).created_at;
+    if (!raw) return null;
+    const d = new Date(raw);
+    return isNaN(d.getTime()) ? null : d;
+  }
+
+  applyFilters() {
+    const query = (this.searchTerm || '').toLowerCase();
+    const from = this.fromDate ? new Date(this.fromDate) : null;
+    if (from) from.setHours(0, 0, 0, 0);
+    const to = this.toDate ? new Date(this.toDate) : null;
+    if (to) to.setHours(23, 59, 59, 999);
+
+    this.filteredTemps = this.temps.filter(temp => {
+      const matchesSearch = !query ||
+        (temp.firstName || '').toLowerCase().includes(query) ||
+        (temp.lastName || '').toLowerCase().includes(query) ||
+        (temp.email || '').toLowerCase().includes(query) ||
+        (temp.phone || '').includes(query);
+
+      let matchesDate = true;
+      if (from || to) {
+        const tempDate = this.getTempDateValue(temp);
+        if (!tempDate) {
+          matchesDate = false;
+        } else {
+          if (from && tempDate < from) matchesDate = false;
+          if (to && tempDate > to) matchesDate = false;
+        }
+      }
+
+      return matchesSearch && matchesDate;
+    });
+
     this.currentPage = 1;
     this.updatePagination();
   }

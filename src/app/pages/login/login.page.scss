@@ -1,85 +1,240 @@
 @font-face {
+  font-family: "Proza Display W03 Bold";
+  src: url("https://db.onlinewebfonts.com/t/c107202f3ecccc6fee25aabca831e096.eot");
+  src: url("https://db.onlinewebfonts.com/t/c107202f3ecccc6fee25aabca831e096.eot?#iefix") format("embedded-opentype"),
+    url("https://db.onlinewebfonts.com/t/c107202f3ecccc6fee25aabca831e096.woff2") format("woff2"),
+    url("https://db.onlinewebfonts.com/t/c107202f3ecccc6fee25aabca831e096.woff") format("woff"),
+    url("https://db.onlinewebfonts.com/t/c107202f3ecccc6fee25aabca831e096.ttf") format("truetype"),
+    url("https://db.onlinewebfonts.com/t/c107202f3ecccc6fee25aabca831e096.svg#Proza Display W03 Bold") format("svg");
+}
+
+ion-content {
+  --background: #004c4d;
+}
+
+.auth-shell {
+  min-height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+.auth-grid {
+  width: 100%;
+  max-width: 1100px;
+  display: grid;
+  grid-template-columns: 1.1fr 1fr;
+  background: #fff;
+  border-radius: 24px;
+  overflow: hidden;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
+}
+
+.auth-features {
+  background: linear-gradient(160deg, #004c4d 0%, #006666 60%, #008080 100%);
+  color: #fff;
+  padding: 48px 40px;
+  display: flex;
+  align-items: center;
+
+  .features-inner {
+    width: 100%;
+  }
+
+  .brand-mark {
     font-family: "Proza Display W03 Bold";
-    src: url("https://db.onlinewebfonts.com/t/c107202f3ecccc6fee25aabca831e096.eot");
-    src: url("https://db.onlinewebfonts.com/t/c107202f3ecccc6fee25aabca831e096.eot?#iefix")format("embedded-opentype"),
-    url("https://db.onlinewebfonts.com/t/c107202f3ecccc6fee25aabca831e096.woff2")format("woff2"),
-    url("https://db.onlinewebfonts.com/t/c107202f3ecccc6fee25aabca831e096.woff")format("woff"),
-    url("https://db.onlinewebfonts.com/t/c107202f3ecccc6fee25aabca831e096.ttf")format("truetype"),
-    url("https://db.onlinewebfonts.com/t/c107202f3ecccc6fee25aabca831e096.svg#Proza Display W03 Bold")format("svg");
+    font-size: 1.4rem;
+    letter-spacing: 0.5px;
+    margin-bottom: 16px;
+    opacity: 0.95;
+  }
+
+  h1 {
+    font-family: "Proza Display W03 Bold";
+    font-size: 2rem;
+    line-height: 1.2;
+    margin: 0 0 12px;
+    color: #fff;
+  }
+
+  .features-intro {
+    color: rgba(255, 255, 255, 0.85);
+    font-size: 1rem;
+    margin-bottom: 28px;
+    line-height: 1.5;
+  }
+
+  .feature-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: 18px;
+
+    li {
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+
+      ion-icon {
+        font-size: 26px;
+        color: #fff;
+        background: rgba(255, 255, 255, 0.15);
+        border-radius: 10px;
+        padding: 8px;
+        flex-shrink: 0;
+      }
+
+      h3 {
+        margin: 0 0 4px;
+        font-size: 1rem;
+        color: #fff;
+        font-weight: 600;
+      }
+
+      p {
+        margin: 0;
+        font-size: 0.9rem;
+        color: rgba(255, 255, 255, 0.8);
+        line-height: 1.4;
+      }
+    }
+  }
 }
-ion-content{
-    --background:#004c4d;
+
+.auth-form-panel {
+  background: #fff;
+  padding: 40px 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  .form-wrap {
+    width: 100%;
+    max-width: 420px;
+  }
 }
-ion-toolbar{
-    --background:white;
+
+.login-card {
+  --background: #fff;
+  background: #fff;
+  padding: 28px 24px;
+  border-radius: 20px;
+  box-shadow: none;
+  margin: 0;
+
+  .form-title {
+    color: #000;
+    font-size: 2rem;
+    margin: 0 0 4px;
+  }
+
+  .form-subtitle {
+    color: #6c757d;
+    font-size: 1rem;
+    margin-bottom: 20px;
+  }
 }
-h3{
-    color:#000;
-}
-.input-item{
+
+.input-item {
   padding-left: 20px;
-  --background:white;
-  background:white;
+  --background: #fff;
+  background: #fff;
   width: 100%;
   border-radius: 40px;
   border: 2px solid #004c4d;
   height: 70px;
-  ion-input{
-      margin-top: -12px;
-       font-family: "Proza Display W03 Bold";
-       color:#000;
+
+  ion-input {
+    margin-top: -12px;
+    font-family: "Proza Display W03 Bold";
+    color: #000;
   }
 }
-ion-item{
-    --background:white;
-}
-p{
-    color:darkgray;
-}
-input{
-    color:#000;
-}
-ion-card{
-    --bakcground:white; 
-    background: white;
-    padding: 20px;
-    border-radius: 20px;
+
+ion-item {
+  --background: #fff;
+  --padding-start: 0;
+  --inner-padding-end: 0;
 }
 
-legend{
-    color: rgba(0, 0, 0, 0.664);
-    background: none;
-    width: auto;
-    font-size: 20px;
-     font-family: "Proza Display W03 Bold";
-     margin-bottom: 0;
+legend {
+  color: rgba(0, 0, 0, 0.664);
+  background: none;
+  width: auto;
+  font-size: 16px;
+  font-family: "Proza Display W03 Bold";
+  margin-bottom: 0;
 }
 
-ion-button{
-    width: 40%;
-    padding: 10px;
-    min-height: 38px;
-    color:white;
-    --color:white;
-    font-size: 20px;
-    font-family: "Proza Display W03 Bold";
-    --background:#004c4d;
+.submit-btn {
+  width: 100%;
+  margin-top: 8px;
+  min-height: 48px;
+  --background: #004c4d;
+  --color: #fff;
+  font-size: 18px;
+  font-family: "Proza Display W03 Bold";
+}
+
+.switch-auth {
+  color: #6c757d;
+  text-align: center;
+  margin-top: 16px;
+
+  .link-accent {
+    color: orange;
+    cursor: pointer;
+    font-weight: 600;
+    margin-left: 4px;
+  }
 }
 
 .password-input-container {
   position: relative;
   display: flex;
   align-items: center;
+  width: 100%;
 }
 
 .password-toggle {
-    position: absolute;
-    right: 0px;
-    top: 0%;
-    transform: translateY(-50%);
-    --padding-start: 0;
-    --padding-end: 0;
-    height: 30px;
-    width: 62px;
-    z-index: 20;
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  --padding-start: 0;
+  --padding-end: 0;
+  height: 30px;
+  width: 48px;
+  z-index: 20;
+  --color: #004c4d;
+}
+
+@media (max-width: 900px) {
+  .auth-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .auth-features {
+    padding: 32px 24px;
+  }
+
+  .auth-form-panel {
+    padding: 28px 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  .auth-shell {
+    padding: 12px;
+  }
+
+  .auth-features h1 {
+    font-size: 1.6rem;
+  }
+
+  .login-card {
+    padding: 20px 12px;
+  }
 }

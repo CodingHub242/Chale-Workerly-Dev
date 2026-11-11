@@ -26,6 +26,27 @@
       </ion-col>
     </ion-row>
 
+    <ion-row>
+      <ion-col size="12">
+        <div class="date-filter-container">
+          <div class="date-filter-fields">
+            <div class="date-field">
+              <label>From</label>
+              <input type="date" [(ngModel)]="fromDate" (change)="onDateFilterChange()" />
+            </div>
+            <div class="date-field">
+              <label>To</label>
+              <input type="date" [(ngModel)]="toDate" (change)="onDateFilterChange()" />
+            </div>
+            <ion-button fill="clear" size="small" class="clear-date-btn" (click)="clearDateFilter()" *ngIf="fromDate || toDate">
+              <ion-icon slot="start" name="close-circle-outline"></ion-icon>
+              Clear
+            </ion-button>
+          </div>
+        </div>
+      </ion-col>
+    </ion-row>
+
     <!-- Pagination Controls -->
     <ion-row *ngIf="totalPages > 1">
       <ion-col size="12">

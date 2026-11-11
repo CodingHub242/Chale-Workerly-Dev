@@ -18,7 +18,8 @@ export class TempService {
     return this.http.get<any[]>(this.apiUrl).pipe(
       map((temps: any[]) => temps.map(temp => ({
         ...temp,
-        profilePictureUrl: temp.profile_picture_url || temp.profilePictureUrl
+        profilePictureUrl: temp.profile_picture_url || temp.profilePictureUrl,
+        createdAt: temp.created_at || temp.createdAt
       })))
     );
   }
@@ -27,7 +28,8 @@ export class TempService {
     return this.http.get<any>(`${this.apiUrl}/${id}`).pipe(
       map((temp: any) => ({
         ...temp,
-        profilePictureUrl: temp.profile_picture_url || temp.profilePictureUrl
+        profilePictureUrl: temp.profile_picture_url || temp.profilePictureUrl,
+        createdAt: temp.created_at || temp.createdAt
       }))
     );
   }

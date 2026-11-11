@@ -14,6 +14,8 @@ export interface Temp {
     tempStatus?: 'pending' | 'accepted' | 'declined';
     profilePictureUrl?: string;
     pivot?: any;
+    createdAt?: string;
+    created_at?: string;
 
     tempId?:any;
     tempresponse?: 'pending' | 'accepted' | 'declined';
