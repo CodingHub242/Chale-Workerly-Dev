@@ -531,7 +531,8 @@ legend {
 /* Job Slider - compact version in features panel */
 .job-slider-container {
   width: 100%;
-  margin-top: 10px;
+  min-width: 0;
+  margin-top: 20px;
   overflow: hidden;
   position: relative;
 
@@ -546,31 +547,49 @@ legend {
 }
 
 .job-slider {
+  width: 100%;
+  min-width: 0;
   overflow: hidden;
   border-radius: 14px;
 }
 
 .job-slider-track {
   display: flex;
+  width: max-content;
   align-items: stretch;
-  transition: transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+
+  transition: transform 0.8s cubic-bezier(
+    0.25, 0.46, 0.45, 0.94
+  );
 }
 
 .job-card {
-  flex-shrink: 0;
+  flex: 0 0 280px;
+  width: 280px;
   margin-right: 16px;
+  
 }
 
 .job-card-content {
-  background: linear-gradient(145deg, #ffffff 0%, #f8f9fa 100%);
+  box-sizing: border-box;
+  width: 280px;
+  min-width: 0;
+  min-height: 90px;
+
+   background: linear-gradient(
+    145deg,
+    #fff 0%,
+    #f8f9fa 100%
+  );
+
   border-radius: 14px;
   padding: 12px 14px;
-  min-width: 260px;
+
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+
   display: flex;
   align-items: center;
   gap: 12px;
-  color: #2c3e50;
 }
 
 .job-icon {
@@ -1070,853 +1089,167 @@ ion-content {
 .auth-form-panel {
   background: white !important;
 }
-This is a diagnostic test, not necessarily the final styling solution.
 
-3. Check your browser console for errors
-Look for errors such as:
 
-ExpressionChangedAfterItHasBeenCheckedError
 
-NG0100
-
-Cannot read properties of undefined
-
-Ionic animation errors
-
-Errors involving ion-router-outlet
-
-Also, temporarily comment out these three lines in ngOnInit():
-
-
-typescript
-// localStorage.removeItem('currentUser');
-// this.appComponent.currentUser = false;
-
-// this.loadAvailableJobs();
-// this.startJobSlider();
-Keep the form initialization.
-
-This helps determine whether the problem is triggered by authentication state or the jobs API.
-
-4. Send me these two results
-Does document.querySelector('.login-card') return an HTML element or null after the form disappears?
-
-Does the login form remain visible when you temporarily comment out the four operations above?
-
-These two tests should narrow the problem considerably. I don't want to unnecessarily rewrite your login page when the actual issue may be a single lifecycle or rendering conflict.
-
-
-Yes the form is still in the dom just not visible
-
-Excellent. That narrows the problem significantly.
-
-If .login-card still exists in the DOM after disappearing, Angular is not removing your login form. Something is making it invisible, moving it, or covering it.
-
-Let's identify exactly what is happening.
-
-1. Run this in Chrome DevTools Console after the form disappears
-
-javascript
-const elements = [
-  '.login-card',
-  '.auth-form-panel',
-  '.auth-grid',
-  '.auth-shell',
-  'ion-content'
-];
-
-elements.forEach(selector => {
-  const el = document.querySelector(selector);
-  if (el) {
-    const s = getComputedStyle(el);
-    const r = el.getBoundingClientRect();
-
-    console.log(selector, {
-      display: s.display,
-      visibility: s.visibility,
-      opacity: s.opacity,
-      height: r.height,
-      width: r.width,
-      top: r.top,
-      left: r.left,
-      position: s.position,
-      transform: s.transform
-    });
-  }
-});
-This will tell us whether:
-
-opacity becomes 0.
-
-display becomes none.
-
-visibility becomes hidden.
-
-The form gets moved outside the visible screen.
-
-The parent container collapses.
-
-2. Try this temporary CSS fix
-Add this at the very bottom of your SCSS:
-
-
-scss
-:host {
-  display: block !important;
-  height: 100% !important;
-  width: 100% !important;
-}
-
-ion-content {
-  --background: #073336;
-}
-
-.auth-shell {
-  display: flex !important;
-  min-height: 100vh !important;
-  width: 100% !important;
-  align-items: center;
-  justify-content: center;
-  opacity: 1 !important;
-  visibility: visible !important;
-}
-
-.auth-grid,
-.auth-form-panel,
-.form-wrap,
-.login-card {
-  opacity: 1 !important;
-  visibility: visible !important;
-  transform: none !important;
-}
-3. One important question
-When the form disappears, what does the screen look like?
-
-A: The entire screen becomes blank (including the background).
-
-B: The background image/green background remains, but the white login card disappears.
-
-C: The white login card disappears, but the left-hand Workerly features panel remains.
-
-D: The entire layout seems to shrink or move.
-
-This distinction is important because it will help identify whether the issue is with Ionic page rendering, CSS visibility, or the layout itself.
-
-
-image.png
-.login-card {display: 'flex', visibility: 'visible', opacity: '1', height: 459.390625, width: 12740, …}
-display
-: 
-"flex"
-height
-: 
-459.390625
-left
-: 
-24
-opacity
-: 
-"1"
-position
-: 
-"static"
-top
-: 
-514.8125
-transform
-: 
-"none"
-visibility
-: 
-"visible"
-width
-: 
-12740display
-: 
-"grid"
-height
-: 
-950.203125
-left
-: 
-24
-opacity
-: 
-"1"
-position
-: 
-"static"
-top
-: 
-24
-transform
-: 
-"none"
-visibility
-: 
-"visible"
-width
-: 
-712display
-: 
-"flex"
-height
-: 
-998.203125
-left
-: 
-0
-opacity
-: 
-"1"
-position
-: 
-"static"
-top
-: 
-0
-transform
-: 
-"none"
-visibility
-: 
-"visible"
-width
-: 
-760display
-: 
-"block"
-height
-: 
-634
-left
-: 
-0
-opacity
-: 
-"1"
-position
-: 
-"relative"
-top
-: 
-0
-transform
-: 
-"none"
-visibility
-: 
-"visible"
-width
-: 
-775
-
-I've found the problem in your measurements. There are actually two layout issues.
-
-The login form is not disappearing. It is being pushed below the visible screen, and its width is expanding abnormally.
-
-Your browser measurements reveal:
-
-.login-card width: 12,740px — this is abnormal.
-
-.login-card top position: 514px — it is below the visible area.
-
-.auth-grid width: 712px.
-
-The jobs slider is inside the left-hand grid column and contains duplicated cards.
-
-I suspect the combination of CSS Grid's automatic minimum sizing and the slider's non-wrapping flex content is causing the layout overflow.
-
-1. Fix your grid layout
-Replace your .auth-grid CSS with:
-
-
-scss
-.auth-grid {
-  width: 100%;
-  max-width: 1150px;
-  min-width: 0;
-
-  display: grid;
-  grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
-
-  background: #fff;
-  border-radius: 24px;
-  overflow: hidden;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
-}
-2. Fix the job slider overflow
-Replace these styles:
-
-
-scss
-.job-slider-container {
-  width: 100%;
-  margin-top: 10px;
-  overflow: hidden;
-  position: relative;
-}
-
-.job-slider {
-  width: 100%;
-  min-width: 0;
-  overflow: hidden;
-  border-radius: 14px;
-}
-
-.job-slider-track {
-  display: flex;
-  width: max-content;
-  max-width: none;
-  align-items: stretch;
-  transition: transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-}
-
-.job-card {
-  flex: 0 0 280px;
-  width: 280px;
-  margin-right: 16px;
-}
-3. Fix the login card width
-Add:
-
-
-scss
-.auth-form-panel {
-  min-width: 0;
-  width: 100%;
-  box-sizing: border-box;
-}
-
-.form-wrap {
-  width: 100%;
-  max-width: 420px;
-  min-width: 0;
-  box-sizing: border-box;
-}
-
-.login-card {
-  display: block;
-  width: 100%;
-  max-width: 100%;
-  min-width: 0;
-  box-sizing: border-box;
-  margin: 0;
-}
-4. Fix the mobile layout
-Your existing media query puts the features panel before the login form. On smaller screens, this means users must scroll past the features before reaching the login form.
-
-I recommend displaying the login form first.
-
-Replace your existing media queries with:
-
-
-scss
+/* TABLETS */
 @media (max-width: 900px) {
+
   .auth-shell {
-    min-height: 100%;
-    padding: 16px;
+    padding: 20px;
     align-items: flex-start;
   }
 
   .auth-grid {
     grid-template-columns: minmax(0, 1fr);
-    width: 100%;
+    grid-template-areas:
+      "form"
+      "features";
+
+    min-height: auto;
   }
 
   .auth-form-panel {
-    grid-row: 1;
-    padding: 30px 20px;
+    padding: 40px 24px;
   }
 
   .auth-features {
-    grid-row: 2;
-    padding: 28px 22px;
+    padding: 35px 28px;
   }
+
 }
 
-@media (max-width: 480px) {
+
+/* MOBILE PHONES */
+@media (max-width: 600px) {
+
+  ion-content {
+    --background:
+      linear-gradient(
+        135deg,
+        rgba(7, 51, 54, 0.94),
+        rgba(7, 51, 54, 0.82)
+      ),
+      url('../../../assets/images/tick.png');
+
+    --background-size: cover;
+    --background-position: center;
+  }
+
   .auth-shell {
-    padding: 10px;
+    padding: 12px;
+    min-height: 100%;
+    align-items: flex-start;
   }
 
-  .auth-features h1 {
-    font-size: 1.5rem;
+  .auth-grid {
+    width: 100%;
+    min-height: auto;
+
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas:
+      "form"
+      "features";
+
+    border-radius: 18px;
   }
 
-  .job-card {
-    flex-basis: 240px;
-    width: 240px;
+  /* LOGIN FORM FIRST */
+
+  .auth-form-panel {
+    grid-row: 1;
+    padding: 30px 16px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
-
-  .login-card {
-    padding: 20px 12px;
-  }
-}
-5. Test again
-After making these changes, refresh the page and run:
-
-
-javascript
-document.querySelector('.login-card').getBoundingClientRect()
-Your login card should now have a reasonable width (around 420px on desktop, or the available screen width on mobile).
-
-The most important fixes are steps 1 and 3. They address the abnormal grid sizing and login card width directly.
-
-Your Angular authentication code does not need to be rewritten to fix this particular problem.
-
-
-image.png
-bottom
-: 
-401.390625
-height
-: 
-355.390625
-left
-: 
-36
-right
-: 
-456
-top
-: 
-46
-width
-: 
-420
-x
-: 
-36
-y
-: 
-46 - displaying now but not looking good and not responsive, and on mobile it should be th first on to and the other part with the slider below it
-
-Great! The login page is now displaying correctly. We just need to improve the layout and responsiveness.
-
-From your screenshot, I recommend the following design:
-
-Desktop: Features and job slider on the left; login form vertically centered on the right.
-
-Tablet: Login form first, followed by the features section.
-
-Mobile: Login form at the very top, with the features and scrolling job slider underneath.
-
-Both sections should use the full available width on mobile, without horizontal overflow.
-
-You do not need to change your HTML structure. We can achieve this with CSS Grid.
-
-1. Replace your layout CSS
-Replace your existing .auth-shell, .auth-grid, .auth-features, and .auth-form-panel styles with:
-
-
-scss
-ion-content {
-  --background:
-    linear-gradient(
-      135deg,
-      rgba(7, 51, 54, 0.92),
-      rgba(7, 51, 54, 0.72)
-    ),
-    url('../../../assets/images/tick.png');
-
-  --background-size: cover;
-  --background-position: center;
-  --background-repeat: no-repeat;
-}
-
-:host {
-  display: block;
-  width: 100%;
-  height: 100%;
-}
-
-.auth-shell {
-  min-height: 100%;
-  width: 100%;
-  padding: 24px;
-  box-sizing: border-box;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.auth-grid {
-  width: 100%;
-  max-width: 1200px;
-  min-width: 0;
-  min-height: 590px;
-
-  display: grid;
-  grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
-  grid-template-areas: "features form";
-
-  background: #fff;
-  border-radius: 24px;
-  overflow: hidden;
-
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
-}
-
-.auth-features {
-grid-area: features;
-  min-width: 0;
-
-  background: linear-gradient(
-    160deg,
-    #004c4d 0%,
-    #006666 60%,
-    #008080 100%
-  );
-
-  color: #fff;
-  padding: 40px 36px;
-
-  display: flex;
-  align-items: center;
-
-  .features-inner {
-     width: 100%;
-    min-width: 0;
-  }
-
-  .brand-mark {
-    font-family: "Proza Display W03 Bold";
-    font-size: 1.4rem;
-    margin-bottom: 12px;
-  }
-
-  h1 {
-    font-family: "Proza Display W03 Bold";
-    font-size: 1.9rem;
-    line-height: 1.2;
-    margin: 0 0 10px;
-    color: #fff;
-  }
-
-  .features-intro {
-    color: rgba(255, 255, 255, 0.85);
-    font-size: 0.98rem;
-    margin-bottom: 22px;
-    line-height: 1.5;
-  }
-
-  .feature-list {
-    list-style: none;
-    padding: 0;
-    margin: 0 0 22px;
-    display: grid;
-    gap: 14px;
-
-    li {
-      display: flex;
-      gap: 12px;
-      align-items: flex-start;
-
-      ion-icon {
-        font-size: 24px;
-        color: #fff;
-        background: rgba(255, 255, 255, 0.15);
-        border-radius: 10px;
-        padding: 8px;
-        flex-shrink: 0;
-      }
-
-      h3 {
-        margin: 0 0 2px;
-        font-size: 0.95rem;
-        color: #fff;
-        font-weight: 600;
-      }
-
-      p {
-        margin: 0;
-        font-size: 0.85rem;
-        color: rgba(255, 255, 255, 0.8);
-        line-height: 1.4;
-      }
-    }
-  }
-}
-
-.auth-form-panel {
- grid-area: form;
-  min-width: 0;
-  width: 100%;
-  box-sizing: border-box;
-
-  background: #fff;
-  padding: 36px;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
 
   .form-wrap {
     width: 100%;
-    max-width: 420px;
-    min-width: 0;
-  }
-}
-
-.login-card {
- --background: #fff;
-
-  display: block;
-  width: 100%;
-  max-width: 100%;
-  min-width: 0;
-  box-sizing: border-box;
-
-  background: #fff;
-  padding: 28px 24px;
-  border-radius: 20px;
-  box-shadow: none;
-  margin: 0;
-
-
-  .form-title {
-     color: #000;
-    font-size: 2rem;
-    margin: 0 0 4px;
-  }
-
-  .form-subtitle {
-     color: #6c757d;
-    font-size: 1rem;
-    margin-bottom: 16px;
-  }
-}
-
-.error-item {
-  margin-bottom: 12px;
-  --border-radius: 10px;
-}
-
-.input-item {
-  box-sizing: border-box;
-  width: 100%;
-  min-width: 0;
-  height: 70px;
-
-  padding-left: 20px;
-
-  background: #fff;
-  border: 2px solid #004c4d;
-  border-radius: 15px;
-
-  ion-input {
-   width: 100%;
-    min-width: 0;
-    margin-top: -12px;
-    font-family: "Proza Display W03 Bold";
-    color: #000;
-  }
-}
-
-ion-item {
- --background: #fff;
-  --padding-start: 0;
-  --inner-padding-end: 0;
-  width: 100%;
-  min-width: 0;
-}
-
-legend {
-  color: rgba(0, 0, 0, 0.664);
-  background: none;
-  width: auto;
-  font-size: 16px;
-  font-family: "Proza Display W03 Bold";
-  margin-bottom: 0;
-}
-
-.submit-btn {
-  width: 100%;
-  margin-top: 4px;
-  min-height: 48px;
-  --background: #004c4d;
-  --color: #fff;
-  font-size: 16px;
-  font-family: "Proza Display W03 Bold";
-}
-
-.switch-auth {
-  color: #6c757d;
-  text-align: center;
-  margin-top: 14px;
-
-  .link-accent {
-    color: orange;
-    cursor: pointer;
-    font-weight: 600;
-    margin-left: 4px;
-  }
-}
-
-.password-input-container {
- position: relative;
-  display: flex;
-  align-items: center;
-  width: 100%;
-  min-width: 0;
-}
-
-.password-toggle {
-  position: absolute;
-  right: 0;
-  top: 50%;
-  transform: translateY(-50%);
-  --padding-start: 0;
-  --padding-end: 0;
-  height: 30px;
-  width: 48px;
-  z-index: 20;
-  --color: #004c4d;
-}
-
-/* Job Slider - compact version in features panel */
-
-.job-slider-container {
-  width: 100%;
-  margin-top: 10px;
-  overflow: hidden;
-  position: relative;
-
-   .job-slider-header {
-    font-size: 0.85rem;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    color: rgba(255, 255, 255, 0.85);
-    margin-bottom: 8px;
-    font-weight: 600;
-  }
-}
-
-.job-slider {
-  width: 100%;
-  min-width: 0;
-  overflow: hidden;
-  border-radius: 14px;
-}
-
-
-
-.job-slider-track {
-  display: flex;
-  width: max-content;
-  max-width: none;
-  align-items: stretch;
-  transition: transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-}
-
-.job-card {
-  flex: 0 0 280px;
-  width: 280px;
-  margin-right: 16px;
-}
-
-.job-card-content {
-  background: linear-gradient(145deg, #ffffff 0%, #f8f9fa 100%);
-  border-radius: 14px;
-  padding: 12px 14px;
-  min-width: 260px;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  color: #2c3e50;
-}
-
-.job-icon {
-  background: linear-gradient(135deg, #004c4d, #006666);
-  border-radius: 10px;
-  padding: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  ion-icon {
-    font-size: 20px;
-    color: #fff;
-  }
-}
-
-.job-details {
-  flex: 1;
-  min-width: 0;
-
-  .job-title {
-    font-size: 14px;
-    font-weight: 700;
-    color: #2c3e50;
-    margin: 0 0 4px;
-    font-family: "Proza Display W03 Bold", sans-serif;
-  }
-
-  .job-pay,
-  .job-status {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    font-size: 12px;
-    color: #5a6c7d;
-
-    ion-icon {
-      font-size: 14px;
-    }
-  }
-
-  .job-pay {
-    color: #27ae60;
-    font-weight: 600;
-  }
-}
-
-.job-action ion-icon {
-  font-size: 22px;
-  color: #ee5a52;
-}
-
-@media (max-width: 900px) {
-  .auth-shell {
-    min-height: 100%;
-    padding: 16px;
-    align-items: flex-start;
-  }
-
-  .auth-grid {
-    grid-template-columns: minmax(0, 1fr);
-    width: 100%;
-  }
-
-  .auth-form-panel {
-    grid-row: 1;
-    padding: 30px 20px;
-  }
-
-  .auth-features {
-    grid-row: 2;
-    padding: 28px 22px;
-  }
-}
-
-@media (max-width: 480px) {
-  .auth-shell {
-    padding: 10px;
-  }
-
-  .auth-features h1 {
-    font-size: 1.5rem;
-  }
-
-  .job-card {
-    flex-basis: 240px;
-    width: 240px;
+    max-width: 100%;
   }
 
   .login-card {
-    padding: 20px 12px;
+    width: 100%;
+    padding: 22px 14px;
+    border-radius: 14px;
   }
+
+  .login-card .form-title {
+    font-size: 1.7rem;
+  }
+
+  .input-item {
+    height: 65px;
+  }
+
+  .submit-btn {
+    min-height: 48px;
+  }
+
+  /* FEATURES BELOW LOGIN */
+
+  .auth-features {
+    grid-row: 2;
+    padding: 30px 20px;
+    display: block;
+  }
+
+  .auth-features h1 {
+    font-size: 1.6rem;
+  }
+
+  .features-intro {
+    font-size: 0.9rem;
+  }
+
+  /* JOB SLIDER */
+
+  .job-slider-container {
+    margin-top: 24px;
+  }
+
+  .job-slider {
+    width: 100%;
+  }
+
+  .job-card {
+    flex: 0 0 260px;
+    width: 260px;
+  }
+
+  .job-card-content {
+    width: 260px;
+    min-height: 90px;
+  }
+
+}
+
+
+/* VERY SMALL PHONES */
+@media (max-width: 360px) {
+
+  .auth-shell {
+    padding: 8px;
+  }
+
+  .auth-form-panel {
+    padding: 24px 10px;
+  }
+
+  .auth-features {
+    padding: 25px 14px;
+  }
+
+  .login-card {
+    padding: 20px 10px;
+  }
+
+  .job-card,
+  .job-card-content {
+    width: 235px;
+    flex-basis: 235px;
+  }
+
 }
