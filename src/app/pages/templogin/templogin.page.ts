@@ -50,6 +50,7 @@ export class TemploginPage implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
+    console.log('TemploginPage destroyed');
     if (this.sliderInterval) {
       clearInterval(this.sliderInterval);
     }
