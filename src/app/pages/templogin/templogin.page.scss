@@ -11,6 +11,310 @@
 ion-content {
   --background:
     linear-gradient(
+      135deg,
+      rgba(7, 51, 54, 0.92),
+      rgba(7, 51, 54, 0.72)
+    ),
+    url('../../../assets/images/tick.png');
+
+  --background-size: cover;
+  --background-position: center;
+  --background-repeat: no-repeat;
+}
+
+:host {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.auth-shell {
+  min-height: 100%;
+  width: 100%;
+  padding: 24px;
+  box-sizing: border-box;
+
+   display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+Log in
+Sign up for free
+import { CommonModule } from '@angular/common';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { RouterModule } from '@angular/router';
+import { IonicModule } from '@ionic/angular';
+import { FormsModule, ReactiveFormsModule, FormBuilder } from '@angular/forms';
+import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { AuthService } from '../../services/auth.service';
+import { Router } from '@angular/router';
+import { JobService } from 'src/app/services/job.service';
+import { Job } from 'src/app/models/job.model';
+import { AppComponent } from 'src/app/app.component';
+
+@Component({
+  standalone: true,
+  selector: 'app-templogin',
+  templateUrl: './templogin.page.html',
+  styleUrls: ['./templogin.page.scss'],
+  imports: [IonicModule, CommonModule, FormsModule, ReactiveFormsModule]
+})
+export class TemploginPage implements OnInit, OnDestroy {
+  loginForm!: FormGroup;
+  isLoading = false;
+  errorMessage = '';
+  passwordType: string = 'password';
+  passwordIcon: string = 'eye-outline';
+  availableJobs: Job[] = [];
+  displayJobs: Job[] = []; // Jobs for display including duplicates
+  sliderOffset = 0;
+  private sliderInterval: any;
+  private cardWidth = 305; // Card width (280px) + margin (25px)
+
+  constructor(
+    private fb: FormBuilder,
+    private authService: AuthService,
+    private router: Router,
+    private jobService: JobService,
+    private appComponent: AppComponent
+  ) { }
+
+  ngOnInit() {
+    this.loginForm = this.fb.group({
+      email: ['', [Validators.required, Validators.email]],
+      password: ['', Validators.required]
+    });
+    localStorage.removeItem('currentUser');
+    this.appComponent.currentUser = false;
+    
+    this.loadAvailableJobs();
+    this.startJobSlider();
+  }
+
+  ngOnDestroy() {
+    if (this.sliderInterval) {
+      clearInterval(this.sliderInterval);
+    }
+  }
+
+  loadAvailableJobs() {
+    this.jobService.getJobs().subscribe({
+      next: (jobs) => {
+        // Filter for active jobs that are available for assignment
+        this.availableJobs = jobs.filter(job =>
+          // job.status === 'Assigning In Progress' || job.status === 'InActive'
+          job.status === 'Assigning In Progress'
+        );
+        this.setupDisplayJobs();
+      },
+      error: (error) => {
+        console.error('Error loading jobs:', error);
+        // Fallback with sample jobs if API fails
+        this.availableJobs = [
+          { id: 1, title: 'Warehouse Assistant', payRate: 15, status: 'Assigning In Progress' } as Job,
+          { id: 2, title: 'Office Clerk', payRate: 18, status: 'Assigning In Progress' } as Job,
+          { id: 3, title: 'Customer Service', payRate: 16, status: 'Assigning In Progress' } as Job
+        ];
+        this.setupDisplayJobs();
+      }
+    });
+  }
+
+  setupDisplayJobs() {
+    if (this.availableJobs.length > 0) {
+      // Create duplicates for infinite loop effect
+      // We need at least 2 sets to create seamless loop
+      this.displayJobs = [...this.availableJobs, ...this.availableJobs];
+    }
+  }
+
+  startJobSlider() {
+    this.sliderInterval = setInterval(() => {
+      if (this.availableJobs.length > 0) {
+        // Move left by one card width
+        this.sliderOffset -= this.cardWidth;
+        
+        // Calculate when we've shown all original cards once
+        const originalSetWidth = this.availableJobs.length * this.cardWidth;
+        
+        // If we've moved past the first set, reset to beginning seamlessly
+        if (Math.abs(this.sliderOffset) >= originalSetWidth) {
+          this.sliderOffset = 0;
+        }
+      }
+    }, 3000); // Change every 3 seconds
+  }
+
+  onSubmit() {
+    if (this.loginForm.invalid) {
+      this.errorMessage = 'Please fill in all required fields correctly.';
+      return;
+    }
+
+    this.isLoading = true;
+    this.errorMessage = '';
+   
+    this.authService.loginTemp(
+      this.loginForm.value.email,
+      this.loginForm.value.password
+    ).subscribe({
+      next: (data: any) => {
+        this.isLoading = false;
+        //console.log(data);
+        if (data.temp.role === 'temp') {
+          this.router.navigate(['/temp-dashboard']).then(() => {
+            window.location.reload();
+          });
+        } else {
+          this.errorMessage = 'This login is for temporary workers only.';
+          localStorage.removeItem('currentUser');
+          // window.location.reload();
+          this.router.navigate(['/templogin']);
+        }
+      },
+      error: (error) => {
+        this.isLoading = false;
+        this.errorMessage = 'Login failed. Please check your credentials and try again.';
+        //alert('Login error: '+ error);
+        this.router.navigate(['/templogin']);
+        // window.location.reload();
+      }
+    });
+  }
+
+  register() {
+    this.router.navigate(['/tempregister']);
+  }
+
+  togglePasswordVisibility() {
+    this.passwordType = this.passwordType === 'password' ? 'text' : 'password';
+    this.passwordIcon = this.passwordIcon === 'eye-outline' ? 'eye-off-outline' : 'eye-outline';
+  }
+}<ion-content [fullscreen]="true">
+  <div class="auth-shell">
+    <div class="auth-grid">
+      <section class="auth-features">
+        <div class="features-inner">
+          <div class="brand-mark">Workerly</div>
+          <h1>Find shifts and manage your work</h1>
+          <p class="features-intro">Sign in to view assignments, track your schedule, and stay connected with opportunities.</p>
+          <ul class="feature-list">
+            <li>
+              <ion-icon name="briefcase-outline"></ion-icon>
+              <div>
+                <h3>Available Opportunities</h3>
+                <p>Discover roles matched to your skills and availability.</p>
+              </div>
+            </li>
+            <li>
+              <ion-icon name="calendar-outline"></ion-icon>
+              <div>
+                <h3>Shift Visibility</h3>
+                <p>Keep track of upcoming shifts and assignments in one place.</p>
+              </div>
+            </li>
+            <li>
+              <ion-icon name="checkmark-done-outline"></ion-icon>
+              <div>
+                <h3>Easy Check-ins</h3>
+                <p>Stay on top of attendance and work updates quickly.</p>
+              </div>
+            </li>
+          </ul>
+
+          <div class="job-slider-container" *ngIf="displayJobs.length">
+            <div class="job-slider-header">Open roles</div>
+            <div class="job-slider">
+              <div class="job-slider-track" [style.transform]="'translateX(' + sliderOffset + 'px)'">
+                <div class="job-card" *ngFor="let job of displayJobs">
+                  <div class="job-card-content">
+                    <div class="job-icon">
+                      <ion-icon name="briefcase-outline"></ion-icon>
+                    </div>
+                    <div class="job-details">
+                      <h4 class="job-title">{{ job.title }}</h4>
+                      <div class="job-pay">
+                        <ion-icon name="cash-outline"></ion-icon>
+                        <span>GHS{{ job.payRate }}/day</span>
+                      </div>
+                      <div class="job-pay" *ngIf="job.client?.name">
+                        <ion-icon name="document-outline"></ion-icon>
+                        <span>{{ job.client?.name }}</span>
+                      </div>
+                      <div class="job-status">
+                        <ion-icon name="time-outline"></ion-icon>
+                        <span>Available Now</span>
+                      </div>
+                    </div>
+                    <div class="job-action">
+                      <ion-icon name="arrow-forward-circle"></ion-icon>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="auth-form-panel">
+        <div class="form-wrap">
+          <ion-card class="login-card">
+            <div class="lc-block text-center">
+              <h2 class="form-title"><b>Workerly</b></h2>
+            </div>
+            <p class="form-subtitle text-center">Welcome back</p>
+
+            <ion-item *ngIf="errorMessage" lines="none" color="danger" class="error-item">
+              <ion-label>{{ errorMessage }}</ion-label>
+            </ion-item>
+
+            <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+              <ion-item lines="none" class="mb-3">
+                <fieldset class="input-item">
+                  <legend>Email</legend>
+                  <ion-input formControlName="email" type="email" placeholder="name@example.com"></ion-input>
+                </fieldset>
+              </ion-item>
+
+              <ion-item lines="none" class="mb-3">
+                <fieldset class="input-item">
+                  <legend>Password</legend>
+                  <div class="password-input-container">
+                    <ion-input formControlName="password" [type]="passwordType" placeholder="xxxxxxxxx"></ion-input>
+                    <ion-button fill="clear" size="small" class="password-toggle" (click)="togglePasswordVisibility()">
+                      <ion-icon [name]="passwordIcon" slot="icon-only"></ion-icon>
+                    </ion-button>
+                  </div>
+                </fieldset>
+              </ion-item>
+
+              <ion-button type="submit" class="mt-2 submit-btn" expand="block" [disabled]="isLoading || loginForm.invalid">
+                <ion-spinner *ngIf="isLoading" name="crescent"></ion-spinner>
+                <span *ngIf="!isLoading">Login</span>
+                <span *ngIf="isLoading">Logging in...</span>
+              </ion-button>
+              <p class="mt-3 switch-auth"><span>Don't have an account?</span> <span (click)="register()" class="link-accent">Register</span></p>
+            </form>
+          </ion-card>
+        </div>
+      </section>
+    </div>
+  </div>
+</ion-content>@font-face {
+  font-family: "Proza Display W03 Bold";
+  src: url("https://db.onlinewebfonts.com/t/c107202f3ecccc6fee25aabca831e096.eot");
+  src: url("https://db.onlinewebfonts.com/t/c107202f3ecccc6fee25aabca831e096.eot?#iefix") format("embedded-opentype"),
+    url("https://db.onlinewebfonts.com/t/c107202f3ecccc6fee25aabca831e096.woff2") format("woff2"),
+    url("https://db.onlinewebfonts.com/t/c107202f3ecccc6fee25aabca831e096.woff") format("woff"),
+    url("https://db.onlinewebfonts.com/t/c107202f3ecccc6fee25aabca831e096.ttf") format("truetype"),
+    url("https://db.onlinewebfonts.com/t/c107202f3ecccc6fee25aabca831e096.svg#Proza Display W03 Bold") format("svg");
+}
+
+ion-content {
+  --background:
+    linear-gradient(
         135deg,
         rgba(7, 51, 54, 0.92),
         rgba(7, 51, 54, 0.72)
@@ -33,11 +337,8 @@ ion-content {
 .auth-grid {
   width: 100%;
   max-width: 1150px;
-  min-width: 0;
-
   display: grid;
-  grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
-
+  grid-template-columns: 1.15fr 1fr;
   background: #fff;
   border-radius: 24px;
   overflow: hidden;
@@ -115,24 +416,24 @@ ion-content {
 }
 
 .auth-form-panel {
-  min-width: 0;
-  width: 100%;
-  box-sizing: border-box;
+  background: #fff;
+  padding: 36px 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
   .form-wrap {
     width: 100%;
-  max-width: 420px;
-  min-width: 0;
-  box-sizing: border-box;
+    max-width: 420px;
   }
 }
 
 .login-card {
-  display: block;
-  width: 100%;
-  max-width: 100%;
-  min-width: 0;
-  box-sizing: border-box;
+  --background: #fff;
+  background: #fff;
+  padding: 28px 24px;
+  border-radius: 20px;
+  box-shadow: none;
   margin: 0;
 
   .form-title {
@@ -212,6 +513,1254 @@ legend {
   display: flex;
   align-items: center;
   width: 100%;
+}
+
+.password-toggle {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  --padding-start: 0;
+  --padding-end: 0;
+  height: 30px;
+  width: 48px;
+  z-index: 20;
+  --color: #004c4d;
+}
+
+/* Job Slider - compact version in features panel */
+.job-slider-container {
+  width: 100%;
+  margin-top: 10px;
+  overflow: hidden;
+  position: relative;
+
+  .job-slider-header {
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: rgba(255, 255, 255, 0.85);
+    margin-bottom: 8px;
+    font-weight: 600;
+  }
+}
+
+.job-slider {
+  overflow: hidden;
+  border-radius: 14px;
+}
+
+.job-slider-track {
+  display: flex;
+  align-items: stretch;
+  transition: transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.job-card {
+  flex-shrink: 0;
+  margin-right: 16px;
+}
+
+.job-card-content {
+  background: linear-gradient(145deg, #ffffff 0%, #f8f9fa 100%);
+  border-radius: 14px;
+  padding: 12px 14px;
+  min-width: 260px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: #2c3e50;
+}
+
+.job-icon {
+  background: linear-gradient(135deg, #004c4d, #006666);
+  border-radius: 10px;
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  ion-icon {
+    font-size: 20px;
+    color: #fff;
+  }
+}
+
+.job-details {
+  flex: 1;
+  min-width: 0;
+
+  .job-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: #2c3e50;
+    margin: 0 0 4px;
+    font-family: "Proza Display W03 Bold", sans-serif;
+  }
+
+  .job-pay,
+  .job-status {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 12px;
+    color: #5a6c7d;
+
+    ion-icon {
+      font-size: 14px;
+    }
+  }
+
+  .job-pay {
+    color: #27ae60;
+    font-weight: 600;
+  }
+}
+
+.job-action ion-icon {
+  font-size: 22px;
+  color: #ee5a52;
+}
+
+@media (max-width: 900px) {
+  .auth-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .auth-features {
+    padding: 28px 22px;
+  }
+
+  .auth-form-panel {
+    padding: 24px 18px;
+  }
+}
+
+@media (max-width: 480px) {
+  .auth-shell {
+    padding: 12px;
+  }
+
+  .auth-features h1 {
+    font-size: 1.5rem;
+  }
+
+  .job-card-content {
+    min-width: 220px;
+  }
+
+  .login-card {
+    padding: 20px 12px;
+  }
+} - the page load, the form displays and vanishes leaving a blank space
+
+The issue is most likely related to the page being re-rendered or the component being destroyed after its initial load, rather than the form's HTML or SCSS.
+
+Looking at your code, there are a few things I would investigate. In particular, I suspect the interaction between AppComponent, authentication state, and this line:
+
+
+typescript
+this.appComponent.currentUser = false;
+Let's troubleshoot it.
+
+1. First, check whether the component is being destroyed
+Add these logs to your component:
+
+
+typescript
+ngOnInit() {
+  console.log('TemploginPage initialized');
+
+  this.loginForm = this.fb.group({
+    email: ['', [Validators.required, Validators.email]],
+    password: ['', Validators.required]
+  });
+
+  localStorage.removeItem('currentUser');
+  this.appComponent.currentUser = false;
+
+  this.loadAvailableJobs();
+  this.startJobSlider();
+}
+
+ngOnDestroy() {
+  console.log('TemploginPage destroyed');
+
+  if (this.sliderInterval) {
+    clearInterval(this.sliderInterval);
+  }
+}
+Open the browser console and refresh the page.
+
+If you see:
+
+
+text
+TemploginPage initialized
+TemploginPage destroyed
+immediately after loading, something is causing the page to be removed from the Angular component tree.
+
+2. Check your AppComponent
+This is particularly important because you are directly modifying:
+
+
+typescript
+this.appComponent.currentUser = false;
+Check whether your app.component.html contains something like:
+
+<ion-router-outlet *ngIf="currentUser"></ion-router-outlet>
+or:
+
+<div *ngIf="currentUser">
+  <ion-router-outlet></ion-router-outlet>
+</div>
+If it does, setting currentUser to false could remove the router outlet and consequently remove your login page.
+
+Your router outlet should generally remain available regardless of whether someone is logged in:
+
+<ion-app>
+  <ion-router-outlet></ion-router-outlet>
+</ion-app>
+Handle authenticated and unauthenticated navigation through route guards instead.
+
+3. Fix your job slider initialization
+Your slider currently starts immediately, even before the jobs have loaded.
+
+Also, setupDisplayJobs() does not clear the previous jobs when the API returns an empty array.
+
+I recommend changing it to:
+
+
+typescript
+setupDisplayJobs() {
+  this.displayJobs = this.availableJobs.length > 0
+    ? [...this.availableJobs, ...this.availableJobs]
+    : [];
+}
+And start the slider only after the jobs have loaded:
+
+
+typescript
+loadAvailableJobs() {
+  this.jobService.getJobs().subscribe({
+    next: (jobs) => {
+      this.availableJobs = jobs.filter(
+        job => job.status === 'Assigning In Progress'
+      );
+
+      this.setupDisplayJobs();
+    },
+    error: (error) => {
+      console.error('Error loading jobs:', error);
+
+      this.availableJobs = [
+        { id: 1, title: 'Warehouse Assistant', payRate: 15, status: 'Assigning In Progress' } as Job,
+        { id: 2, title: 'Office Clerk', payRate: 18, status: 'Assigning In Progress' } as Job,
+        { id: 3, title: 'Customer Service', payRate: 16, status: 'Assigning In Progress' } as Job
+      ];
+
+      this.setupDisplayJobs();
+    }
+  });
+}
+This is a cleanup, not necessarily the cause of the disappearing form.
+
+4. Check your CSS background properties
+Change:
+
+
+scss
+--background-size: cover;
+--background-position: center;
+--background-repeat: no-repeat;
+To:
+
+
+scss
+--background-size: cover;
+--background-position: center;
+--background-repeat: no-repeat;
+These properties are fine as they are, so they are unlikely to cause the form to disappear.
+
+5. My strongest recommendation
+I would like to see your app.component.ts and app.component.html, particularly how you handle currentUser.
+
+Please share these two files.
+
+The reason is that your login page is displayed initially and then disappears. That behavior strongly suggests a routing, authentication-state, or component lifecycle issue rather than a styling problem.
+
+I can help identify exactly what is removing the form and provide the corrected code without changing your existing login design.
+
+
+Just showed the initialized - <ion-app>
+  <ion-split-pane contentId="main-content">
+    <ion-menu contentId="main-content" type="overlay" *ngIf="currentUser">
+      <ion-header>
+        <ion-toolbar>
+          <ion-title style="color:whitesmoke;">Workerly</ion-title>
+        </ion-toolbar>
+      </ion-header>
+      <ion-content>
+        <ion-list>
+          <ion-menu-toggle auto-hide="false" *ngFor="let p of appPages">
+            <ion-item [@collapse]="'expanded'" [routerDirection]="'root'" [routerLink]="[p.url]">
+              <ion-icon slot="start" [name]="p.icon"></ion-icon>
+              <ion-label>
+                {{ p.title }}
+              </ion-label>
+            </ion-item>
+          </ion-menu-toggle>
+        </ion-list>
+      </ion-content>
+    </ion-menu>
+    <ion-router-outlet id="main-content"></ion-router-outlet>
+  </ion-split-pane>
+  
+  <!-- Notification Button -->
+  <!-- <ion-fab vertical="bottom" horizontal="end" slot="fixed" *ngIf="showNotifications">
+    <ion-fab-button (click)="toggleNotifications()">
+      <ion-icon name="chatbox"></ion-icon>
+      <ion-badge color="danger" *ngIf="unreadCount > 0">{{ unreadCount }}</ion-badge>
+    </ion-fab-button>
+  </ion-fab> -->
+  
+  <!-- Notification Panel -->
+  <ion-modal [isOpen]="notificationsOpen" (didDismiss)="notificationsOpen = false">
+    <ng-template>
+      <app-notification></app-notification>
+    </ng-template>
+  </ion-modal>
+</ion-app> import { Component, OnInit } from '@angular/core';
+import { trigger, state, style, animate, transition } from '@angular/animations';
+import { AuthService } from './services/auth.service';
+import { NotificationService } from './services/notification.service';
+
+@Component({
+  selector: 'app-root',
+  templateUrl: 'app.component.html',
+  styleUrls: ['app.component.scss'],
+  standalone: false,
+  animations: [
+    trigger('collapse', [
+      state('expanded', style({ height: '*', opacity: 1 })),
+      state('collapsed', style({ height: '0', opacity: 0 })),
+      transition('expanded <=> collapsed', [
+        animate('200ms ease-out')
+      ])
+    ])
+  ]
+})
+export class AppComponent {
+  public currentUser: any;
+  showNotifications = false;
+  notificationsOpen = false;
+  unreadCount = 0;
+  
+  public appPages: any[] = [];
+
+  // Admin menu items
+  private adminPages = [
+    { title: 'Dashboard', url: '/dashboard', icon: 'home' },
+    { title: 'Shifts', url: '/shifts', icon: 'calendar' },
+    { title: 'Jobs', url: '/jobs', icon: 'briefcase' },
+    { title: 'Clients', url: '/clients', icon: 'people' },
+    { title: 'Temps', url: '/temps', icon: 'person' },
+    {title: 'Temp Check-In', url: '/temp-check-in', icon: 'checkmark-circle' },
+    { title: 'Shift Reports', url: '/shift-reports', icon: 'time' },
+    { title: 'Timesheets', url: '/timesheets', icon: 'document' },
+    { title: 'Reports', url: '/reports', icon: 'analytics' },
+    { title: 'Invoices', url: '/invoices', icon: 'cash' },
+  ];
+
+  // Temp menu items
+  private tempPages = [
+    { title: 'Dashboard', url: '/temp-dashboard', icon: 'home' },
+    { title: 'Shifts', url: '/shifts', icon: 'calendar' },
+    { title: 'Timesheets', url: '/timesheets', icon: 'document' },
+  ];
+
+  constructor(
+    private authService: AuthService,
+    private notificationService: NotificationService
+  ) {
+    this.currentUser = this.authService.getCurrentUser();
+    this.setMenuItems();
+  }
+  
+  ngOnInit() {
+    // Only show notifications for logged in users
+    this.showNotifications = !!this.currentUser;
+    
+    // Subscribe to notification updates
+    this.notificationService.notifications$.subscribe(notifications => {
+      this.unreadCount = this.notificationService.getUnreadCount();
+    });
+
+    // Subscribe to auth changes to update menu
+    this.authService.currentUser$.subscribe(user => {
+      this.currentUser = user;
+      //console.log('User changed:', user);
+      this.setMenuItems();
+    });
+  }
+
+  setMenuItems() {
+    if (this.currentUser) {
+      if (this.currentUser.role === 'temp') {
+        this.appPages = this.tempPages;
+      } else {
+        this.appPages = this.adminPages;
+      }
+    } else {
+      this.appPages = [];
+    }
+  }
+  
+  toggleNotifications() {
+    this.notificationsOpen = !this.notificationsOpen;
+  }
+}
+
+Thanks. Your app.component.html reveals something important: your <ion-router-outlet> is not inside the *ngIf, so the menu visibility is not directly removing the login page.
+
+Since the console only shows TemploginPage initialized and not TemploginPage destroyed, I suspect the issue is related to Ionic's ion-split-pane and ion-router-outlet layout, or the page's CSS/layout.
+
+Let's isolate it first.
+
+1. Temporarily simplify app.component.html
+Replace your current template temporarily with:
+
+<ion-app>
+  <ion-router-outlet></ion-router-outlet>
+</ion-app>
+Copied
+Refresh the login page.
+
+If the login form stays visible, the problem is related to the split-pane layout.
+
+If it still disappears, the problem is somewhere else.
+
+2. If the form stays visible, fix your split-pane layout
+Try this version:
+
+<ion-app>
+  <ion-menu
+    contentId="main-content"
+    type="overlay"
+    *ngIf="currentUser">
+
+    <ion-header>
+      <ion-toolbar>
+        <ion-title>Workerly</ion-title>
+      </ion-toolbar>
+    </ion-header>
+
+    <ion-content>
+      <ion-list>
+        <ion-menu-toggle
+          auto-hide="false"
+          *ngFor="let p of appPages">
+
+          <ion-item
+            [@collapse]="'expanded'"
+            [routerDirection]="'root'"
+            [routerLink]="[p.url]">
+
+            <ion-icon slot="start" [name]="p.icon"></ion-icon>
+            <ion-label>{{ p.title }}</ion-label>
+
+          </ion-item>
+        </ion-menu-toggle>
+      </ion-list>
+    </ion-content>
+  </ion-menu>
+
+  <ion-router-outlet id="main-content"></ion-router-outlet>
+</ion-app>
+Notice that I removed ion-split-pane for now. You can reintroduce it after confirming the issue.
+
+3. One more thing: Check your ion-content CSS
+Add this temporarily to your templogin.page.scss:
+
+
+scss
+ion-content {
+  display: block;
+  --overflow: auto;
+}
+
+.auth-shell {
+  min-height: 100%;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+4. I need one test result
+Please try step 1 first.
+
+What happens when you replace app.component.html with only the router outlet?
+
+
+The login form stays visible.
+
+The login form still disappears.
+
+The page is blank immediately.
+This test will help us narrow down the actual cause instead of changing code unnecessarily.
+
+
+The login form still disappears when I use only ion-app and ion-router-outlet.
+
+Good. This eliminates ion-split-pane and the side menu as the cause.
+
+Since the component initializes but is not destroyed, I want to investigate whether the form is still in the DOM but becoming invisible, or whether something is affecting the Ionic page rendering.
+
+Let's do three checks.
+
+1. Inspect whether the form still exists
+Open Chrome DevTools (F12), go to Console, and run:
+
+
+javascript
+document.querySelector('.login-card')
+Then run:
+
+
+javascript
+document.querySelector('.login-card')?.getBoundingClientRect()
+If the element exists, check its dimensions and position.
+
+2. Temporarily force the login page to remain visible
+Add this to the bottom of templogin.page.scss:
+
+
+scss
+:host {
+  display: block !important;
+  width: 100% !important;
+  height: 100% !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+ion-content {
+  display: block !important;
+  --background: #e9eeee !important;
+}
+
+.auth-shell,
+.auth-grid,
+.auth-form-panel,
+.form-wrap,
+.login-card {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+.auth-shell {
+  min-height: 100%;
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+}
+
+.auth-form-panel {
+  background: white !important;
+}
+This is a diagnostic test, not necessarily the final styling solution.
+
+3. Check your browser console for errors
+Look for errors such as:
+
+ExpressionChangedAfterItHasBeenCheckedError
+
+NG0100
+
+Cannot read properties of undefined
+
+Ionic animation errors
+
+Errors involving ion-router-outlet
+
+Also, temporarily comment out these three lines in ngOnInit():
+
+
+typescript
+// localStorage.removeItem('currentUser');
+// this.appComponent.currentUser = false;
+
+// this.loadAvailableJobs();
+// this.startJobSlider();
+Keep the form initialization.
+
+This helps determine whether the problem is triggered by authentication state or the jobs API.
+
+4. Send me these two results
+Does document.querySelector('.login-card') return an HTML element or null after the form disappears?
+
+Does the login form remain visible when you temporarily comment out the four operations above?
+
+These two tests should narrow the problem considerably. I don't want to unnecessarily rewrite your login page when the actual issue may be a single lifecycle or rendering conflict.
+
+
+Yes the form is still in the dom just not visible
+
+Excellent. That narrows the problem significantly.
+
+If .login-card still exists in the DOM after disappearing, Angular is not removing your login form. Something is making it invisible, moving it, or covering it.
+
+Let's identify exactly what is happening.
+
+1. Run this in Chrome DevTools Console after the form disappears
+
+javascript
+const elements = [
+  '.login-card',
+  '.auth-form-panel',
+  '.auth-grid',
+  '.auth-shell',
+  'ion-content'
+];
+
+elements.forEach(selector => {
+  const el = document.querySelector(selector);
+  if (el) {
+    const s = getComputedStyle(el);
+    const r = el.getBoundingClientRect();
+
+    console.log(selector, {
+      display: s.display,
+      visibility: s.visibility,
+      opacity: s.opacity,
+      height: r.height,
+      width: r.width,
+      top: r.top,
+      left: r.left,
+      position: s.position,
+      transform: s.transform
+    });
+  }
+});
+This will tell us whether:
+
+opacity becomes 0.
+
+display becomes none.
+
+visibility becomes hidden.
+
+The form gets moved outside the visible screen.
+
+The parent container collapses.
+
+2. Try this temporary CSS fix
+Add this at the very bottom of your SCSS:
+
+
+scss
+:host {
+  display: block !important;
+  height: 100% !important;
+  width: 100% !important;
+}
+
+ion-content {
+  --background: #073336;
+}
+
+.auth-shell {
+  display: flex !important;
+  min-height: 100vh !important;
+  width: 100% !important;
+  align-items: center;
+  justify-content: center;
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+.auth-grid,
+.auth-form-panel,
+.form-wrap,
+.login-card {
+  opacity: 1 !important;
+  visibility: visible !important;
+  transform: none !important;
+}
+3. One important question
+When the form disappears, what does the screen look like?
+
+A: The entire screen becomes blank (including the background).
+
+B: The background image/green background remains, but the white login card disappears.
+
+C: The white login card disappears, but the left-hand Workerly features panel remains.
+
+D: The entire layout seems to shrink or move.
+
+This distinction is important because it will help identify whether the issue is with Ionic page rendering, CSS visibility, or the layout itself.
+
+
+image.png
+.login-card {display: 'flex', visibility: 'visible', opacity: '1', height: 459.390625, width: 12740, …}
+display
+: 
+"flex"
+height
+: 
+459.390625
+left
+: 
+24
+opacity
+: 
+"1"
+position
+: 
+"static"
+top
+: 
+514.8125
+transform
+: 
+"none"
+visibility
+: 
+"visible"
+width
+: 
+12740display
+: 
+"grid"
+height
+: 
+950.203125
+left
+: 
+24
+opacity
+: 
+"1"
+position
+: 
+"static"
+top
+: 
+24
+transform
+: 
+"none"
+visibility
+: 
+"visible"
+width
+: 
+712display
+: 
+"flex"
+height
+: 
+998.203125
+left
+: 
+0
+opacity
+: 
+"1"
+position
+: 
+"static"
+top
+: 
+0
+transform
+: 
+"none"
+visibility
+: 
+"visible"
+width
+: 
+760display
+: 
+"block"
+height
+: 
+634
+left
+: 
+0
+opacity
+: 
+"1"
+position
+: 
+"relative"
+top
+: 
+0
+transform
+: 
+"none"
+visibility
+: 
+"visible"
+width
+: 
+775
+
+I've found the problem in your measurements. There are actually two layout issues.
+
+The login form is not disappearing. It is being pushed below the visible screen, and its width is expanding abnormally.
+
+Your browser measurements reveal:
+
+.login-card width: 12,740px — this is abnormal.
+
+.login-card top position: 514px — it is below the visible area.
+
+.auth-grid width: 712px.
+
+The jobs slider is inside the left-hand grid column and contains duplicated cards.
+
+I suspect the combination of CSS Grid's automatic minimum sizing and the slider's non-wrapping flex content is causing the layout overflow.
+
+1. Fix your grid layout
+Replace your .auth-grid CSS with:
+
+
+scss
+.auth-grid {
+  width: 100%;
+  max-width: 1150px;
+  min-width: 0;
+
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+
+  background: #fff;
+  border-radius: 24px;
+  overflow: hidden;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
+}
+2. Fix the job slider overflow
+Replace these styles:
+
+
+scss
+.job-slider-container {
+  width: 100%;
+  margin-top: 10px;
+  overflow: hidden;
+  position: relative;
+}
+
+.job-slider {
+  width: 100%;
+  min-width: 0;
+  overflow: hidden;
+  border-radius: 14px;
+}
+
+.job-slider-track {
+  display: flex;
+  width: max-content;
+  max-width: none;
+  align-items: stretch;
+  transition: transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.job-card {
+  flex: 0 0 280px;
+  width: 280px;
+  margin-right: 16px;
+}
+3. Fix the login card width
+Add:
+
+
+scss
+.auth-form-panel {
+  min-width: 0;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.form-wrap {
+  width: 100%;
+  max-width: 420px;
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+.login-card {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+  margin: 0;
+}
+4. Fix the mobile layout
+Your existing media query puts the features panel before the login form. On smaller screens, this means users must scroll past the features before reaching the login form.
+
+I recommend displaying the login form first.
+
+Replace your existing media queries with:
+
+
+scss
+@media (max-width: 900px) {
+  .auth-shell {
+    min-height: 100%;
+    padding: 16px;
+    align-items: flex-start;
+  }
+
+  .auth-grid {
+    grid-template-columns: minmax(0, 1fr);
+    width: 100%;
+  }
+
+  .auth-form-panel {
+    grid-row: 1;
+    padding: 30px 20px;
+  }
+
+  .auth-features {
+    grid-row: 2;
+    padding: 28px 22px;
+  }
+}
+
+@media (max-width: 480px) {
+  .auth-shell {
+    padding: 10px;
+  }
+
+  .auth-features h1 {
+    font-size: 1.5rem;
+  }
+
+  .job-card {
+    flex-basis: 240px;
+    width: 240px;
+  }
+
+  .login-card {
+    padding: 20px 12px;
+  }
+}
+5. Test again
+After making these changes, refresh the page and run:
+
+
+javascript
+document.querySelector('.login-card').getBoundingClientRect()
+Your login card should now have a reasonable width (around 420px on desktop, or the available screen width on mobile).
+
+The most important fixes are steps 1 and 3. They address the abnormal grid sizing and login card width directly.
+
+Your Angular authentication code does not need to be rewritten to fix this particular problem.
+
+
+image.png
+bottom
+: 
+401.390625
+height
+: 
+355.390625
+left
+: 
+36
+right
+: 
+456
+top
+: 
+46
+width
+: 
+420
+x
+: 
+36
+y
+: 
+46 - displaying now but not looking good and not responsive, and on mobile it should be th first on to and the other part with the slider below it
+
+Great! The login page is now displaying correctly. We just need to improve the layout and responsiveness.
+
+From your screenshot, I recommend the following design:
+
+Desktop: Features and job slider on the left; login form vertically centered on the right.
+
+Tablet: Login form first, followed by the features section.
+
+Mobile: Login form at the very top, with the features and scrolling job slider underneath.
+
+Both sections should use the full available width on mobile, without horizontal overflow.
+
+You do not need to change your HTML structure. We can achieve this with CSS Grid.
+
+1. Replace your layout CSS
+Replace your existing .auth-shell, .auth-grid, .auth-features, and .auth-form-panel styles with:
+
+
+scss
+ion-content {
+  --background:
+    linear-gradient(
+      135deg,
+      rgba(7, 51, 54, 0.92),
+      rgba(7, 51, 54, 0.72)
+    ),
+    url('../../../assets/images/tick.png');
+
+  --background-size: cover;
+  --background-position: center;
+  --background-repeat: no-repeat;
+}
+
+:host {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.auth-shell {
+  min-height: 100%;
+  width: 100%;
+  padding: 24px;
+  box-sizing: border-box;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.auth-grid {
+  width: 100%;
+  max-width: 1200px;
+  min-width: 0;
+  min-height: 590px;
+
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+  grid-template-areas: "features form";
+
+  background: #fff;
+  border-radius: 24px;
+  overflow: hidden;
+
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
+}
+
+.auth-features {
+grid-area: features;
+  min-width: 0;
+
+  background: linear-gradient(
+    160deg,
+    #004c4d 0%,
+    #006666 60%,
+    #008080 100%
+  );
+
+  color: #fff;
+  padding: 40px 36px;
+
+  display: flex;
+  align-items: center;
+
+  .features-inner {
+     width: 100%;
+    min-width: 0;
+  }
+
+  .brand-mark {
+    font-family: "Proza Display W03 Bold";
+    font-size: 1.4rem;
+    margin-bottom: 12px;
+  }
+
+  h1 {
+    font-family: "Proza Display W03 Bold";
+    font-size: 1.9rem;
+    line-height: 1.2;
+    margin: 0 0 10px;
+    color: #fff;
+  }
+
+  .features-intro {
+    color: rgba(255, 255, 255, 0.85);
+    font-size: 0.98rem;
+    margin-bottom: 22px;
+    line-height: 1.5;
+  }
+
+  .feature-list {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 22px;
+    display: grid;
+    gap: 14px;
+
+    li {
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+
+      ion-icon {
+        font-size: 24px;
+        color: #fff;
+        background: rgba(255, 255, 255, 0.15);
+        border-radius: 10px;
+        padding: 8px;
+        flex-shrink: 0;
+      }
+
+      h3 {
+        margin: 0 0 2px;
+        font-size: 0.95rem;
+        color: #fff;
+        font-weight: 600;
+      }
+
+      p {
+        margin: 0;
+        font-size: 0.85rem;
+        color: rgba(255, 255, 255, 0.8);
+        line-height: 1.4;
+      }
+    }
+  }
+}
+
+.auth-form-panel {
+ grid-area: form;
+  min-width: 0;
+  width: 100%;
+  box-sizing: border-box;
+
+  background: #fff;
+  padding: 36px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  .form-wrap {
+    width: 100%;
+    max-width: 420px;
+    min-width: 0;
+  }
+}
+
+.login-card {
+ --background: #fff;
+
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+
+  background: #fff;
+  padding: 28px 24px;
+  border-radius: 20px;
+  box-shadow: none;
+  margin: 0;
+
+
+  .form-title {
+     color: #000;
+    font-size: 2rem;
+    margin: 0 0 4px;
+  }
+
+  .form-subtitle {
+     color: #6c757d;
+    font-size: 1rem;
+    margin-bottom: 16px;
+  }
+}
+
+.error-item {
+  margin-bottom: 12px;
+  --border-radius: 10px;
+}
+
+.input-item {
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  height: 70px;
+
+  padding-left: 20px;
+
+  background: #fff;
+  border: 2px solid #004c4d;
+  border-radius: 15px;
+
+  ion-input {
+   width: 100%;
+    min-width: 0;
+    margin-top: -12px;
+    font-family: "Proza Display W03 Bold";
+    color: #000;
+  }
+}
+
+ion-item {
+ --background: #fff;
+  --padding-start: 0;
+  --inner-padding-end: 0;
+  width: 100%;
+  min-width: 0;
+}
+
+legend {
+  color: rgba(0, 0, 0, 0.664);
+  background: none;
+  width: auto;
+  font-size: 16px;
+  font-family: "Proza Display W03 Bold";
+  margin-bottom: 0;
+}
+
+.submit-btn {
+  width: 100%;
+  margin-top: 4px;
+  min-height: 48px;
+  --background: #004c4d;
+  --color: #fff;
+  font-size: 16px;
+  font-family: "Proza Display W03 Bold";
+}
+
+.switch-auth {
+  color: #6c757d;
+  text-align: center;
+  margin-top: 14px;
+
+  .link-accent {
+    color: orange;
+    cursor: pointer;
+    font-weight: 600;
+    margin-left: 4px;
+  }
+}
+
+.password-input-container {
+ position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  min-width: 0;
 }
 
 .password-toggle {
