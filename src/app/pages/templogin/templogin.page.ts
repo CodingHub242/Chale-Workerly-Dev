@@ -27,7 +27,7 @@ export class TemploginPage implements OnInit, OnDestroy {
   displayJobs: Job[] = []; // Jobs for display including duplicates
   sliderOffset = 0;
   private sliderInterval: any;
-  private cardWidth = 305; // Card width (280px) + margin (25px)
+  private cardWidth = 296; // Card width (280px) + margin (25px)
 
   constructor(
     private fb: FormBuilder,
