@@ -38,6 +38,7 @@ export class TemploginPage implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit() {
+     console.log('TemploginPage initialized');
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
       password: ['', Validators.required]
