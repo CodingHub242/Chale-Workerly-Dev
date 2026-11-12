@@ -33,8 +33,11 @@ ion-content {
 .auth-grid {
   width: 100%;
   max-width: 1150px;
+  min-width: 0;
+
   display: grid;
-  grid-template-columns: 1.15fr 1fr;
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+
   background: #fff;
   border-radius: 24px;
   overflow: hidden;
@@ -112,24 +115,24 @@ ion-content {
 }
 
 .auth-form-panel {
-  background: #fff;
-  padding: 36px 32px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  min-width: 0;
+  width: 100%;
+  box-sizing: border-box;
 
   .form-wrap {
     width: 100%;
-    max-width: 420px;
+  max-width: 420px;
+  min-width: 0;
+  box-sizing: border-box;
   }
 }
 
 .login-card {
-  --background: #fff;
-  background: #fff;
-  padding: 28px 24px;
-  border-radius: 20px;
-  box-shadow: none;
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
   margin: 0;
 
   .form-title {
@@ -225,13 +228,14 @@ legend {
 }
 
 /* Job Slider - compact version in features panel */
+
 .job-slider-container {
   width: 100%;
   margin-top: 10px;
   overflow: hidden;
   position: relative;
 
-  .job-slider-header {
+   .job-slider-header {
     font-size: 0.85rem;
     text-transform: uppercase;
     letter-spacing: 0.5px;
@@ -242,18 +246,25 @@ legend {
 }
 
 .job-slider {
+  width: 100%;
+  min-width: 0;
   overflow: hidden;
   border-radius: 14px;
 }
 
+
+
 .job-slider-track {
   display: flex;
+  width: max-content;
+  max-width: none;
   align-items: stretch;
   transition: transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
 .job-card {
-  flex-shrink: 0;
+  flex: 0 0 280px;
+  width: 280px;
   margin-right: 16px;
 }
 
@@ -320,30 +331,40 @@ legend {
 }
 
 @media (max-width: 900px) {
-  .auth-grid {
-    grid-template-columns: 1fr;
+  .auth-shell {
+    min-height: 100%;
+    padding: 16px;
+    align-items: flex-start;
   }
 
-  .auth-features {
-    padding: 28px 22px;
+  .auth-grid {
+    grid-template-columns: minmax(0, 1fr);
+    width: 100%;
   }
 
   .auth-form-panel {
-    padding: 24px 18px;
+    grid-row: 1;
+    padding: 30px 20px;
+  }
+
+  .auth-features {
+    grid-row: 2;
+    padding: 28px 22px;
   }
 }
 
 @media (max-width: 480px) {
   .auth-shell {
-    padding: 12px;
+    padding: 10px;
   }
 
   .auth-features h1 {
     font-size: 1.5rem;
   }
 
-  .job-card-content {
-    min-width: 220px;
+  .job-card {
+    flex-basis: 240px;
+    width: 240px;
   }
 
   .login-card {
