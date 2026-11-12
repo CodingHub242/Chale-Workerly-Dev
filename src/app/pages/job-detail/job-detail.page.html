@@ -20,7 +20,7 @@
           <ion-card class="details-card">
             <ion-card-header>
               <ion-card-title>{{ job.title }}</ion-card-title>
-              <ion-card-subtitle>{{ job.client.name }}</ion-card-subtitle>
+              <ion-card-subtitle>{{ job.client?.name || '—' }}</ion-card-subtitle>
             </ion-card-header>
           </ion-card>
         </ion-col>
@@ -33,8 +33,8 @@
               <ion-card-title>Job Details</ion-card-title>
             </ion-card-header>
             <ion-card-content>
-              <p><strong><ion-icon name="document-text-outline"></ion-icon> Description:</strong> {{ job.description }}</p>
-              <p><strong><ion-icon name="cash-outline"></ion-icon> Pay Rate:</strong> GHS{{ job.payRate }}/day</p>
+              <p><strong><ion-icon name="document-text-outline"></ion-icon> Description : </strong> <span style="margin-left:10px;color: chocolate;font-weight:600;">{{ job.description }}</span></p>
+              <p><strong><ion-icon name="cash-outline"></ion-icon> Pay Rate :</strong> <span style="margin-left:10px;color: chocolate;font-weight:600;">GHS{{ job.payRate }}/day</span></p>
             </ion-card-content>
           </ion-card>
         </ion-col>
@@ -45,9 +45,9 @@
               <ion-card-title>Dates</ion-card-title>
             </ion-card-header>
             <ion-card-content>
-              <p><strong><ion-icon name="calendar-outline"></ion-icon> Start Date:</strong> {{ job.startDate | date:'short' }}</p>
-              <p><strong><ion-icon name="calendar-outline"></ion-icon> End Date:</strong> {{ job.endDate | date:'short' }}</p>
-              <p *ngIf="job.checkinTime"><strong><ion-icon name="time-outline"></ion-icon> Check-in Time:</strong> {{ formatCheckinTime(job.checkinTime) }}</p>
+              <p><strong><ion-icon name="calendar-outline"></ion-icon> Start Date :</strong> <span style="margin-left:10px;color: chocolate;font-weight:600;">{{ job.startDate | date:'short' }}</span></p>
+              <p><strong><ion-icon name="calendar-outline"></ion-icon> End Date :</strong> <span style="margin-left:10px;color: chocolate;font-weight:600;">{{ job.endDate | date:'short' }}</span></p>
+              <p *ngIf="job.checkinTime"><strong><ion-icon name="time-outline"></ion-icon> Check-in Time :</strong> <span style="margin-left:10px;color: chocolate;font-weight:600;">{{ formatCheckinTime(job.checkinTime) }}</span></p>
             </ion-card-content>
           </ion-card>
         </ion-col>
@@ -64,7 +64,7 @@
               <input type="file" multiple (change)="addAttachments($event)" #fileInput style="display: none;" accept="application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/pdf,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet">
             </ion-card-header>
             <ion-card-content>
-              <ion-list *ngIf="job.attachments.length > 0; else noAttachments">
+              <ion-list *ngIf="(job.attachments?.length || 0) > 0; else noAttachments">
                 <ion-item *ngFor="let attachment of job.attachments">
                   <ion-icon *ngIf="extensionGot!='xlsx'" [name]="getFileIcon(attachment.fileName)" slot="start"></ion-icon>
                   <img *ngIf="extensionGot=='xlsx'" src="../../../assets/xlsx.png" width="30" slot="start"/>

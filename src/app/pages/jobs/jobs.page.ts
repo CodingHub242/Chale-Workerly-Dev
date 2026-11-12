@@ -28,11 +28,13 @@ export class JobsPage implements OnInit {
       this.jobs = jobs;
 
       this.jobs.forEach((element:any) => {
-          
-          if (element.client) {
+        if (element.client && typeof element.client === 'string') {
+          try {
             element.client = JSON.parse(element.client);
-            console.log(element.client);
+          } catch (e) {
+            console.error('Failed to parse job client', e);
           }
+        }
       });
     });
   }

@@ -57,38 +57,59 @@ export class JobFormPage implements OnInit {
       this.jobService.getJob(this.jobId).subscribe((job:any) => {
         const jobData = job;
         console.log('Job Data:', jobData);
-        this.existingAttachments = jobData.attachments;
-        if(jobData.experience==null)
-        {
-           jobData.experience = [0,5];
+        this.existingAttachments = jobData.attachments || [];
+
+        let experience = jobData.experience;
+        if (experience == null) {
+          experience = [0, 5];
+        } else if (typeof experience === 'string') {
+          try { experience = JSON.parse(experience); } catch (e) { experience = [0, 5]; }
+        } else if (typeof experience === 'object' && !Array.isArray(experience)) {
+          experience = [experience.lower ?? 0, experience.upper ?? 5];
+        }
+        if (!Array.isArray(experience) || experience.length < 2) {
+          experience = [0, 5];
         }
 
-        //console.log(jobData.experience);
-       // console.log('Existing Attachments:', this.existingAttachments);
-        if (jobData.checkinTime) {
-          const date = new Date(jobData.checkinTime);
-          const time = date.toTimeString().slice(0,5); // HH:MM format
-          this.form.patchValue({
-            ...jobData,
-            client_id: jobData.client.id,
-            experience: {
-              lower: jobData.experience[0] || 0,
-              upper: jobData.experience[1] || 5
-            },
-            attachments: this.existingAttachments,
-            checkinTime: time
-          });
-        } else {
-          this.form.patchValue({
-            ...jobData,
-            client_id: jobData.client.id,
-            experience: {
-              lower: jobData.experience[0] || 0,
-              upper: jobData.experience[1] || 5
-            },
-            attachments: this.existingAttachments,
-          });
+        let clientId = jobData.client_id ?? jobData.client?.id ?? '';
+        if (jobData.client && typeof jobData.client === 'string') {
+          try {
+            const parsed = JSON.parse(jobData.client);
+            clientId = clientId || parsed?.id || '';
+          } catch (e) {}
         }
+
+        const toDateInput = (val: any) => {
+          if (!val) return '';
+          if (typeof val === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(val)) return val;
+          const d = new Date(val);
+          return isNaN(d.getTime()) ? '' : d.toISOString().slice(0, 10);
+        };
+
+        const patch: any = {
+          ...jobData,
+          client_id: clientId,
+          startDate: toDateInput(jobData.startDate),
+          endDate: toDateInput(jobData.endDate),
+          experience: {
+            lower: Number(experience[0]) || 0,
+            upper: Number(experience[1]) || 5
+          },
+          attachments: this.existingAttachments
+        };
+
+        if (jobData.checkinTime) {
+          if (typeof jobData.checkinTime === 'string' && /^\d{2}:\d{2}/.test(jobData.checkinTime)) {
+            patch.checkinTime = jobData.checkinTime.slice(0, 5);
+          } else {
+            const date = new Date(jobData.checkinTime);
+            patch.checkinTime = isNaN(date.getTime()) ? '' : date.toTimeString().slice(0, 5);
+          }
+        } else {
+          patch.checkinTime = '';
+        }
+
+        this.form.patchValue(patch);
       });
     }
   }

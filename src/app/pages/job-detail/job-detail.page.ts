@@ -27,7 +27,15 @@ export class JobDetailPage implements OnInit {
 
   ngOnInit() {
     const jobId = this.route.snapshot.params['id'];
-    this.jobService.getJob(jobId).subscribe((job: Job) => {
+    this.jobService.getJob(jobId).subscribe((job: any) => {
+      if (job.client && typeof job.client === 'string') {
+        try {
+          job.client = JSON.parse(job.client);
+        } catch (e) {
+          job.client = null;
+        }
+      }
+      job.attachments = job.attachments || [];
       this.job = job;
       //console.log('Job Details:', this.job.attachments);
     });
