@@ -80,13 +80,11 @@ export class TemploginPage implements OnInit, OnDestroy {
     });
   }
 
-  setupDisplayJobs() {
-    if (this.availableJobs.length > 0) {
-      // Create duplicates for infinite loop effect
-      // We need at least 2 sets to create seamless loop
-      this.displayJobs = [...this.availableJobs, ...this.availableJobs];
-    }
-  }
+ setupDisplayJobs() {
+  this.displayJobs = this.availableJobs.length > 0
+    ? [...this.availableJobs, ...this.availableJobs]
+    : [];
+}
 
   startJobSlider() {
     this.sliderInterval = setInterval(() => {
