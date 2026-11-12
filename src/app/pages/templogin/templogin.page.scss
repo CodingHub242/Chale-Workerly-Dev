@@ -1,11 +1,28 @@
+
+/* =========================================
+   CUSTOM FONT
+========================================= */
+
 @font-face {
   font-family: "Proza Display W03 Bold";
   src: url("https://db.onlinewebfonts.com/t/c107202f3ecccc6fee25aabca831e096.eot");
-  src: url("https://db.onlinewebfonts.com/t/c107202f3ecccc6fee25aabca831e096.eot?#iefix") format("embedded-opentype"),
+  src:
+    url("https://db.onlinewebfonts.com/t/c107202f3ecccc6fee25aabca831e096.eot?#iefix") format("embedded-opentype"),
     url("https://db.onlinewebfonts.com/t/c107202f3ecccc6fee25aabca831e096.woff2") format("woff2"),
     url("https://db.onlinewebfonts.com/t/c107202f3ecccc6fee25aabca831e096.woff") format("woff"),
     url("https://db.onlinewebfonts.com/t/c107202f3ecccc6fee25aabca831e096.ttf") format("truetype"),
     url("https://db.onlinewebfonts.com/t/c107202f3ecccc6fee25aabca831e096.svg#Proza Display W03 Bold") format("svg");
+}
+
+
+/* =========================================
+   BASE PAGE STYLING
+========================================= */
+
+:host {
+  display: block;
+  width: 100%;
+  min-height: 100%;
 }
 
 ion-content {
@@ -22,65 +39,69 @@ ion-content {
   --background-repeat: no-repeat;
 }
 
-:host {
-  display: block;
-  width: 100%;
-  height: 100%;
-}
+
+/* =========================================
+   MAIN AUTHENTICATION LAYOUT
+========================================= */
 
 .auth-shell {
-  min-height: 100%;
   width: 100%;
+  min-height: 100%;
   padding: 24px;
   box-sizing: border-box;
 
-   display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-ion-content {
-  --background:
-    linear-gradient(
-        135deg,
-        rgba(7, 51, 54, 0.92),
-        rgba(7, 51, 54, 0.72)
-    ),
-    url('../../../assets/images/tick.png');
-
-  --background-size: cover;
-  --background-position: center;
-  --background-repeat: no-repeat;
-}
-
-.auth-shell {
-  min-height: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 24px;
 }
 
 .auth-grid {
   width: 100%;
-  max-width: 1150px;
+  max-width: 1200px;
+  min-width: 0;
+  min-height: 590px;
+
   display: grid;
-  grid-template-columns: 1.15fr 1fr;
+
+  grid-template-columns:
+    minmax(0, 1.1fr)
+    minmax(0, 0.9fr);
+
+  grid-template-areas: "features form";
+
   background: #fff;
   border-radius: 24px;
   overflow: hidden;
+
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
 }
 
+
+/* =========================================
+   LEFT FEATURES PANEL
+========================================= */
+
 .auth-features {
-  background: linear-gradient(160deg, #004c4d 0%, #006666 60%, #008080 100%);
+  grid-area: features;
+
+  min-width: 0;
+
+  background: linear-gradient(
+    160deg,
+    #004c4d 0%,
+    #006666 60%,
+    #008080 100%
+  );
+
   color: #fff;
   padding: 40px 36px;
+
   display: flex;
   align-items: center;
 
   .features-inner {
     width: 100%;
+    min-width: 0;
   }
 
   .brand-mark {
@@ -108,6 +129,7 @@ ion-content {
     list-style: none;
     padding: 0;
     margin: 0 0 22px;
+
     display: grid;
     gap: 14px;
 
@@ -142,9 +164,21 @@ ion-content {
   }
 }
 
+
+/* =========================================
+   RIGHT LOGIN PANEL
+========================================= */
+
 .auth-form-panel {
+  grid-area: form;
+
+  min-width: 0;
+  width: 100%;
+  box-sizing: border-box;
+
   background: #fff;
-  padding: 36px 32px;
+  padding: 36px;
+
   display: flex;
   align-items: center;
   justify-content: center;
@@ -152,13 +186,27 @@ ion-content {
   .form-wrap {
     width: 100%;
     max-width: 420px;
+    min-width: 0;
   }
 }
 
+
+/* =========================================
+   LOGIN CARD
+========================================= */
+
 .login-card {
   --background: #fff;
+
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+
   background: #fff;
   padding: 28px 24px;
+
   border-radius: 20px;
   box-shadow: none;
   margin: 0;
@@ -176,51 +224,115 @@ ion-content {
   }
 }
 
+
+/* =========================================
+   FORM INPUTS
+========================================= */
+
 .error-item {
   margin-bottom: 12px;
   --border-radius: 10px;
-}
-
-.input-item {
-  padding-left: 20px;
-  --background: #fff;
-  background: #fff;
-  width: 100%;
-  border-radius: 15px;
-  border: 2px solid #004c4d;
-  height: 70px;
-
-  ion-input {
-    margin-top: -12px;
-    font-family: "Proza Display W03 Bold";
-    color: #000;
-  }
 }
 
 ion-item {
   --background: #fff;
   --padding-start: 0;
   --inner-padding-end: 0;
+
+  width: 100%;
+  min-width: 0;
+}
+
+.input-item {
+  box-sizing: border-box;
+
+  padding-left: 20px;
+
+  --background: #fff;
+  background: #fff;
+
+  width: 100%;
+  min-width: 0;
+  height: 70px;
+
+  border-radius: 15px;
+  border: 2px solid #004c4d;
+
+  ion-input {
+    width: 100%;
+    min-width: 0;
+    margin-top: -12px;
+
+    font-family: "Proza Display W03 Bold";
+    color: #000;
+  }
 }
 
 legend {
   color: rgba(0, 0, 0, 0.664);
   background: none;
+
   width: auto;
   font-size: 16px;
+
   font-family: "Proza Display W03 Bold";
   margin-bottom: 0;
 }
 
+
+/* =========================================
+   PASSWORD VISIBILITY
+========================================= */
+
+.password-input-container {
+  position: relative;
+
+  display: flex;
+  align-items: center;
+
+  width: 100%;
+  min-width: 0;
+}
+
+.password-toggle {
+  position: absolute;
+  right: 0;
+  top: 50%;
+
+  transform: translateY(-50%);
+
+  --padding-start: 0;
+  --padding-end: 0;
+  --color: #004c4d;
+
+  height: 30px;
+  width: 48px;
+
+  z-index: 20;
+}
+
+
+/* =========================================
+   LOGIN BUTTON
+========================================= */
+
 .submit-btn {
   width: 100%;
   margin-top: 4px;
+
   min-height: 48px;
+
   --background: #004c4d;
   --color: #fff;
+
   font-size: 16px;
   font-family: "Proza Display W03 Bold";
 }
+
+
+/* =========================================
+   REGISTER LINK
+========================================= */
 
 .switch-auth {
   color: #6c757d;
@@ -235,31 +347,17 @@ legend {
   }
 }
 
-.password-input-container {
-  position: relative;
-  display: flex;
-  align-items: center;
-  width: 100%;
-}
 
-.password-toggle {
-  position: absolute;
-  right: 0;
-  top: 50%;
-  transform: translateY(-50%);
-  --padding-start: 0;
-  --padding-end: 0;
-  height: 30px;
-  width: 48px;
-  z-index: 20;
-  --color: #004c4d;
-}
+/* =========================================
+   AVAILABLE JOBS SLIDER
+========================================= */
 
-/* Job Slider - compact version in features panel */
 .job-slider-container {
   width: 100%;
   min-width: 0;
+
   margin-top: 20px;
+
   overflow: hidden;
   position: relative;
 
@@ -267,7 +365,9 @@ legend {
     font-size: 0.85rem;
     text-transform: uppercase;
     letter-spacing: 0.5px;
+
     color: rgba(255, 255, 255, 0.85);
+
     margin-bottom: 8px;
     font-weight: 600;
   }
@@ -276,6 +376,7 @@ legend {
 .job-slider {
   width: 100%;
   min-width: 0;
+
   overflow: hidden;
   border-radius: 14px;
 }
@@ -283,6 +384,7 @@ legend {
 .job-slider-track {
   display: flex;
   width: max-content;
+
   align-items: stretch;
 
   transition: transform 0.8s cubic-bezier(
@@ -292,18 +394,19 @@ legend {
 
 .job-card {
   flex: 0 0 280px;
+
   width: 280px;
   margin-right: 16px;
-  
 }
 
 .job-card-content {
   box-sizing: border-box;
+
   width: 280px;
   min-width: 0;
   min-height: 90px;
 
-   background: linear-gradient(
+  background: linear-gradient(
     145deg,
     #fff 0%,
     #f8f9fa 100%
@@ -317,15 +420,25 @@ legend {
   display: flex;
   align-items: center;
   gap: 12px;
+
+  color: #2c3e50;
 }
 
 .job-icon {
-  background: linear-gradient(135deg, #004c4d, #006666);
+  background: linear-gradient(
+    135deg,
+    #004c4d,
+    #006666
+  );
+
   border-radius: 10px;
   padding: 10px;
+
   display: flex;
   align-items: center;
   justify-content: center;
+
+  flex-shrink: 0;
 
   ion-icon {
     font-size: 20px;
@@ -340,8 +453,11 @@ legend {
   .job-title {
     font-size: 14px;
     font-weight: 700;
+
     color: #2c3e50;
+
     margin: 0 0 4px;
+
     font-family: "Proza Display W03 Bold", sans-serif;
   }
 
@@ -350,6 +466,7 @@ legend {
     display: flex;
     align-items: center;
     gap: 5px;
+
     font-size: 12px;
     color: #5a6c7d;
 
@@ -364,67 +481,21 @@ legend {
   }
 }
 
-.job-action ion-icon {
-  font-size: 22px;
-  color: #ee5a52;
-}
+.job-action {
+  flex-shrink: 0;
 
-@media (max-width: 900px) {
-  .auth-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .auth-features {
-    padding: 28px 22px;
-  }
-
-  .auth-form-panel {
-    padding: 24px 18px;
+  ion-icon {
+    font-size: 22px;
+    color: #ee5a52;
   }
 }
 
-@media (max-width: 480px) {
-  .auth-shell {
-    padding: 12px;
-  }
 
-  .auth-features h1 {
-    font-size: 1.5rem;
-  }
+/* =========================================
+   TABLET RESPONSIVENESS
+   Login first, features underneath
+========================================= */
 
-  .job-card-content {
-    min-width: 220px;
-  }
-
-  .login-card {
-    padding: 20px 12px;
-  }
-} 
-
-.auth-shell,
-.auth-grid,
-.auth-form-panel,
-.form-wrap,
-.login-card {
-  display: block !important;
-  visibility: visible !important;
-  opacity: 1 !important;
-}
-
-.auth-shell {
-  min-height: 100%;
-  display: flex !important;
-  align-items: center;
-  justify-content: center;
-}
-
-.auth-form-panel {
-  background: white !important;
-}
-
-
-
-/* TABLETS */
 @media (max-width: 900px) {
 
   .auth-shell {
@@ -433,12 +504,14 @@ legend {
   }
 
   .auth-grid {
+    width: 100%;
+    min-height: auto;
+
     grid-template-columns: minmax(0, 1fr);
+
     grid-template-areas:
       "form"
       "features";
-
-    min-height: auto;
   }
 
   .auth-form-panel {
@@ -452,7 +525,12 @@ legend {
 }
 
 
-/* MOBILE PHONES */
+/* =========================================
+   MOBILE RESPONSIVENESS
+   Login at the top
+   Features and slider below
+========================================= */
+
 @media (max-width: 600px) {
 
   ion-content {
@@ -466,11 +544,15 @@ legend {
 
     --background-size: cover;
     --background-position: center;
+    --background-repeat: no-repeat;
   }
 
   .auth-shell {
-    padding: 12px;
+    width: 100%;
     min-height: 100%;
+
+    padding: 12px;
+
     align-items: flex-start;
   }
 
@@ -479,6 +561,7 @@ legend {
     min-height: auto;
 
     grid-template-columns: minmax(0, 1fr);
+
     grid-template-areas:
       "form"
       "features";
@@ -486,10 +569,10 @@ legend {
     border-radius: 18px;
   }
 
-  /* LOGIN FORM FIRST */
+
+  /* LOGIN FORM */
 
   .auth-form-panel {
-    grid-row: 1;
     padding: 30px 16px;
 
     display: flex;
@@ -504,7 +587,9 @@ legend {
 
   .login-card {
     width: 100%;
+
     padding: 22px 14px;
+
     border-radius: 14px;
   }
 
@@ -520,11 +605,12 @@ legend {
     min-height: 48px;
   }
 
-  /* FEATURES BELOW LOGIN */
+
+  /* FEATURES PANEL */
 
   .auth-features {
-    grid-row: 2;
     padding: 30px 20px;
+
     display: block;
   }
 
@@ -536,6 +622,7 @@ legend {
     font-size: 0.9rem;
   }
 
+
   /* JOB SLIDER */
 
   .job-slider-container {
@@ -544,6 +631,7 @@ legend {
 
   .job-slider {
     width: 100%;
+    overflow: hidden;
   }
 
   .job-card {
@@ -559,7 +647,10 @@ legend {
 }
 
 
-/* VERY SMALL PHONES */
+/* =========================================
+   VERY SMALL MOBILE SCREENS
+========================================= */
+
 @media (max-width: 360px) {
 
   .auth-shell {
@@ -578,10 +669,17 @@ legend {
     padding: 20px 10px;
   }
 
-  .job-card,
+  .auth-features h1 {
+    font-size: 1.4rem;
+  }
+
+  .job-card {
+    flex: 0 0 235px;
+    width: 235px;
+  }
+
   .job-card-content {
     width: 235px;
-    flex-basis: 235px;
   }
 
 }
