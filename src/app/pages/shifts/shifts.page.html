@@ -15,17 +15,6 @@
 
 <ion-content class="shifts-content">
 
-<!-- Shift Search -->
-<div class="shift-search-container">
-  <ion-searchbar
-    placeholder="Search jobs, clients, workers or status..."
-    [debounce]="250"
-    [animated]="true"
-    [showClearButton]="'focus'"
-    (ionInput)="onShiftSearch($event)">
-  </ion-searchbar>
-</div>
-
   <div class="calendar-container" *ngIf="!authService.isTemp()">
     <div class="calendar-header">
       <div class="header-content">
@@ -71,6 +60,18 @@
       </mwl-calendar-month-view>
     </div>
   </div>
+
+
+<!-- Shift Search -->
+<div class="shift-search-container">
+  <ion-searchbar
+    placeholder="Search jobs, clients, workers or status..."
+    [debounce]="250"
+    [animated]="true"
+    [showClearButton]="'focus'"
+    (ionInput)="onShiftSearch($event)">
+  </ion-searchbar>
+</div>
 
     <div class="shifts-container">
       <div class="shifts-grid" *ngIf="filteredShifts.length > 0; else noShifts">
