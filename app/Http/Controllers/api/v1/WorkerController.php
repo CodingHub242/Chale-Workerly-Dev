@@ -31,9 +31,6 @@ use Redirect;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 
-
-
-
 class WorkerController extends Controller
 {
     public function generateRandomLetters() {
@@ -198,7 +195,7 @@ class WorkerController extends Controller
     public function AddShift(Request $request) {
         try {
                 $validator = Validator::make($request->all(), [
-                    'job_id' => 'required|exists:jobs,id',
+                    'job_id' => 'required|exists:wjobs,id',
                     'client_id' => 'required|exists:clients,id',
                     'startTime' => 'required|date',
                     'endTime' => 'required|date|after_or_equal:startTime',
@@ -332,7 +329,7 @@ class WorkerController extends Controller
         try {
 
                 $validator = Validator::make($request->all(), [
-                    'job_id' => 'sometimes|required|exists:jobs,id',
+                    'job_id' => 'sometimes|required|exists:wjobs,id',
                     'client_id' => 'sometimes|required|exists:clients,id',
                     'startTime' => 'sometimes|required|date',
                     'endTime' => 'sometimes|required|date|after_or_equal:startTime',
@@ -351,11 +348,10 @@ class WorkerController extends Controller
                     return response()->json(['error' => 'Cannot update shift that is already in a timesheet'], 400);
                 }
 
-                // Update shift fields, including temp_ids
-                $updateData = $request->all();
+                $updateData = $request->except('shift_id');
                 DB::table('shifts')->where('id', $request->id)->update($updateData);
-                // Reload the shift model to ensure it's fresh
                 $shift = Shift::find($request->id);
+
                 $shift->temps()->sync($request->temp_ids);
 
                 return response()->json($shift->fresh(['job', 'client', 'temps']));
@@ -388,47 +384,80 @@ class WorkerController extends Controller
     }
     public function UpdateShiftStat(Request $request,Shift $shift) {
         try {
-            $shift = Shift::where('id', $request->id)->first();
+            
+                $shift = Shift::where('id', $request->id)->first();
+                // Update the shift's main attributes 1
+                // if($request->status=='checked-in')
+                // {
+                //     $data = [
+                //         'status' => $request->status, // Default status
+                //         'checkedInAt'=> $request->checkedInAt
+                //     ];
+                // }
+                // else if($request->status=='completed')
+                // {
+                //      $data = [
+                //         'status' => $request->status, // Default status
+                //         'checkedOutAt'=>$request->checkedOutAt,
+                //     ];
+                // }
+                // else
+                // {
+                //      $data = [
+                //         'status' => $request->status, // Default status
+                //         //'checkedOutAt'=>$request->checkedInAt,
+                //         //'checkedOutAt'=>$request->checkedInAt,
+                //     ];
+                // }
+                 
+              
+                // //$shift->update($request->except('temp_ids'));
+                // $shift->update($data);
 
-            if ($request->has('temp_id')) {
-                // Update the pivot table shift_temps
-                $pivotData = [];
+                if ($request->has('temp_id')) 
+                {
+                    // Update the pivot table shift_temps
+                    $pivotData = [];
 
-                if ($request->status == 'checked-in') {
-                    $pivotData['tempStatus'] = $request->status;
-                    $pivotData['checkedInAt'] = $request->checkedInAt;
-                    if ($request->has('deduction')) {
-                        $pivotData['deduction'] = $request->deduction;
+                    if ($request->status == 'checked-in') {
+                        $pivotData['tempresponse'] = $request->status;
+                        $pivotData['checkedInAt'] = $request->checkedInAt;
+                        if ($request->has('deduction')) {
+                            $pivotData['deduction'] = $request->deduction;
+                        }
+                    } elseif ($request->status == 'completed') {
+                        $pivotData['tempresponse'] = $request->status;
+                        $pivotData['checkedOutAt'] = $request->checkedOutAt;
+                    } else {
+                        $pivotData['tempresponse'] = $request->status;
                     }
-                } elseif ($request->status == 'completed') {
-                    $pivotData['tempStatus'] = $request->status;
-                    $pivotData['checkedOutAt'] = $request->checkedOutAt;
-                } else {
-                    $pivotData['tempStatus'] = $request->status;
-                }
 
-                $shift->temps()->updateExistingPivot($request->temp_id, $pivotData);
-            } else {
-                // Update the shift table directly (legacy behavior)
-                $data = ['status' => $request->status];
+                    $shift->temps()->updateExistingPivot($request->temp_id, $pivotData);
+                } 
+                else 
+                {
+                    // Update the shift table directly (legacy behavior)
+                    $data = ['status' => $request->status];
 
-                if ($request->status == 'checked-in') {
-                    $data['checkedInAt'] = $request->checkedInAt;
-                    if ($request->has('deduction')) {
-                        $data['deduction'] = $request->deduction;
+                    if ($request->status == 'checked-in') {
+                        $data['checkedInAt'] = $request->checkedInAt;
+                        if ($request->has('deduction')) {
+                            $data['deduction'] = $request->deduction;
+                        }
+                    } elseif ($request->status == 'completed') {
+                        $data['checkedOutAt'] = $request->checkedOutAt;
                     }
-                } elseif ($request->status == 'completed') {
-                    $data['checkedOutAt'] = $request->checkedOutAt;
+
+                    $shift->update($data);
                 }
-
-                $shift->update($data);
-            }
-
-            // Return the updated shift with its relations loaded
-            return response()->json($shift->load('temps'));
+            
+                // // Return the updated shift with its relations loaded
+                // return response()->json($shift);
+                // Return the updated shift with its relations loaded
+                return response()->json($shift->load('temps'));
 
         } catch (Exception $e) {
-            Log::error('Error updating shift status: ' . $e->getMessage());
+            Log::error('Error fetching clients: ' . $e->getMessage());
             return response()->json(['error' => $e->getMessage()], 500);
         }
     }
@@ -499,6 +528,22 @@ class WorkerController extends Controller
         }
     }
 
+    public function getShiftsByJobAndDate($jobId, $date) 
+    {
+        try {
+            $shifts = Shift::where('job_id', $jobId)
+                ->whereDate('startTime', $date)
+                ->with(['job', 'job.client', 'temps'])
+                ->get();
+
+            return response()->json($shifts);
+        } catch (Exception $e) {
+            Log::error('Error fetching shifts by job and date: ' . $e->getMessage());
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+    }
+
+
 
 ////////JOBS
     public function AddJob(Request $request) {
@@ -511,6 +556,7 @@ class WorkerController extends Controller
                     'startDate' => 'required|date',
                     'endDate' => 'required|date|after_or_equal:start_date',
                     'workhours' => 'required|string',
+                    'checkinTime' => 'nullable|string',
                     'experience' => 'sometimes|array',
                     'attachments' => 'nullable|array',
                     'attachments.*' => 'file|mimes:pdf,doc,docx,xlsx,excel|max:2048', // Validate each attachment
@@ -530,6 +576,9 @@ class WorkerController extends Controller
                     'endDate' => $validatedData['endDate'],
                     'payRate' => $validatedData['payRate'],
                     'status'=> $validatedData['status'],
+                    'checkinTime'=> isset($request->checkinTime) ? $request->checkinTime : null,
+                    'workhours' => isset($request->workhours) ? $request->workhours : null,
+                    'experience' => isset($request->experience) ? $request->experience : null,
                     // Add any other job fields here
                 ]);
 
@@ -641,20 +690,26 @@ class WorkerController extends Controller
                     'startDate' => 'required|date',
                     'endDate' => 'required|date|after_or_equal:startDate',
                     'payRate' => 'required|numeric',
-                    'attachments' => 'nullable|array', // New attachments will be in an array
-                    'attachments.*' => 'file|mimes:pdf,doc,docx,xlsx,excel|max:2048' // Validate each new file
+                    'checkinTime' => 'nullable|string',
+                   // 'attachments' => 'nullable|array', // New attachments will be in an array
+                   // 'attachments.*' => 'file|mimes:pdf,doc,docx,xlsx,excel|max:2048' // Validate each new file
                 ]);
+
+                 //return response()->json(['job' => $validatedData], 201);
 
                 // 3. Update the job's core details
                 $job->update([
                     'title' => $validatedData['title'],
                     'description' => $validatedData['description'],
-                    'client_id' => $validatedData['client_id'],
+                    'client_id' => $request->client_id,
                     'startDate' => $validatedData['startDate'],
                     'endDate' => $validatedData['endDate'],
                     'payRate' => $validatedData['payRate'],
+                    'checkinTime' => isset($request->checkinTime) ? $request->checkinTime : $job->checkinTime,
+                    'workhours' => isset($request->workhours) ? $request->workhours : null,
                     // Add any other updatable job fields here
                 ]);
+
 
                 // 4. Handle any newly uploaded attachments
                 if ($request->hasFile('attachments')) {
@@ -810,14 +865,14 @@ class WorkerController extends Controller
             'attachment' => $attachment,
         ];
 
-        $apiPush = Http::post('https://chaleapp.online/api/v1/SendAttach', $data);
-        //return $attachment;
-        //return $apiPush;
-        if ($apiPush) {
+        // $apiPush = Http::post('https://chaleapp.online/api/v1/SendAttach', $data);
+        // //return $attachment;
+        // //return $apiPush;
+        // if ($apiPush) {
             return response()->json(['success'=>true,'message' => 'Email sent successfully.']);
-        } else {
-            return response()->json(['success'=>false,'error' => 'Failed to send email.'], 500);
-        }
+        // } else {
+        //     return response()->json(['success'=>false,'error' => 'Failed to send email.'], 500);
+        // }
        // Mail::to($request->recipient)->send(new AttachmentMail($attachment, $request->subject, $request->body));
 
         // return response()->json(['message' => 'Email sent successfully.']);
@@ -827,8 +882,8 @@ class WorkerController extends Controller
 ////////TEMPS
     public function getTemps(Request $request) {
         try {
-            
-            $clients = Temp::get();
+            //get all temps descending
+            $clients = Temp::latest()->get();
 
            // return response()->json(['clients' => $clients], 200);
             return $clients;
@@ -883,31 +938,19 @@ class WorkerController extends Controller
         }
     }
 
-    public function UpdateTemp(Request $request) {
+    public function UpdateTemp(Request $request, $id)
+    {
         try {
-            
-            $clients = Temp::where('id', $request->id)->first();
 
-            if ($clients) {
-                // $client = new Client();
-                // $client->name = $request->name;
-                // $client->email = $request->email;
-                // $client->phone = $request->phone;
-                // $client->address = $request->address;
-                $clients->update(['title' => $request->title, 'email' => $request->email,'phone' => $request->phone, 'firstName' => $request->firstName, 'lastName' => $request->lastName, 'experience' => $request->experience, 'status' => $request->status, 'basePay' => $request->basePay, 'skills' => $request->skills]);
+            $temp = Temp::findOrFail($id);
 
-                return response()->json(['client' => 'Temp Updated'], 201);
-            }
-            else
-            {
-               return response()->json(['error' => 'Temp Does Not Exist'], 400);
+            $temp->update($request->all());
 
-                // Optionally, you can return the created client
-                
-            }
+            return response()->json(['client' => 'Temp Updated'], 201);
+
 
         } catch (Exception $e) {
-            Log::error('Error fetching clients: ' . $e->getMessage());
+            Log::error('Error updating temp: ' . $e->getMessage());
             return response()->json(['error' => $e->getMessage()], 500);
         }
     }
@@ -984,7 +1027,9 @@ class WorkerController extends Controller
                 $client->save();
 
                 // Optionally, you can return the created client
-                return response()->json($request->all());
+                //return response()->json($request->all());
+
+                return response()->json(['success'=>true,'admin'=>$request->all()]);
             }
 
         } catch (Exception $e) {
@@ -1189,6 +1234,7 @@ class WorkerController extends Controller
                 $client->title = $request->title;
                 $client->firstName = $request->firstName;
                 $client->lastName = $request->lastName;
+                $client->nickName = $request->nickName;
                 $client->email = $request->email;
                 $client->phone = $request->phone;
                 $client->experience = $request->experience;
@@ -1262,6 +1308,24 @@ class WorkerController extends Controller
         }
     }
 
+    public function uploadProfilePicture(Request $request, $id)
+    {
+        $request->validate([
+            'profilePicture' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+        ]);
+
+        $temp = Temp::findOrFail($id);
+        if ($request->hasFile('profilePicture')) {
+            $file = $request->file('profilePicture');
+            $filename = time() . '_' . $file->getClientOriginalName();
+            $path = $file->storeAs('profile_pictures', $filename, 'public');
+            $temp->profile_picture_url = '/storage/' . $path;
+            $temp->save();
+        }
+
+        return response()->json(['message' => 'Profile picture uploaded successfully', 'temp' => $temp]);
+    }
+    
     public function updateOrder(Request $request)
     {
         // Validate the incoming request
@@ -1339,6 +1403,88 @@ class WorkerController extends Controller
                 'message' => 'Failed to update order',
                 'error' => $e->getMessage()
             ], 500);
+        }
+    }
+
+    public function forgot_password(Request $request)
+    {
+        try {
+            $request->validate([
+                'email' => 'required|email|exists:temps,email',
+            ]);
+
+            $temp = Temp::where('email', $request->email)->first();
+
+            $otp = str_pad(random_int(0, 999999), 6, '0', STR_PAD_LEFT);
+            $expiresAt = now()->addMinutes(15);
+
+            \App\Models\PasswordReset::updateOrCreate(
+                ['email' => $request->email],
+                ['otp' => $otp, 'used' => false, 'expires_at' => $expiresAt]
+            );
+
+            // Send OTP via SMS (same provider used elsewhere in this controller)
+            $curl = curl_init();
+            curl_setopt_array($curl, [
+                CURLOPT_URL => 'https://sms.arkesel.com/api/v2/sms/send',
+                CURLOPT_HTTPHEADER => ['api-key: ZFRDQVFUVlZyQ0t1c3NsRllNc1U'],
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_ENCODING => '',
+                CURLOPT_MAXREDIRS => 10,
+                CURLOPT_TIMEOUT => 0,
+                CURLOPT_FOLLOWLOCATION => true,
+                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                CURLOPT_CUSTOMREQUEST => 'POST',
+                CURLOPT_POSTFIELDS => http_build_query([
+                    'sender' => 'Workerly',
+                    'message' => 'Your Workerly password reset OTP is '.$otp.'. It expires in 15 minutes.',
+                    'recipients' => [$temp->phone],
+                ]),
+            ]);
+            curl_exec($curl);
+            curl_close($curl);
+
+            return response()->json(['success' => true, 'message' => 'Reset OTP sent to your phone.']);
+        } catch (Exception $e) {
+            Log::error('Forgot password error: ' . $e->getMessage());
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+    }
+
+    public function reset_password(Request $request)
+    {
+        try {
+            $request->validate([
+                'email' => 'required|email',
+                'otp' => 'required|digits:6',
+                'password' => 'required|string|min:6',
+            ]);
+
+            $reset = \App\Models\PasswordReset::where('email', $request->email)
+                ->where('otp', $request->otp)
+                ->where('used', false)
+                ->where('expires_at', '>', now())
+                ->first();
+
+            if (!$reset) {
+                return response()->json(['success' => false, 'error' => 'Invalid or expired OTP.'], 400);
+            }
+
+            $temp = Temp::where('email', $request->email)->first();
+            if (!$temp) {
+                return response()->json(['success' => false, 'error' => 'Temp not found.'], 404);
+            }
+
+            $temp->password = password_hash($request->password, PASSWORD_DEFAULT);
+            $temp->save();
+
+            $reset->used = true;
+            $reset->save();
+
+            return response()->json(['success' => true, 'message' => 'Password reset successfully.']);
+        } catch (Exception $e) {
+            Log::error('Reset password error: ' . $e->getMessage());
+            return response()->json(['error' => $e->getMessage()], 500);
         }
     }
 

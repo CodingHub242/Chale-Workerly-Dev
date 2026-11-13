@@ -103,6 +103,14 @@ export class AuthService {
       );
   }
 
+  forgotPasswordTemp(email: string): Observable<any> {
+    return this.http.post<any>(`${this.apiUrl}/forgot-password`, { email });
+  }
+
+  resetTempPassword(email: string, otp: string, password: string): Observable<any> {
+    return this.http.post<any>(`${this.apiUrl}/reset-password`, { email, otp, password });
+  }
+
   logout(): void {
     const currentUser = this.getCurrentUser();
     const wasTemp = currentUser?.role === 'temp';

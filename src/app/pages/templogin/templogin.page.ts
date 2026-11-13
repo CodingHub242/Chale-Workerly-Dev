@@ -29,6 +29,16 @@ export class TemploginPage implements OnInit, OnDestroy {
   private sliderInterval: any;
   private cardWidth = 296; // Card width (280px) + margin (25px)
 
+  // Forgot password / reset flow states
+  resetView: 'login' | 'forgot' | 'otp' | 'reset' = 'login';
+  forgotEmail = '';
+  otpEmail = '';
+  otpCode = '';
+  newPassword = '';
+  confirmPassword = '';
+  resetError = '';
+  resetLoading = false;
+
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
@@ -147,5 +157,87 @@ export class TemploginPage implements OnInit, OnDestroy {
   togglePasswordVisibility() {
     this.passwordType = this.passwordType === 'password' ? 'text' : 'password';
     this.passwordIcon = this.passwordIcon === 'eye-outline' ? 'eye-off-outline' : 'eye-outline';
+  }
+
+  showForgot() {
+    this.resetView = 'forgot';
+    this.resetError = '';
+    this.forgotEmail = '';
+  }
+
+  backToLogin() {
+    this.resetView = 'login';
+    this.resetError = '';
+    this.forgotEmail = '';
+    this.otpEmail = '';
+    this.otpCode = '';
+    this.newPassword = '';
+    this.confirmPassword = '';
+  }
+
+  sendOtp() {
+    if (!this.forgotEmail) {
+      this.resetError = 'Please enter your email.';
+      return;
+    }
+    this.resetLoading = true;
+    this.resetError = '';
+    this.authService.forgotPasswordTemp(this.forgotEmail).subscribe({
+      next: () => {
+        this.resetLoading = false;
+        this.otpEmail = this.forgotEmail;
+        this.resetView = 'otp';
+      },
+      error: () => {
+        this.resetLoading = false;
+        this.resetError = 'Failed to send OTP. Please try again.';
+      }
+    });
+  }
+
+  verifyOtp() {
+    if (!this.otpCode || this.otpCode.length !== 6) {
+      this.resetError = 'Please enter a 6-digit OTP.';
+      return;
+    }
+    this.resetLoading = true;
+    this.resetError = '';
+    this.authService.resetTempPassword(this.otpEmail, this.otpCode, this.newPassword).subscribe({
+      next: () => {
+        this.resetLoading = false;
+        this.resetError = '';
+        alert('Password reset successfully. You can now log in.');
+        this.backToLogin();
+      },
+      error: () => {
+        this.resetLoading = false;
+        this.resetError = 'Invalid or expired OTP. Please try again.';
+      }
+    });
+  }
+
+  resetPassword() {
+    if (!this.newPassword || this.newPassword.length < 6) {
+      this.resetError = 'Password must be at least 6 characters.';
+      return;
+    }
+    if (this.newPassword !== this.confirmPassword) {
+      this.resetError = 'Passwords do not match.';
+      return;
+    }
+    this.resetLoading = true;
+    this.resetError = '';
+    this.authService.resetTempPassword(this.otpEmail, this.otpCode, this.newPassword).subscribe({
+      next: () => {
+        this.resetLoading = false;
+        this.resetError = '';
+        alert('Password reset successfully. You can now log in.');
+        this.backToLogin();
+      },
+      error: () => {
+        this.resetLoading = false;
+        this.resetError = 'Failed to reset password. Please try again.';
+      }
+    });
   }
 }
