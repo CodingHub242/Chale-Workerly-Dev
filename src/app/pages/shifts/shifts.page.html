@@ -14,6 +14,18 @@
 </ion-header>
 
 <ion-content class="shifts-content">
+
+<!-- Shift Search -->
+<div class="shift-search-container">
+  <ion-searchbar
+    placeholder="Search jobs, clients, workers or status..."
+    [debounce]="250"
+    [animated]="true"
+    [showClearButton]="'focus'"
+    (ionInput)="onShiftSearch($event)">
+  </ion-searchbar>
+</div>
+
   <div class="calendar-container" *ngIf="!authService.isTemp()">
     <div class="calendar-header">
       <div class="header-content">
@@ -61,8 +73,8 @@
   </div>
 
     <div class="shifts-container">
-      <div class="shifts-grid" *ngIf="shifts.length > 0; else noShifts">
-        <div class="shift-card-wrapper" *ngFor="let shift of shifts">
+      <div class="shifts-grid" *ngIf="filteredShifts.length > 0; else noShifts">
+        <div class="shift-card-wrapper" *ngFor="let shift of filteredShifts">
           <ion-card class="shift-card" [class.active]="shift.status === 'started'">
             <div class="status-indicator" [class.pending]="shift.status === 'pending'"
                 [class.started]="shift.status === 'started'"
@@ -151,13 +163,37 @@
           </ion-card>
         </div>
       </div>
-      <ng-template #noShifts>
-        <div class="no-shifts-message">
-          <ion-icon name="calendar-outline" size="large"></ion-icon>
-          <h3>No shifts assigned yet</h3>
-          <p *ngIf="authService.isTemp()">Please contact your administrator for shift assignments.</p>
-          <p *ngIf="!authService.isTemp()">Create your first shift to get started.</p>
-        </div>
+     <ng-template #noShifts>
+
+  <!-- No shifts exist -->
+  <div *ngIf="shifts.length === 0; else noMatchingShifts"
+       class="no-shifts-message">
+
+    <ion-icon name="calendar-outline" size="large"></ion-icon>
+    <h3>No shifts assigned yet</h3>
+
+    <p *ngIf="authService.isTemp()">
+      Please contact your administrator for shift assignments.
+    </p>
+
+    <p *ngIf="!authService.isTemp()">
+      Create your first shift to get started.
+    </p>
+  </div>
+
+        <!-- Shifts exist, but search returned no matches -->
+        <ng-template #noMatchingShifts>
+          <div class="no-shifts-message">
+            <ion-icon name="search-outline" size="large"></ion-icon>
+            <h3>No matching shifts found</h3>
+            <p>Try another job title, client, worker name or status.</p>
+
+            <ion-button fill="clear" (click)="clearShiftSearch()">
+              Clear Search
+            </ion-button>
+          </div>
+        </ng-template>
+
       </ng-template>
     </div>
 </ion-content>

@@ -25,6 +25,8 @@ export class ShiftsPage implements OnInit {
   refresh: any;
   currentUser: any;
 
+  searchTerm = '';
+
   constructor(
     private shiftService: ShiftService,
     private router: Router,
@@ -44,13 +46,13 @@ export class ShiftsPage implements OnInit {
 
   loadShifts() {
     this.shiftService.getShifts().subscribe(shifts => {
-      console.log('All shifts from backend:', shifts);
-      console.log('Current user:', this.currentUser);
-      console.log('Is temp user:', this.authService.isTemp());
+    //  console.log('All shifts from backend:', shifts);
+      //console.log('Current user:', this.currentUser);
+      //console.log('Is temp user:', this.authService.isTemp());
 
       // Filter shifts for temp users to only show their assigned shifts
       if (this.authService.isTemp()) {
-        console.log('Filtering for temp user with id:', this.currentUser.id);
+       // console.log('Filtering for temp user with id:', this.currentUser.id);
         this.shifts = shifts.filter(shift => {
           const hasTemp = shift.temps.some(temp => {
            // console.log('Checking temp:', temp.id, 'against user id:', this.currentUser.id, 'match:', temp.id === this.currentUser.id);
@@ -75,20 +77,36 @@ export class ShiftsPage implements OnInit {
         });
       });
 
-      this.events = this.shifts.map(shift => {
-        const workerCount = shift.temps.length;
+      // this.events = this.shifts.map(shift => {
+      //   const workerCount = shift.temps.length;
 
-        return {
-          start: startOfDay(new Date(shift.startTime)),
-          title: `${shift.job.title} · ${
-            workerCount === 0
-              ? 'Unassigned'
-              : `${workerCount} ${workerCount === 1 ? 'worker' : 'workers'}`
-          }`,
-        };
-      });
+      //   return {
+      //     start: startOfDay(new Date(shift.startTime)),
+      //     title: `${shift.job.title} · ${
+      //       workerCount === 0
+      //         ? 'Unassigned'
+      //         : `${workerCount} ${workerCount === 1 ? 'worker' : 'workers'}`
+      //     }`,
+      //   };
+      // });
+      this.updateCalendarEvents();
     });
   }
+
+  updateCalendarEvents(): void {
+  this.events = this.filteredShifts.map(shift => {
+    const workerCount = shift.temps?.length ?? 0;
+
+    return {
+      start: startOfDay(new Date(shift.startTime)),
+      title: `${shift.job?.title ?? 'Untitled Job'} · ${
+        workerCount === 0
+          ? 'Unassigned'
+          : `${workerCount} ${workerCount === 1 ? 'worker' : 'workers'}`
+      }`
+    };
+  });
+}
 
   addShift(date?: Date) {
     if (date) {
@@ -228,4 +246,41 @@ export class ShiftsPage implements OnInit {
         return 'help-circle-outline';
     }
   }
+
+  get filteredShifts(): Shift[] {
+  const search = this.searchTerm.trim().toLowerCase();
+
+  if (!search) {
+    return this.shifts;
+  }
+
+  return this.shifts.filter(shift => {
+    const jobTitle = shift.job?.title ?? '';
+    const clientName = shift.client?.name ?? '';
+    const status = shift.status ?? '';
+
+    const workerNames = (shift.temps ?? [])
+      .map(temp => `${temp.firstName ?? ''} ${temp.lastName ?? ''}`)
+      .join(' ');
+
+    const searchableText = [
+      jobTitle,
+      clientName,
+      status,
+      workerNames
+    ].join(' ').toLowerCase();
+
+    return searchableText.includes(search);
+  });
+}
+
+onShiftSearch(event: any): void {
+  this.searchTerm = event.detail?.value ?? '';
+  this.updateCalendarEvents();
+}
+
+clearShiftSearch(): void {
+  this.searchTerm = '';
+  this.updateCalendarEvents();
+}
 }

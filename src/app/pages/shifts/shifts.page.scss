@@ -793,3 +793,25 @@ ion-card {
     line-height: 1.5;
   }
 }
+
+
+.shift-search-container {
+  background: #f0f2f5;
+  padding: 12px 16px 4px;
+
+  ion-searchbar {
+    --background: #ffffff;
+    --color: #2c3e50;
+    --placeholder-color: #98a2b3;
+    --icon-color: #004c4d;
+    --clear-button-color: #667085;
+    --border-radius: 10px;
+
+    padding: 0;
+    max-width: 650px;
+  }
+
+  @media (max-width: 480px) {
+    padding: 8px;
+  }
+}
