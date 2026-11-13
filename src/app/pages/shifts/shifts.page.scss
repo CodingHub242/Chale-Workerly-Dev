@@ -196,24 +196,41 @@ ion-content.shifts-content {
         }
       }
 
-      .cal-event {
+     .cal-event {
         display: flex;
         align-items: center;
-        gap: 4px;
-        background: var(--primary-color);
-        color: white;
-        padding: 2px 6px;
-        border-radius: 4px;
-        margin-bottom: 2px;
-        font-size: 0.8rem;
+        gap: 5px;
+
+        width: 100%;
+        max-width: 100%;
+        min-width: 0;
+        box-sizing: border-box;
+
+        padding: 4px 6px;
+        margin: 0;
+
+        background-color: #004c4e;
+        color: #ffffff;
+        border-radius: 5px;
+
+        font-size: 11px;
+        line-height: 1.4;
+
+        overflow: hidden;
+        white-space: nowrap;
 
         ion-icon {
-          font-size: 14px;
+          flex: 0 0 auto;
+          font-size: 13px;
         }
 
         .event-title {
-          white-space: nowrap;
+          display: block;
+          flex: 1 1 auto;
+          min-width: 0;
+
           overflow: hidden;
+          white-space: nowrap;
           text-overflow: ellipsis;
         }
       }

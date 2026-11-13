@@ -53,13 +53,13 @@ export class ShiftsPage implements OnInit {
         console.log('Filtering for temp user with id:', this.currentUser.id);
         this.shifts = shifts.filter(shift => {
           const hasTemp = shift.temps.some(temp => {
-            console.log('Checking temp:', temp.id, 'against user id:', this.currentUser.id, 'match:', temp.id === this.currentUser.id);
+           // console.log('Checking temp:', temp.id, 'against user id:', this.currentUser.id, 'match:', temp.id === this.currentUser.id);
             return temp.id === this.currentUser.id;
           });
-          console.log('Shift', shift.id, 'has temp:', hasTemp);
+         // console.log('Shift', shift.id, 'has temp:', hasTemp);
           return hasTemp;
         });
-        console.log('Filtered shifts for temp:', this.shifts);
+        //console.log('Filtered shifts for temp:', this.shifts);
       } else {
         this.shifts = shifts;
       }
@@ -76,10 +76,15 @@ export class ShiftsPage implements OnInit {
       });
 
       this.events = this.shifts.map(shift => {
-        const temps = shift.temps.map(t => t.firstName).join(', ');
+        const workerCount = shift.temps.length;
+
         return {
           start: startOfDay(new Date(shift.startTime)),
-          title: `${shift.job.title} - ${temps || 'Unassigned'}`,
+          title: `${shift.job.title} · ${
+            workerCount === 0
+              ? 'Unassigned'
+              : `${workerCount} ${workerCount === 1 ? 'worker' : 'workers'}`
+          }`,
         };
       });
     });
