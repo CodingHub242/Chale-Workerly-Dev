@@ -181,8 +181,25 @@
 
               <div class="tab-content" [ngClass]="selectedTab">
                  <div class="worker-scroll">
+
+                  <div
+                    *ngIf="selectedTab === 'working' && workingTemps.length === 0"
+                    class="worker-empty-state">
+
+                    <div class="empty-state-icon">
+                      <ion-icon name="people-outline"></ion-icon>
+                    </div>
+
+                    <h3>No workers currently active</h3>
+
+                    <p>
+                      When a temp checks in and starts a shift,
+                      they'll appear here.
+                    </p>
+
+                  </div>
                 <!-- Working Tab Content -->
-                <ion-list *ngIf="selectedTab === 'working'" class="status-section">
+                <ion-list *ngIf="selectedTab === 'working' && workingTemps.length > 0" class="status-section">
                   <ion-item *ngFor="let temp of workingTemps">
                     <ion-label>
                       <h2>

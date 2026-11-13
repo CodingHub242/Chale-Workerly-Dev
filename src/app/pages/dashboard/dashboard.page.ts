@@ -63,7 +63,10 @@ export class DashboardPage implements OnInit {
   ngOnInit() {
     this.jobService.getJobs().subscribe(jobs => this.jobs = jobs);
     this.clientService.getClients().subscribe(clients => this.clients = clients);
-    this.tempService.getTemps().subscribe(temps => this.temps = temps);
+    this.tempService.getTemps().subscribe(temps => {
+      this.temps = temps;
+      this.processShifts();
+    });
     this.shiftService.getShifts().subscribe(shifts => {
       this.shifts = shifts;
       this.processShifts();
