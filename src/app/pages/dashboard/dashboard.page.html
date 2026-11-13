@@ -146,26 +146,38 @@
                 </div>
               </div>
 
-              <ion-segment [(ngModel)]="selectedTab" mode="ios" color="primary">
+             
+              <ion-segment
+                [(ngModel)]="selectedTab"
+                mode="ios"
+                color="primary">
+
                 <ion-segment-button value="working">
                   <ion-label>
                     <ion-icon name="play-circle-outline"></ion-icon>
                     Working
+                    <span class="tab-count">{{ workingTemps.length }}</span>
                   </ion-label>
                 </ion-segment-button>
+
                 <ion-segment-button value="pending">
                   <ion-label>
                     <ion-icon name="time-outline"></ion-icon>
                     Pending
+                    <span class="tab-count">{{ pendingTemps.length }}</span>
                   </ion-label>
                 </ion-segment-button>
+
                 <ion-segment-button value="past">
                   <ion-label>
                     <ion-icon name="calendar-outline"></ion-icon>
                     Past
+                    <span class="tab-count">{{ pastTemps.length }}</span>
                   </ion-label>
                 </ion-segment-button>
+
               </ion-segment>
+
 
               <div class="tab-content" [ngClass]="selectedTab">
                  <div class="worker-scroll">
