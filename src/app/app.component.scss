@@ -10,12 +10,17 @@
 
 /* Sidebar dimensions */
 
-ion-menu {
-  --width: 290px;
-  --min-width: 290px;
-  --max-width: 300px;
+ion-split-pane {
+  --side-width: 290px;
+  --side-min-width: 290px;
+  --side-max-width: 290px;
 }
 
+ion-menu.workerly-menu {
+  --width: 290px;
+  --min-width: 290px;
+  --max-width: 290px;
+}
 /* Brand header */
 
 .sidebar-header {

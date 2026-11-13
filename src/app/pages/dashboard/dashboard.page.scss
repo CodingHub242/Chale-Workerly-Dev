@@ -36,11 +36,12 @@ ion-content {
 }
 
 .dashboard-grid {
+  width: 100%;
   max-width: 1600px;
   margin: 0 auto;
-  padding: 24px;
+  padding: 20px 12px 24px;
+  box-sizing: border-box;
 }
-
 /* Main cards */
 
 .chart-card,
