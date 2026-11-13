@@ -35,6 +35,42 @@ ion-content {
   --background: var(--page-bg);
 }
 
+.dashboard-intro {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 4px 0 20px;
+
+  h1 {
+    color: var(--text-primary);
+    font-size: 25px;
+    font-weight: 700;
+    margin: 0 0 6px;
+    letter-spacing: -0.5px;
+  }
+
+  p {
+    color: var(--text-secondary);
+    font-size: 14px;
+    margin: 0;
+  }
+}
+
+ion-row {
+  align-items: stretch;
+}
+
+.stat-card {
+  height: calc(100% - 16px);
+  min-height: 145px;
+  display: flex;
+  align-items: center;
+
+  .stat-header {
+    margin-bottom: 15px;
+  }
+}
+
 .dashboard-grid {
   width: 100%;
   max-width: 1600px;
