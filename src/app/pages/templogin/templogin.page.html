@@ -77,7 +77,7 @@
               <ion-label>{{ errorMessage }}</ion-label>
             </ion-item>
 
-            <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+            <!-- <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
               <ion-item lines="none" class="mb-3">
                 <fieldset class="input-item">
                   <legend>Email</legend>
@@ -95,38 +95,82 @@
                     </ion-button>
                   </div>
                 </fieldset>
-              </ion-item>
+              </ion-item> -->
 
+             
+              <!-- LOGIN VIEW -->
               <div *ngIf="resetView === 'login'">
+
                 <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+
+                  <!-- Email -->
                   <ion-item lines="none" class="mb-3">
                     <fieldset class="input-item">
                       <legend>Email</legend>
-                      <ion-input formControlName="email" type="email" placeholder="name@example.com"></ion-input>
+                      <ion-input
+                        formControlName="email"
+                        type="email"
+                        placeholder="name@example.com">
+                      </ion-input>
                     </fieldset>
                   </ion-item>
 
+                  <!-- Password -->
                   <ion-item lines="none" class="mb-3">
                     <fieldset class="input-item">
                       <legend>Password</legend>
+
                       <div class="password-input-container">
-                        <ion-input formControlName="password" [type]="passwordType" placeholder="xxxxxxxxx"></ion-input>
-                        <ion-button fill="clear" size="small" class="password-toggle" (click)="togglePasswordVisibility()">
-                          <ion-icon [name]="passwordIcon" slot="icon-only"></ion-icon>
+                        <ion-input
+                          formControlName="password"
+                          [type]="passwordType"
+                          placeholder="xxxxxxxxx">
+                        </ion-input>
+
+                        <ion-button
+                          fill="clear"
+                          size="small"
+                          class="password-toggle"
+                          type="button"
+                          (click)="togglePasswordVisibility()">
+
+                          <ion-icon
+                            [name]="passwordIcon"
+                            slot="icon-only">
+                          </ion-icon>
+
                         </ion-button>
                       </div>
                     </fieldset>
                   </ion-item>
 
-                  <ion-button type="submit" class="mt-2 submit-btn" expand="block" [disabled]="isLoading || loginForm.invalid">
+                  <!-- Login Button -->
+                  <ion-button
+                    type="submit"
+                    class="mt-2 submit-btn"
+                    expand="block"
+                    [disabled]="isLoading || loginForm.invalid">
+
                     <ion-spinner *ngIf="isLoading" name="crescent"></ion-spinner>
+
                     <span *ngIf="!isLoading">Login</span>
                     <span *ngIf="isLoading">Logging in...</span>
+
                   </ion-button>
-                  <p class="mt-3 switch-auth"><span>Don't have an account?</span> <span (click)="register()" class="link-accent">Register</span></p>
-                  <p class="mt-1 switch-auth"><span>Forgot password?</span> <span (click)="showForgot()" class="link-accent">Reset it</span></p>
+
+                  <p class="mt-3 switch-auth">
+                    <span>Don't have an account?</span>
+                    <span (click)="register()" class="link-accent">Register</span>
+                  </p>
+
+                  <p class="mt-1 switch-auth">
+                    <span>Forgot password?</span>
+                    <span (click)="showForgot()" class="link-accent">Reset it</span>
+                  </p>
+
                 </form>
               </div>
+
 
               <!-- Forgot password: request OTP -->
               <div *ngIf="resetView === 'forgot'" class="reset-view">
@@ -188,7 +232,7 @@
                 <p class="mt-3 switch-auth"><span>Didn't receive OTP?</span> <span (click)="showForgot()" class="link-accent">Resend</span></p>
                 <p class="mt-1 switch-auth"><span>Cancel</span> <span (click)="backToLogin()" class="link-accent">Back to sign in</span></p>
               </div>
-            </form>
+            <!-- </form> -->
           </ion-card>
         </div>
       </section>
