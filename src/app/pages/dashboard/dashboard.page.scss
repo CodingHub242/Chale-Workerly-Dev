@@ -104,6 +104,35 @@ ion-row {
   ion-card-content {
     color: var(--text-primary);
   }
+
+  .worker-scroll {
+  max-height: 390px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 0 5px 10px 0;
+
+  // Firefox
+  scrollbar-width: thin;
+  scrollbar-color: #cbd5d8 transparent;
+
+  // Chrome, Edge and Safari
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: #cbd5d8;
+    border-radius: 10px;
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    background: #84999b;
+  }
+}
 }
 
 /* Statistics cards */
@@ -423,6 +452,10 @@ ion-row {
 
   .list-card {
     padding: 6px;
+
+    .worker-scroll {
+      max-height: 320px;
+    }
 
     .worker-header {
       padding: 12px;

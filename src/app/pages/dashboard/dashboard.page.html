@@ -168,6 +168,7 @@
               </ion-segment>
 
               <div class="tab-content" [ngClass]="selectedTab">
+                 <div class="worker-scroll">
                 <!-- Working Tab Content -->
                 <ion-list *ngIf="selectedTab === 'working'" class="status-section">
                   <ion-item *ngFor="let temp of workingTemps">
@@ -231,6 +232,8 @@
                     </ion-label>
                   </ion-item>
                 </ion-list>
+
+                </div>
               </div>
             </div>
             <!-- <ion-list class="worker-list" style="margin-top: 20px;">
