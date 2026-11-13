@@ -80,7 +80,6 @@ ion-row {
 }
 /* Main cards */
 
-.chart-card,
 .list-card {
   background: var(--card-bg);
   border: 1px solid var(--border-color);
@@ -133,6 +132,71 @@ ion-row {
     background: #84999b;
   }
 }
+}
+
+/* Shifts per Day Chart */
+
+.chart-card {
+  background: #ffffff;
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  box-shadow: 0 3px 12px rgba(16, 24, 40, 0.04);
+  margin: 16px 0 24px;
+  overflow: hidden;
+
+  ion-card-header {
+    padding: 22px 24px;
+    border-bottom: 1px solid var(--border-color);
+  }
+
+  .chart-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+  }
+
+  ion-card-title {
+    color: var(--text-primary);
+    font-size: 18px;
+    font-weight: 700;
+  }
+
+  .chart-heading p {
+    color: var(--text-secondary);
+    font-size: 13px;
+    margin: 6px 0 0;
+  }
+
+  .chart-icon {
+    width: 42px;
+    height: 42px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 11px;
+    background: #edf4f4;
+    color: var(--primary-light);
+
+    ion-icon {
+      font-size: 21px;
+    }
+  }
+
+  ion-card-content {
+    padding: 20px 24px 24px;
+  }
+
+  .chart-container {
+    position: relative;
+    width: 100%;
+    height: 340px;
+
+    canvas {
+      display: block;
+      max-width: 100%;
+    }
+  }
 }
 
 /* Statistics cards */
@@ -476,7 +540,17 @@ ion-row {
     }
   }
 
-  .chart-card ion-card-content {
-    height: 280px;
+  .chart-card {
+  ion-card-header {
+    padding: 16px;
   }
+
+  ion-card-content {
+    padding: 15px 12px 18px;
+  }
+
+  .chart-container {
+    height: 260px;
+  }
+}
 }
