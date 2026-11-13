@@ -1459,84 +1459,15 @@ class WorkerController extends Controller
 
 
 //////////////
-public function forgot_password(Request $request)
-    {
-        try {
-            $request->validate([
-                'email' => 'required|email|exists:temps,email',
-            ]);
-
-            $temp = Temp::where('email', $request->email)->first();
-
-            $otp = str_pad(random_int(0, 999999), 6, '0', STR_PAD_LEFT);
-            $expiresAt = now()->addMinutes(15);
-
-            \App\Models\PasswordReset::updateOrCreate(
-                ['email' => $request->email],
-                ['otp' => $otp, 'used' => false, 'expires_at' => $expiresAt]
-            );
-
-            // Send OTP via SMS (same provider used elsewhere in this controller)
-            $curl = curl_init();
-            curl_setopt_array($curl, [
-                CURLOPT_URL => 'https://sms.arkesel.com/api/v2/sms/send',
-                CURLOPT_HTTPHEADER => ['api-key: ZFRDQVFUVlZyQ0t1c3NsRllNc1U'],
-                CURLOPT_RETURNTRANSFER => true,
-                CURLOPT_ENCODING => '',
-                CURLOPT_MAXREDIRS => 10,
-                CURLOPT_TIMEOUT => 0,
-                CURLOPT_FOLLOWLOCATION => true,
-                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-                CURLOPT_CUSTOMREQUEST => 'POST',
-                CURLOPT_POSTFIELDS => http_build_query([
-                    'sender' => 'Workerly',
-                    'message' => 'Your Workerly password reset OTP is '.$otp.'. It expires in 15 minutes.',
-                    'recipients' => [$temp->phone],
-                ]),
-            ]);
-            curl_exec($curl);
-            curl_close($curl);
-
-            return response()->json(['success' => true, 'message' => 'Reset OTP sent to your phone.']);
-        } catch (Exception $e) {
-            Log::error('Forgot password error: ' . $e->getMessage());
-            return response()->json(['error' => $e->getMessage()], 500);
-        }
-    }
-
-    public function reset_password(Request $request)
-    {
-        try {
-            $request->validate([
-                'email' => 'required|email',
-                'otp' => 'required|digits:6',
-                'password' => 'required|string|min:6',
-            ]);
-
-            $reset = \App\Models\PasswordReset::where('email', $request->email)
-                ->where('otp', $request->otp)
-                ->where('used', false)
-                ->where('expires_at', '>', now())
-                ->first();
-
-            if (!$reset) {
-                return response()->json(['success' => false, 'error' => 'Invalid or expired OTP.'], 400);
-            }
-
-            $temp = Temp::where('email', $request->email)->first();
-            if (!$temp) {
-                return response()->json(['success' => false, 'error' => 'Temp not found.'], 404);
-            }
-
-            $temp->password = password_hash($request->password, PASSWORD_DEFAULT);
-            $temp->save();
-
-            $reset->used = true;
-            $reset->save();
-
-            return response()->json(['success' => true, 'message' => 'Password reset successfully.']);
-        } catch (Exception $e) {
-            Log::error('Reset password error: ' . $e->getMessage());
-            return response()->json(['error' => $e->getMessage()], 500);
-        }
-    }
+CREATE TABLE `password_resets` (
+    `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+    `email` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+    `otp` varchar(6) COLLATE utf8mb4_unicode_ci NOT NULL,
+    `used` tinyint(1) NOT NULL DEFAULT '0',
+    `expires_at` timestamp NULL DEFAULT NULL,
+    `created_at` timestamp NULL DEFAULT NULL,
+    `updated_at` timestamp NULL DEFAULT NULL,
+    PRIMARY KEY (`id`),
+    KEY `password_resets_email_index` (`email`),
+    KEY `password_resets_email_otp_index` (`email`,`otp`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
