@@ -19,6 +19,108 @@
 
 <ion-content>
   <ion-grid class="dashboard-grid">
+     <ion-row>
+      <!-- Jobs Stat Card -->
+      <ion-col size="12" size-md="6" size-lg="4">
+        <div class="stat-card jobs-gradient">
+          <div class="stat-content">
+            <div class="stat-header">
+              <div class="stat-icon jobs-icon">
+                <ion-icon name="briefcase-outline"></ion-icon>
+              </div>
+              <div class="trend-indicator positive">
+                <ion-icon name="trending-up-outline"></ion-icon>
+              </div>
+            </div>
+            <div class="stat-info">
+              <h2>{{ jobs.length }}</h2>
+              <p>Active Jobs</p>
+            </div>
+          </div>
+        </div>
+      </ion-col>
+
+      <!-- Clients Stat Card -->
+      <ion-col size="12" size-md="6" size-lg="4">
+        <div class="stat-card clients-gradient">
+          <div class="stat-content">
+            <div class="stat-header">
+              <div class="stat-icon clients-icon">
+                <ion-icon name="people-outline"></ion-icon>
+              </div>
+              <div class="trend-indicator positive">
+                <ion-icon name="trending-up-outline"></ion-icon>
+              </div>
+            </div>
+            <div class="stat-info">
+              <h2>{{ clients.length }}</h2>
+              <p>Total Clients</p>
+            </div>
+          </div>
+        </div>
+      </ion-col>
+
+      <!-- Temps Stat Card -->
+      <ion-col size="12" size-md="6" size-lg="4">
+        <div class="stat-card temps-gradient">
+          <div class="stat-content">
+            <div class="stat-header">
+              <div class="stat-icon temps-icon">
+                <ion-icon name="person-outline"></ion-icon>
+              </div>
+              <div class="trend-indicator positive">
+                <ion-icon name="trending-up-outline"></ion-icon>
+              </div>
+            </div>
+            <div class="stat-info">
+              <h2>{{ temps.length }}</h2>
+              <p>Available Temps</p>
+            </div>
+          </div>
+        </div>
+      </ion-col>
+
+      <!-- Shifts Stat Card -->
+      <ion-col size="12" size-md="6" size-lg="6">
+        <div class="stat-card shifts-gradient">
+          <div class="stat-content">
+            <div class="stat-header">
+              <div class="stat-icon shifts-icon">
+                <ion-icon name="calendar-outline"></ion-icon>
+              </div>
+              <div class="trend-indicator positive">
+                <ion-icon name="trending-up-outline"></ion-icon>
+              </div>
+            </div>
+            <div class="stat-info">
+              <h2>{{ shifts.length }}</h2>
+              <p>Scheduled Shifts</p>
+            </div>
+          </div>
+        </div>
+      </ion-col>
+
+      <!-- Timesheets Stat Card -->
+      <ion-col size="12" size-md="6" size-lg="6">
+        <div class="stat-card timesheets-gradient">
+          <div class="stat-content">
+            <div class="stat-header">
+              <div class="stat-icon timesheets-icon">
+                <ion-icon name="document-text-outline"></ion-icon>
+              </div>
+              <div class="trend-indicator neutral">
+                <ion-icon name="trending-up-outline"></ion-icon>
+              </div>
+            </div>
+            <div class="stat-info">
+              <h2>{{ timesheets.length }}</h2>
+              <p>Pending Timesheets</p>
+            </div>
+          </div>
+        </div>
+      </ion-col>
+    </ion-row>
+    
     <ion-row>
       <!-- Worker Status List -->
       <ion-col size="12">
@@ -141,107 +243,7 @@
       </ion-col>
     </ion-row>
 
-    <ion-row>
-      <!-- Jobs Stat Card -->
-      <ion-col size="12" size-md="6" size-lg="4">
-        <div class="stat-card jobs-gradient">
-          <div class="stat-content">
-            <div class="stat-header">
-              <div class="stat-icon jobs-icon">
-                <ion-icon name="briefcase-outline"></ion-icon>
-              </div>
-              <div class="trend-indicator positive">
-                <ion-icon name="trending-up-outline"></ion-icon>
-              </div>
-            </div>
-            <div class="stat-info">
-              <h2>{{ jobs.length }}</h2>
-              <p>Active Jobs</p>
-            </div>
-          </div>
-        </div>
-      </ion-col>
-
-      <!-- Clients Stat Card -->
-      <ion-col size="12" size-md="6" size-lg="4">
-        <div class="stat-card clients-gradient">
-          <div class="stat-content">
-            <div class="stat-header">
-              <div class="stat-icon clients-icon">
-                <ion-icon name="people-outline"></ion-icon>
-              </div>
-              <div class="trend-indicator positive">
-                <ion-icon name="trending-up-outline"></ion-icon>
-              </div>
-            </div>
-            <div class="stat-info">
-              <h2>{{ clients.length }}</h2>
-              <p>Total Clients</p>
-            </div>
-          </div>
-        </div>
-      </ion-col>
-
-      <!-- Temps Stat Card -->
-      <ion-col size="12" size-md="6" size-lg="4">
-        <div class="stat-card temps-gradient">
-          <div class="stat-content">
-            <div class="stat-header">
-              <div class="stat-icon temps-icon">
-                <ion-icon name="person-outline"></ion-icon>
-              </div>
-              <div class="trend-indicator positive">
-                <ion-icon name="trending-up-outline"></ion-icon>
-              </div>
-            </div>
-            <div class="stat-info">
-              <h2>{{ temps.length }}</h2>
-              <p>Available Temps</p>
-            </div>
-          </div>
-        </div>
-      </ion-col>
-
-      <!-- Shifts Stat Card -->
-      <ion-col size="12" size-md="6" size-lg="6">
-        <div class="stat-card shifts-gradient">
-          <div class="stat-content">
-            <div class="stat-header">
-              <div class="stat-icon shifts-icon">
-                <ion-icon name="calendar-outline"></ion-icon>
-              </div>
-              <div class="trend-indicator positive">
-                <ion-icon name="trending-up-outline"></ion-icon>
-              </div>
-            </div>
-            <div class="stat-info">
-              <h2>{{ shifts.length }}</h2>
-              <p>Scheduled Shifts</p>
-            </div>
-          </div>
-        </div>
-      </ion-col>
-
-      <!-- Timesheets Stat Card -->
-      <ion-col size="12" size-md="6" size-lg="6">
-        <div class="stat-card timesheets-gradient">
-          <div class="stat-content">
-            <div class="stat-header">
-              <div class="stat-icon timesheets-icon">
-                <ion-icon name="document-text-outline"></ion-icon>
-              </div>
-              <div class="trend-indicator neutral">
-                <ion-icon name="trending-up-outline"></ion-icon>
-              </div>
-            </div>
-            <div class="stat-info">
-              <h2>{{ timesheets.length }}</h2>
-              <p>Pending Timesheets</p>
-            </div>
-          </div>
-        </div>
-      </ion-col>
-    </ion-row>
+   
 
     <ion-row>
       <!-- Bar Chart -->
