@@ -1,39 +1,82 @@
 <ion-app>
   <ion-split-pane contentId="main-content">
-    <ion-menu contentId="main-content" type="overlay" *ngIf="currentUser">
-      <ion-header>
+
+    <ion-menu
+      contentId="main-content"
+      type="overlay"
+      *ngIf="currentUser"
+      class="workerly-menu">
+
+      <!-- Brand Header -->
+      <ion-header class="sidebar-header">
         <ion-toolbar>
-          <ion-title style="color:whitesmoke;">Workerly</ion-title>
+          <ion-title>
+            <div class="brand-container">
+              <div class="brand-icon">
+                <ion-icon name="briefcase-outline"></ion-icon>
+              </div>
+              <span>Workerly</span>
+            </div>
+          </ion-title>
         </ion-toolbar>
       </ion-header>
-      <ion-content>
-        <ion-list>
-          <ion-menu-toggle auto-hide="false" *ngFor="let p of appPages">
-            <ion-item [@collapse]="'expanded'" [routerDirection]="'root'" [routerLink]="[p.url]">
-              <ion-icon slot="start" [name]="p.icon"></ion-icon>
-              <ion-label>
-                {{ p.title }}
-              </ion-label>
+
+      <!-- Navigation -->
+      <ion-content class="sidebar-content">
+
+        <div class="navigation-label">MAIN MENU</div>
+
+        <ion-list class="sidebar-list">
+          <ion-menu-toggle
+            auto-hide="false"
+            *ngFor="let p of appPages">
+
+            <ion-item
+              lines="none"
+              [routerDirection]="'root'"
+              [routerLink]="[p.url]"
+              routerLinkActive="selected"
+              [routerLinkActiveOptions]="{ exact: true }">
+
+              <ion-icon
+                slot="start"
+                [name]="p.icon">
+              </ion-icon>
+
+              <ion-label>{{ p.title }}</ion-label>
+
+              <ion-icon
+                slot="end"
+                name="chevron-forward-outline"
+                class="menu-chevron">
+              </ion-icon>
+
             </ion-item>
+
           </ion-menu-toggle>
         </ion-list>
+
+        <div class="sidebar-footer">
+          <div class="footer-brand">WORKERLY</div>
+          <div class="footer-caption">Workforce Management Platform</div>
+        </div>
+
       </ion-content>
     </ion-menu>
+
     <ion-router-outlet id="main-content"></ion-router-outlet>
+
   </ion-split-pane>
-  
-  <!-- Notification Button -->
-  <!-- <ion-fab vertical="bottom" horizontal="end" slot="fixed" *ngIf="showNotifications">
-    <ion-fab-button (click)="toggleNotifications()">
-      <ion-icon name="chatbox"></ion-icon>
-      <ion-badge color="danger" *ngIf="unreadCount > 0">{{ unreadCount }}</ion-badge>
-    </ion-fab-button>
-  </ion-fab> -->
-  
-  <!-- Notification Panel -->
-  <ion-modal [isOpen]="notificationsOpen" (didDismiss)="notificationsOpen = false">
+
+  <!-- Notification Modal -->
+  <ion-modal
+    [isOpen]="notificationsOpen"
+    (didDismiss)="notificationsOpen = false">
+
     <ng-template>
       <app-notification></app-notification>
     </ng-template>
+
   </ion-modal>
+
 </ion-app>
